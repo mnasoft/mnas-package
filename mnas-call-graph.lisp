@@ -3,31 +3,27 @@
 (in-package #:cl-user)
 
 (defpackage #:mnas-call-graph
-  (:use #:cl))
+  (:use #:cl)
+  (:export read-file
+	   defun-code
+	   defun-name
+	   defmethod-code
+	   defmethod-name
+	   def-name
+	   defu-defm-name
+	   who-calls
+	   who-calls-lst))
 
 (in-package #:mnas-call-graph)
 
-(setf sb-impl::*default-external-format* :UTF-8)
-
-(defun load-lisp-lisp-as-code (fname &key (temporary-fname "~/quicklisp/local-projects/tem-temporary-tempo.lisp"))
-  (with-open-file (o-stream temporary-fname :direction :output :if-exists :supersede :external-format :UTF-8) ;;;; 
-    (princ "(defparameter *code* '(" o-stream)
-    (princ #\newline o-stream)
-    (with-open-file (stream fname :external-format  :UTF-8) ;;;; 
-      (loop for line = (read-line stream nil 'foo)
-	 until (eq line 'foo)
-	 do (progn
-	      (princ line o-stream)
-	      (princ #\newline o-stream))))
-    (princ #\newline o-stream)
-    (princ "))" o-stream))
-  (load temporary-fname)
-  *code*)
-
-(defparameter *code* 
-  (load-lisp-lisp-as-code "~/quicklisp/local-projects/mnas/mnas-graph/mnas-graph.lisp"))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun read-file (path)
+  (with-open-file (s path)
+    (do ((rez nil)
+	 (form (read s nil 'done) (read s nil 'done)))
+	((eq form 'done) rez)
+      (push form rez))))
 
 (defun defun-code (code)
   (let ((rez nil))
@@ -55,10 +51,6 @@
 
 (defun def-name (code)
   (append (defun-name code) (defmethod-name code)))
-
-(defun-name *code*)
-(defmethod-name *code*)
-(def-name *code*)
 
 (defun defu-defm-name (func)
     (cond
@@ -88,17 +80,30 @@
    (mapcar #'who-calls
 	   func-lst)))
 
-(export 'who-calls-lst)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(in-package #:mnas-graph)
-(who-calls 'demo-5)
-(who-calls 'MAKE-RANDOM-GRAPH)
-(who-calls 'to-string)
+(in-package :cl-user)
+(defparameter *is* (open "~/quicklisp/local-projects/mnas/mnas-graph/mnas-graph.lisp"))
+
+(close *is*)
+
+(require    :mnas-graph)
+(in-package :mnas-graph)
+
+;;(mnas-call-graph:who-calls 'to-string)
+;;(mnas-call-graph:who-calls 'make-random-graph)
+
+
+(defun-name mnas-call-graph:re-fi *code*)
+(defmethod-name *code*)
+(def-name *code*)
 
 (mnas-graph:view-graph
- (mnas-graph:generate-graph 
-  (who-calls-lst (def-name *code*))))
-
+ (mnas-graph:generate-graph
+  (mnas-call-graph:who-calls-lst
+   (mnas-call-graph:def-name
+       (mnas-call-graph:read-file
+	"~/quicklisp/local-projects/mnas/mnas-graph/mnas-graph.lisp")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
