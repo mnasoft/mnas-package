@@ -12,18 +12,22 @@
 	   def-name
 	   defu-defm-name
 	   who-calls
-	   who-calls-lst))
+	   who-calls-lst
+	   make-call-praph))
 
 (in-package #:mnas-call-graph)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun read-file (path)
-  (with-open-file (s path)
-    (do ((rez nil)
-	 (form (read s nil 'done) (read s nil 'done)))
-	((eq form 'done) rez)
-      (push form rez))))
+  (let ((sb-impl-d-e-f sb-impl::*default-external-format*)
+	(sb-impl::*default-external-format* :UTF-8))
+    (with-open-file (s path)
+      (do ((rez nil)
+	   (form (read s nil 'done) (read s nil 'done)))
+	  ((eq form 'done) (progn     (setf sb-impl::*default-external-format* sb-impl-d-e-f ) rez))
+	(push form rez)))
+    ))
 
 (defun defun-code (code)
   (let ((rez nil))
@@ -80,30 +84,25 @@
    (mapcar #'who-calls
 	   func-lst)))
 
+(defun make-call-praph (lisp-file )
+  (mnas-graph:view-graph
+   (mnas-graph:generate-graph
+    (mnas-call-graph:who-calls-lst
+     (mnas-call-graph:def-name
+	 (mnas-call-graph:read-file lisp-file))))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(in-package :cl-user)
-(defparameter *is* (open "~/quicklisp/local-projects/mnas/mnas-graph/mnas-graph.lisp"))
-
-(close *is*)
 
 (require    :mnas-graph)
 (in-package :mnas-graph)
 
-;;(mnas-call-graph:who-calls 'to-string)
-;;(mnas-call-graph:who-calls 'make-random-graph)
-
-
-(defun-name mnas-call-graph:re-fi *code*)
-(defmethod-name *code*)
-(def-name *code*)
-
-(mnas-graph:view-graph
- (mnas-graph:generate-graph
-  (mnas-call-graph:who-calls-lst
-   (mnas-call-graph:def-name
-       (mnas-call-graph:read-file
-	"~/quicklisp/local-projects/mnas/mnas-graph/mnas-graph.lisp")))))
+(mnas-call-graph:make-call-praph
+  "~/quicklisp/local-projects/mnas/mnas-graph/mnas-graph.lisp")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(require    :algorithm)
+(in-package :algorithm)
+
+(mnas-call-graph:make-call-praph
+"/home/namatv/quicklisp/local-projects/clisp/algorithm/algorithm.lisp")
