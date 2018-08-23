@@ -124,3 +124,12 @@
        (mnas-call-graph:who-calls-lst
 	(package-function-symbols package)))))
     (t (error "~S does not designate a package" package-name))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(in-package #:cl-user)
+
+(defun package-call-graph (package-name)
+  (require package-name)
+  (mnas-call-graph:make-call-praph package-name))
+
