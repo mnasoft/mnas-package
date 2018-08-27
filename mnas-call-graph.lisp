@@ -86,6 +86,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defun func-to-string (func)
+  (string-downcase (string func)))
+
 (defun defu-defm-name (func)
     (cond
       ((listp (first func))
@@ -96,16 +99,14 @@
 (defun who-calls (func)
   (let
       ((rez (swank/backend:who-calls func))
-       (func-str (string-downcase (string func))))
+       (func-str (func-to-string func)))
     (mapcar
      #'(lambda (el1)
 	 (list el1 func-str))
      (remove-duplicates 
       (mapcar
        #'(lambda (el)
-	   (string-downcase
-	    (string
-	     (defu-defm-name el))))
+	   (func-to-string (defu-defm-name el)))
        rez)
       :test #'equal))))
 
@@ -114,15 +115,21 @@
    (mapcar #'who-calls
 	   func-lst)))
 
-(defun make-call-praph (package-name 
-			&aux (package (find-package package-name)))
+(defun make-call-praph (package-name
+			&key
+			  (graphviz-prg :filter-dot)
+			&aux
+			  (package (find-package package-name))
+			  (pkg-functions (package-function-symbols package)))
   (declare ((or package string symbol) package-name))
   (cond
     (package
      (mnas-graph:view-graph
-      (mnas-graph:generate-graph
+      (mnas-graph:make-graph
        (mnas-call-graph:who-calls-lst
-	(package-function-symbols package)))))
+	pkg-functions)
+       :nodes (mapcar #'(lambda (el) (func-to-string el)) pkg-functions))
+      :graphviz-prg graphviz-prg))
     (t (error "~S does not designate a package" package-name))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
