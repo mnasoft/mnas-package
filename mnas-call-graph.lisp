@@ -10,8 +10,9 @@
    package-function-symbols
    defu-defm-name
    who-calls
-   who-calls-lst
-   make-call-praph))
+   who-calls-lst)
+  (:export make-call-praph package-call-graph)
+  (:export make-class-graph package-classes  package-class-graph))
 
 (in-package #:mnas-call-graph)
 
@@ -134,9 +135,69 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(in-package #:cl-user)
-
 (defun package-call-graph (package-name)
-  (require package-name)
-  (mnas-call-graph:make-call-praph package-name))
+  (when (symbolp package-name) (require package-name))
+  (when (stringp package-name) (require package-name))
+  (make-call-praph package-name))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun package-classes
+    (package-name
+     &aux
+       (rez nil)
+       (class nil)
+       (package (find-package package-name)))
+  "Возвращает список классов пакета"
+  (declare ((or package string symbol) package-name))
+  (mapc 
+   #'(lambda (el)
+       (setf class (find-class el nil))
+       (when class (push class rez)))
+   (package-symbols-by-category package))
+  rez)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun make-class-graph
+    (package-name
+     &aux
+       (package (find-package package-name))
+       (graph (make-instance 'mnas-graph:graph)))
+  (declare ((or package string symbol) package-name))
+  (flet ((find-subclasses (class)
+	   (mapcar
+	    #'(lambda (el)
+		(mnas-graph:insert-to
+		 (make-instance
+		  'mnas-graph:edge
+		  :from (make-instance 'mnas-graph:node :owner graph :name (string (class-name class)))
+		  :to   (make-instance 'mnas-graph:node :owner graph :name (string (class-name el))))
+		 graph))
+	    (sb-mop:class-direct-subclasses class))
+	   graph))
+    (mapc
+     #'(lambda (el)
+  	 (mnas-graph:insert-to
+	  (make-instance 'mnas-graph:node :owner graph :name (string (class-name el)))
+	  graph)
+	 (find-subclasses el))
+     (package-classes package)))
+  graph)
+
+(defun package-class-graph
+    (package-name
+     &key
+       (graphviz-prg :filter-dot))
+  "Выводит визуальное представление иерархии классов (графа наследования)"
+  (when (symbolp package-name) (require package-name))
+  (when (stringp package-name) (require package-name))
+  (mnas-graph:view-graph
+   (make-class-graph package-name)
+    :graphviz-prg graphviz-prg))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;; (in-package #:cl-user)
+;;;; (import '(package-call-graph package-class-graph make-class-graph make-call-praph) :mnas-call-graph)
+;;;; (export 'package-call-graph) (export	'package-class-graph) (export	'make-class-graph) (export 'make-call-praph)

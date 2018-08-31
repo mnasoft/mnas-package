@@ -21,4 +21,25 @@
   (require :mnas-string)
   (make-call-praph :mnas-string))
 
-(format t "(mnas-call-graph:demo-1)~%(mnas-call-graph:demo-2)~%(mnas-call-graph:demo-3)~%(mnas-call-graph:demo-10)")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(progn 
+  (defclass a1 ()      ())
+  (defclass a2 (a1)    ())
+  (defclass a3 (a2)    ())
+  (defclass a4 (a3)    ())
+
+  (defclass b1 ()      ())
+  (defclass b2 (b1)    ())
+  (defclass b3 (b2)    ())
+  (defclass b4 (b3)    ())
+
+  (defclass c1 (a3 b3) ()))
+
+(defun demo-11 ()
+  (make-call-praph :package-class-graph)
+  (make-class-praph :package-class-graph))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(format t "(mnas-call-graph:demo-1)~%(mnas-call-graph:demo-2)~%(mnas-call-graph:demo-3)~%(mnas-call-graph:demo-10)~%(mnas-call-graph:demo-11)")
