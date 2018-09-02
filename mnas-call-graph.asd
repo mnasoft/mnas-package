@@ -2,10 +2,12 @@
 
 (defsystem #:mnas-call-graph
   :description "Describe mnas-call-graph here"
-  :author "Your Name <your.name@example.com>"
-  :license  "Specify license here"
-  :version "0.0.1"
-  :serial t
+  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :license  "GNU GPLv3"
+  :version "0.0.2"
+  :serial nil
   :depends-on (#:mnas-graph)
   :components ((:file "mnas-call-graph")
-	       (:file "demos")))
+	       (:file "demos" :depends-on ("mnas-call-graph"))
+	       (:file "cl-user-import-symbols" :depends-on ("mnas-call-graph"))))
+

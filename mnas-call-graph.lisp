@@ -12,7 +12,8 @@
    who-calls
    who-calls-lst)
   (:export make-call-praph package-call-graph)
-  (:export make-class-graph package-classes  package-class-graph))
+  (:export make-class-graph package-classes  package-class-graph)
+  (:export demo-1 demo-2 demo-3 demo-10 demo-11))
 
 (in-package #:mnas-call-graph)
 
@@ -117,30 +118,27 @@
 	   func-lst)))
 
 (defun make-call-praph (package-name
-			&key
-			  (graphviz-prg :filter-dot)
 			&aux
 			  (package (find-package package-name))
-			  (pkg-functions (package-function-symbols package)))
+			  (pkg-functions nil))
   (declare ((or package string symbol) package-name))
   (cond
     (package
-     (mnas-graph:view-graph
-      (mnas-graph:make-graph
-       (mnas-call-graph:who-calls-lst
-	pkg-functions)
-       :nodes (mapcar #'(lambda (el) (func-to-string el)) pkg-functions))
-      :graphviz-prg graphviz-prg))
+     (setf pkg-functions (package-function-symbols package))
+     (mnas-graph:make-graph
+      (mnas-call-graph:who-calls-lst
+       pkg-functions)
+      :nodes (mapcar #'(lambda (el) (func-to-string el)) pkg-functions)))
     (t (error "~S does not designate a package" package-name))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun package-call-graph (package-name)
+(defun package-call-graph (package-name
+			   &key
+			     (graphviz-prg :filter-dot))
   (when (symbolp package-name) (require package-name))
   (when (stringp package-name) (require package-name))
-  (make-call-praph package-name))
+  (mnas-graph:view-graph (make-call-praph package-name) :graphviz-prg graphviz-prg))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun package-classes
     (package-name

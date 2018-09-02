@@ -14,7 +14,7 @@
 
 (export 'demo-3)
 (defun demo-3 ()
-  (mnas-call-graph:make-call-praph :mnas-call-graph))
+  (make-call-praph :mnas-call-graph))
 
 (export 'demo-10)
 (defun demo-10 ()
@@ -36,9 +36,10 @@
 
   (defclass c1 (a3 b3) ()))
 
+(export 'demo-11)
 (defun demo-11 ()
-  (make-call-praph :package-class-graph)
-  (make-class-praph :package-class-graph))
+  (make-call-praph  :mnas-call-graph)
+  (make-class-graph :mnas-call-graph))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
