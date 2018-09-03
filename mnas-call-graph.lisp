@@ -89,14 +89,18 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun func-to-string (func)
-  (string-downcase (string func)))
+  (cond
+    ((symbolp func)
+     (string-downcase (string func)))
+    (t
+     (string-downcase (format nil "~S" func)))))
 
 (defun defu-defm-name (func)
-    (cond
-      ((listp (first func))
-       (second (first func)))
-      ((null (listp (first func)))
-       (first func))))
+  (cond
+    ((listp (first func))
+     (second (first func)))
+    ((null (listp (first func)))
+     (first func))))
 
 (defun who-calls (func)
   (let
