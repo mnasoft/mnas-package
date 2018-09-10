@@ -1,24 +1,6 @@
-;;;; mnas-call-graph.lisp
+;;;; mnas-package.lisp
 
-(in-package #:cl-user)
-
-(defpackage #:mnas-call-graph
-  (:use #:cl)
-  (:export ;read-file ;defun-code ;defun-name ;defmethod-code ;defmethod-name ;def-name
-   package-symbols
-   package-symbols-by-category
-   package-function-symbols
-   defu-defm-name
-   who-calls
-   who-calls-lst)
-  (:export make-call-praph )
-  (:export make-class-graph package-classes  package-class-graph)
-  (:export package-call-graph package-class-graph)
-  (:export demo-1 demo-2 demo-3 demo-10 demo-11))
-
-(in-package #:mnas-call-graph)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(in-package #:mnas-package)
 
 (defun package-symbols (package-name &aux (lst nil) (package (find-package package-name)))
   "Выполнят поиск всех символов, определенных пакетом package-name
