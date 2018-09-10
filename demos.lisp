@@ -43,4 +43,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(format t "(mnas-call-graph:demo-1)~%(mnas-call-graph:demo-2)~%(mnas-call-graph:demo-3)~%(mnas-call-graph:demo-10)~%(mnas-call-graph:demo-11)")
+(progn 
+  (format t "~%~%~%")
+  (format t "mnas-package DEMOS~%")
+  (format t "==================~%")
+  (format t "(mnas-package:demo-1)~%")
+  (format t "(mnas-package:demo-2)~%")
+  (format t "(mnas-package:demo-3)~%")
+  (format t "(mnas-package:demo-10)~%")
+  (format t "(mnas-package:demo-11)"))
