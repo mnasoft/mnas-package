@@ -1,20 +1,20 @@
 ;;;; demos.lisp
 
-(in-package :mnas-call-graph)
+(in-package #:mnas-package)
 
 (export 'demo-1)
 (defun demo-1 ()
   (require :mnas-string)
-  (package-symbols-by-category :mnas-call-graph :internal nil))
+  (package-symbols-by-category :mnas-package :internal nil))
 
 (export 'demo-2)
 (defun demo-2 ()
   (require :mnas-string)
-  (package-symbols-by-category :mnas-call-graph))
+  (package-symbols-by-category :mnas-package))
 
 (export 'demo-3)
 (defun demo-3 ()
-  (make-call-praph :mnas-call-graph))
+  (make-call-praph :mnas-package))
 
 (export 'demo-10)
 (defun demo-10 ()
@@ -38,8 +38,8 @@
 
 (export 'demo-11)
 (defun demo-11 ()
-  (make-call-praph  :mnas-call-graph)
-  (make-class-graph :mnas-call-graph))
+  (make-call-praph  :mnas-package)
+  (make-class-graph :mnas-package))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -113,7 +113,7 @@
     (package
      (setf pkg-functions (package-function-symbols package))
      (mnas-graph:make-graph
-      (mnas-call-graph:who-calls-lst
+      (who-calls-lst
        pkg-functions)
       :nodes (mapcar #'(lambda (el) (func-to-string el)) pkg-functions)))
     (t (error "~S does not designate a package" package-name))))
