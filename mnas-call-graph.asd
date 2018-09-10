@@ -3,8 +3,8 @@
 (defsystem #:mnas-call-graph
   :description "Describe mnas-call-graph here"
   :author "Nick Matvyeyev <mnasoft@gmail.com>"
-  :license  "GNU GPLv3"
-  :version "0.0.2"
+  :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
+  :version "0.0.3"
   :serial nil
   :depends-on (#:mnas-graph)
   :components ((:file "mnas-call-graph")
