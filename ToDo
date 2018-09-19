@@ -1,0 +1,5 @@
+# ToDo
+1. Определить функцию package-class-slot-graph (package class)
+   которая-бы строила граф слотов класса.
+
+
