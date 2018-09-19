@@ -183,6 +183,24 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;; (in-package #:cl-user)
-;;;; (import '(package-call-graph package-class-graph make-class-graph make-call-praph) :mnas-call-graph)
-;;;; (export 'package-call-graph) (export	'package-class-graph) (export	'make-class-graph) (export 'make-call-praph)
+(defun class-undirect-subclasses (class-01)
+  "Выполняет поиск всех подклассов класса class-01 и 
+возвращает список всех найденных классов.
+Пример использования:
+ (class-undirect-subclasses (find-class 'number))
+"
+  (let ((rez-classes nil)
+	(*l-not-obr* (list class-01)))
+    (flet
+	((bar (class)
+	   (format t "~S~%" (class-name class))
+	   (setf *l-not-obr* (append *l-not-obr* (sb-mop:class-direct-subclasses class)))))
+      (do ((class nil))
+	  ((null *l-not-obr*) rez-classes)
+	(setf class (pop *l-not-obr*))
+	(push class rez-classes)
+	(bar class)))))
+
+
+
+
