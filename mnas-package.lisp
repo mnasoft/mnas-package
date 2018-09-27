@@ -6,9 +6,10 @@
   "Выполнят поиск всех символов, определенных пакетом package-name
  Примеры использования:
  =====================
- (package-symbols 'mnas-call-graph)
- (package-symbols :mnas-call-graph)
- (package-symbols \"MNAS-CALL-GRAPH\")"
+ (package-symbols 'mnas-package)
+ (package-symbols :mnas-package)
+ (package-symbols (find-package :mnas-package))
+ (package-symbols \"MNAS-PACKAGE\")"
   (declare ((or package string symbol) package-name))
   (cond
     (package (do-symbols (s package ) (push s lst)) lst)
@@ -30,9 +31,9 @@
  - inherited nil  - заимствованные символы.
  Примеры использования:
  =====================
- (package-symbols-by-category 'mnas-call-graph :internal nil) ;; отбор только внешних символов;
- (package-symbols-by-category :mnas-call-graph)               ;; отбор внешних и внутренних символов;
- (package-symbols-by-category \"MNAS-CALL-GRAPH\" 
+ (package-symbols-by-category 'mnas-package :internal nil) ;; отбор только внешних символов;
+ (package-symbols-by-category :mnas-package)               ;; отбор внешних и внутренних символов;
+ (package-symbols-by-category \"MNAS-PACKAGE\" 
    :internal nil 
    :inherited t) ;; отбор только внешних и заимствованных символов;
 "
@@ -133,7 +134,11 @@
        (rez nil)
        (class nil)
        (package (find-package package-name)))
-  "Возвращает список классов пакета"
+  "Возвращает список классов пакета.
+   Пример использования:
+ (mnas-package::package-classes :mnas-package)
+ (mnas-package::package-classes (find-package \"MNAS-PACKAGE\"))
+ (mnas-package::package-classes (find-package :mnas-package))"
   (declare ((or package string symbol) package-name))
   (mapc 
    #'(lambda (el)
@@ -174,7 +179,9 @@
     (package-name
      &key
        (graphviz-prg :filter-dot))
-  "Выводит визуальное представление иерархии классов (графа наследования)"
+  "Выводит визуальное представление иерархии классов (графа наследования)
+   Пример использования:
+ (mnas-package:mnas-package-demo-11)"
   (when (symbolp package-name) (require package-name))
   (when (stringp package-name) (require package-name))
   (mnas-graph:view-graph
@@ -190,14 +197,14 @@
  (class-undirect-subclasses (find-class 'number))
 "
   (let ((rez-classes nil)
-	(*l-not-obr* (list class-01)))
+	(l-not-obr (list class-01)))
     (flet
 	((bar (class)
 	   (format t "~S~%" (class-name class))
-	   (setf *l-not-obr* (append *l-not-obr* (sb-mop:class-direct-subclasses class)))))
+	   (setf l-not-obr (append l-not-obr (sb-mop:class-direct-subclasses class)))))
       (do ((class nil))
-	  ((null *l-not-obr*) rez-classes)
-	(setf class (pop *l-not-obr*))
+	  ((null l-not-obr) rez-classes)
+	(setf class (pop l-not-obr))
 	(push class rez-classes)
 	(bar class)))))
 
