@@ -208,6 +208,33 @@
 	(push class rez-classes)
 	(bar class)))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defsystem #:mnas-systems
+
+  :depends-on (#:mnas-graph)
+)
+
+(defun make-mnas-systems ()
+  (let* ((sos (make-string-output-stream))
+	 (sis (make-string-input-stream 
+	       (progn
+		 (when (uiop:directory-exists-p (pathname "/home/namatv/quicklisp/local-projects/mnas/mnas-systems"))
+		   (uiop:delete-directory-tree (pathname "/home/namatv/quicklisp/local-projects/mnas/mnas-systems/") :validate t))
+		 (sb-ext:run-program "/bin/bash" '("-c" "find /home/namatv/quicklisp/local-projects/ -name '*.asd'") :output sos)
+		 (get-output-stream-string sos))))
+	 (asd (loop for line = (read-line sis nil nil)
+		 while line
+		 collect (pathname-name line))))
+    (ensure-directories-exist (pathname "/home/namatv/quicklisp/local-projects/mnas/mnas-systems/"))
+    (with-open-file (asd-file (pathname "/home/namatv/quicklisp/local-projects/mnas/mnas-systems/mnas-systems.asd") :direction :output :if-exists :supersede)
+      (format asd-file ";;;; mnas-systems.asd~%~%")
+      (format asd-file "(defsystem #:mnas-systems~%")
+      (format asd-file "  :depends-on (~%")
+      (loop for i in asd
+	 do (format asd-file "	       #:~a~%" i))
+      (format asd-file "  ))"))))
+
+;;; (make-mnas-systems)
 
 
