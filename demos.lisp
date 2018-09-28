@@ -33,7 +33,8 @@
   (defclass c1 (a3 b3) ()))
 
 (defun mnas-package-demo-11 ()
-  (package-class-graph :mnas-package))
+  (package-class-graph :mnas-package)
+  (package-call-graph :mnas-package))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
