@@ -219,21 +219,38 @@
   (let* ((sos (make-string-output-stream))
 	 (sis (make-string-input-stream 
 	       (progn
-		 (when (uiop:directory-exists-p (pathname "/home/namatv/quicklisp/local-projects/mnas/mnas-systems"))
-		   (uiop:delete-directory-tree (pathname "/home/namatv/quicklisp/local-projects/mnas/mnas-systems/") :validate t))
-		 (sb-ext:run-program "/bin/bash" '("-c" "find /home/namatv/quicklisp/local-projects/ -name '*.asd'") :output sos)
+		 (when (uiop:directory-exists-p (pathname "d:/PRG/msys32/home/namatv/quicklisp/local-projects/mnas/mnas-systems"))
+		   (uiop:delete-directory-tree (pathname "d:/PRG/msys32/home/namatv/quicklisp/local-projects/mnas/mnas-systems/") :validate t))
+		 (sb-ext:run-program
+		  (cond
+		    ((uiop:os-windows-p) "d:/PRG/msys32/usr/bin/bash.exe")
+		    (t "/bin/bash"))
+		  '("-c" "find /home/namatv/quicklisp/local-projects/ -name '*.asd'") :output sos)
 		 (get-output-stream-string sos))))
 	 (asd (loop for line = (read-line sis nil nil)
 		 while line
 		 collect (pathname-name line))))
-    (ensure-directories-exist (pathname "/home/namatv/quicklisp/local-projects/mnas/mnas-systems/"))
-    (with-open-file (asd-file (pathname "/home/namatv/quicklisp/local-projects/mnas/mnas-systems/mnas-systems.asd") :direction :output :if-exists :supersede)
+    (ensure-directories-exist
+     (pathname
+      (concatenate 'string (namestring (user-homedir-pathname)) "quicklisp/local-projects/mnas/mnas-systems/")))
+    (with-open-file
+	(asd-file
+	 (pathname (concatenate 'string (namestring (user-homedir-pathname)) "quicklisp/local-projects/mnas/mnas-systems/" "mnas-systems.asd"))
+	 :direction :output :if-exists :supersede)
       (format asd-file ";;;; mnas-systems.asd~%~%")
       (format asd-file "(defsystem #:mnas-systems~%")
+      (format asd-file "  :components ((:file \"mnas-systems\"))~%")
       (format asd-file "  :depends-on (~%")
       (loop for i in asd
 	 do (format asd-file "	       #:~a~%" i))
-      (format asd-file "  ))"))))
+      (format asd-file "  ))"))
+    (with-open-file
+	(lisp-file
+	 (pathname (concatenate 'string (namestring (user-homedir-pathname)) "quicklisp/local-projects/mnas/mnas-systems/" "mnas-systems.lisp"))
+	 :direction :output :if-exists :supersede)
+      (format lisp-file ";;;; mnas-systems.lisp~%~%")
+      (format lisp-file "(defpackage #:mnas-systems)~%~%")
+      (format lisp-file "(in-package #:mnas-systems)"))))
 
 ;;; (make-mnas-systems)
 
