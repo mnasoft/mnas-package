@@ -210,11 +210,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defsystem #:mnas-systems
-
-  :depends-on (#:mnas-graph)
-)
-
 (defun make-mnas-systems ()
   (let* ((sos (make-string-output-stream))
 	 (sis (make-string-input-stream 
@@ -253,5 +248,3 @@
       (format lisp-file "(in-package #:mnas-systems)"))))
 
 ;;; (make-mnas-systems)
-
-
