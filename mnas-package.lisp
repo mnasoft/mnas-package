@@ -54,21 +54,19 @@
      rez)
     (t (error "~S does not designate a package" package-name))))
 
-(defun package-function-symbols
-    (package-name
-     &aux (lst (list))
-       (package (find-package package-name)))
-  "Retrieves all function symbols from a package."
-  (declare ((or package string symbol) package-name))
-  (the
-   list
-   (cond
-     (package
-      (do-all-symbols (symb package)
-	(when (and (fboundp symb) (eql (symbol-package symb) package))
-	  (push symb lst)))
-      lst)
-     (t (error "~S does not designate a package" package-name)))))
+(defun package-filter-symbols (sym-list)
+  (let ((rez nil))
+    (mapc
+     #'(lambda (el) (unless (fboundp el) (push el rez)))
+     sym-list)
+    rez))
+
+(defun package-filter-functions (sym-list)
+  (let ((rez nil))
+    (mapc
+     #'(lambda (el) (when (fboundp el) (push el rez)))
+     sym-list)
+    rez))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -112,7 +110,8 @@
   (declare ((or package string symbol) package-name))
   (cond
     (package
-     (setf pkg-functions (package-function-symbols package))
+     (setf pkg-functions (package-filter-functions (package-symbols-by-category package)))
+     ;;;; (package-function-symbols package)
      (mnas-graph:make-graph
       (who-calls-lst
        pkg-functions)
@@ -211,6 +210,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun make-mnas-systems ()
+  "Необходимо сделать описание"
   (let* ((sos (make-string-output-stream))
 	 (sis (make-string-input-stream 
 	       (progn
@@ -248,3 +248,20 @@
       (format lisp-file "(in-package #:mnas-systems)"))))
 
 ;;; (make-mnas-systems)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun make-symbol-graph
+    (package-name
+     &aux
+       (package (find-package package-name))
+       (graph (make-instance 'mnas-graph:graph)))
+  (declare ((or package string symbol) package-name))
+  (mapc
+   #'(lambda (el)
+       (mnas-graph:insert-to
+	(make-instance 'mnas-graph:node :owner graph :name (string (class-name el)))
+	graph)
+       (find-subclasses el))
+   (package-classes package))
+  graph)

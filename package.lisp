@@ -7,7 +7,6 @@
 ;;;; mnas-package.lisp     
   (:export mnas-package::package-symbols
 	   mnas-package::package-symbols-by-category
-	   mnas-package::package-function-symbols
 	   mnas-package::defu-defm-name
 	   mnas-package::who-calls
 	   mnas-package::who-calls-lst
