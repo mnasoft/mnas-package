@@ -2,23 +2,21 @@
 
 (in-package #:mnas-package)
 
-(export 'lll)
-(defparameter lll '(1 2 3))
+(defparameter *sample-var-1* '(1 2 3))
+(defparameter *sample-var-2* ())
+(defparameter *sample-var-3* "3")
 
 (defun mnas-package-demo-1 ()
-  (require :mnas-string)
+  *sample-var-1*
   (package-symbols-by-category :mnas-package :internal nil))
 
 (defun mnas-package-demo-2 ()
-  (require :mnas-string)
+  *sample-var-2*
   (package-symbols-by-category :mnas-package))
 
 (defun mnas-package-demo-3 ()
+  *sample-var-3*
   (make-call-praph :mnas-package))
-
-(defun mnas-package-demo-10 ()
-  (require :mnas-string)
-  (make-call-praph :mnas-string))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -35,26 +33,22 @@
 
   (defclass mnas-package-c1 (mnas-package-a3 mnas-package-b3) ()))
 
-(defun mnas-package-demo-11 ()
-  (package-class-graph :mnas-package)
-  (package-call-graph :mnas-package))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun mnas-package-demo ()
   (mnas-package-demo-1)
   (mnas-package-demo-2)
   (mnas-package-demo-3)
-  (mnas-package-demo-10)
-  (mnas-package-demo-11)
+  (package-call-graph   :mnas-package)
+  (package-class-graph  :mnas-package)
+  (package-symbol-graph :mnas-package)
   )
 
 (progn 
   (format t "~%~%~%")
   (format t "mnas-package DEMOS~%")
   (format t "==================~%")
+  (format t "(mnas-package:mnas-package-demo)~%")
   (format t "(mnas-package:mnas-package-demo-1)~%")
   (format t "(mnas-package:mnas-package-demo-2)~%")
-  (format t "(mnas-package:mnas-package-demo-3)~%")
-  (format t "(mnas-package:mnas-package-demo-10)~%")
-  (format t "(mnas-package:mnas-package-demo-11)"))
+  (format t "(mnas-package:mnas-package-demo-3)~%"))

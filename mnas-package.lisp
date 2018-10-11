@@ -57,7 +57,9 @@
 (defun package-filter-symbols (sym-list)
   (let ((rez nil))
     (mapc
-     #'(lambda (el) (unless (fboundp el) (push el rez)))
+     #'(lambda (el)
+	 (when (boundp el)
+	   (push el rez)))
      sym-list)
     rez))
 
@@ -111,7 +113,6 @@
   (cond
     (package
      (setf pkg-functions (package-filter-functions (package-symbols-by-category package)))
-     ;;;; (package-function-symbols package)
      (mnas-graph:make-graph
       (who-calls-lst
        pkg-functions)
@@ -251,17 +252,50 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun make-symbol-graph
-    (package-name
-     &aux
-       (package (find-package package-name))
-       (graph (make-instance 'mnas-graph:graph)))
+(defun who-references (var)
+  "Выполняет поиск функций, в которых есть ссылка на внешнюю переменную var.
+Возвращает список, каждым элементом которого является список следующего формата:
+ (функция переменная).
+Пример использования:
+ (who-references '*sample-var*) 
+ => ((\"who-references\" \"*sample-var*\"))
+"
+  (let
+      ((rez (swank/backend:who-references var))
+       (func-str (func-to-string var)))
+    (mapcar
+     #'(lambda (el1)
+	 (list el1 func-str))
+     (remove-duplicates 
+      (mapcar
+       #'(lambda (el)
+	   (func-to-string (defu-defm-name el)))
+       rez)
+      :test #'equal))))
+
+(defun who-references-lst (var-lst)
+  (apply #'append
+   (mapcar #'who-references
+	   var-lst)))
+
+(defun make-symbol-graph (package-name
+			&aux
+			  (package (find-package package-name))
+			  (pkg-symbols nil))
   (declare ((or package string symbol) package-name))
-  (mapc
-   #'(lambda (el)
-       (mnas-graph:insert-to
-	(make-instance 'mnas-graph:node :owner graph :name (string (class-name el)))
-	graph)
-       (find-subclasses el))
-   (package-classes package))
-  graph)
+  (cond
+    (package
+     (setf pkg-symbols (package-filter-symbols (package-symbols-by-category package)))
+     (mnas-graph:make-graph
+      (who-references-lst
+       pkg-symbols)
+      :nodes (mapcar #'(lambda (el) (func-to-string el)) pkg-symbols)))
+    (t (error "~S does not designate a package" package-name))))
+
+
+(defun package-symbol-graph (package-name
+			   &key
+			     (graphviz-prg :filter-dot))
+  (when (symbolp package-name) (require package-name))
+  (when (stringp package-name) (require package-name))
+  (mnas-graph:view-graph (make-symbol-graph package-name) :graphviz-prg graphviz-prg))

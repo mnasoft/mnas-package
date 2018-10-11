@@ -9,5 +9,5 @@
   :depends-on (#:mnas-graph)
   :components ((:file "package")
 	       (:file "mnas-package" :depends-on ("package"))
-	       (:file "demos" :depends-on ("mnas-package"))
+;;;;	       (:file "demos" :depends-on ("mnas-package"))
 	       (:file "cl-user-import-symbols" :depends-on ("mnas-package"))))
