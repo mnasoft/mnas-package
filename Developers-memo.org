@@ -1,4 +1,16 @@
 * Операции git
+** Добавлние удаленных репозиториев
+#+BEGIN_SRC bash :results none
+git remote remove github.com
+git remote add github.com git@github.com:mnasoft/mnas-package.git
+
+git remote remove common-lisp.net
+git remote add common-lisp.net git@common-lisp.net:nmatvyeyev/mnas-package.git
+
+git remote remove gitlab.com
+git remote add gitlab.com git@gitlab.com:mnas/mnas-package.git
+
+#+END_SRC
 ** Перечень удаленных репозиториев
  #+BEGIN_SRC bash 
  git remote
