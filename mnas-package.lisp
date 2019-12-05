@@ -105,10 +105,16 @@
    (mapcar #'who-calls
 	   func-lst)))
 
-(defun make-call-praph (package-name
+(export 'make-call-graph)
+(defun make-call-graph (package-name
 			&aux
 			  (package (find-package package-name))
 			  (pkg-functions nil))
+  "@b(Пример использования:)
+@begin[lang=lisp](code)
+ (mnas-package:make-call-graph :mnas-package)
+@end(code)
+  "
   (declare ((or package string symbol) package-name))
   (cond
     (package
@@ -122,9 +128,17 @@
 (defun package-call-graph (package-name
 			   &key
 			     (graphviz-prg :filter-dot))
+  "@b(Описание:)
+package-call-graph выполняет визуализацию графа вызовов пакета @b(package-name).
+
+@b(Пример использования:)
+@begin[lang=lisp](code)
+ (package-call-graph :mnas-package)
+@end(code)
+"
   (when (symbolp package-name) (require package-name))
   (when (stringp package-name) (require package-name))
-  (mnas-graph:view-graph (make-call-praph package-name) :graphviz-prg graphviz-prg))
+  (mnas-graph:view-graph (make-call-graph package-name) :graphviz-prg graphviz-prg))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -149,11 +163,21 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(export 'make-class-graph)
 (defun make-class-graph
     (package-name
      &aux
        (package (find-package package-name))
        (graph (make-instance 'mnas-graph:graph)))
+  "@b(Описание:)
+
+ make-class-graph создает граф наследования классов.
+
+@b(Пример использования:)
+@begin[lang=lisp](code)
+ (make-class-graph :mnas-package)
+@end(code)
+"
   (declare ((or package string symbol) package-name))
   (flet ((find-subclasses (class)
 	   (mapcar
@@ -278,10 +302,16 @@
    (mapcar #'who-references
 	   var-lst)))
 
+(export 'make-symbol-graph)
 (defun make-symbol-graph (package-name
 			&aux
 			  (package (find-package package-name))
 			  (pkg-symbols nil))
+  "@b(Пример использования:)
+@begin[lang=lisp](code)
+ (make-symbol-graph :mnas-package)
+@end(code)
+"
   (declare ((or package string symbol) package-name))
   (cond
     (package
@@ -296,6 +326,35 @@
 (defun package-symbol-graph (package-name
 			   &key
 			     (graphviz-prg :filter-dot))
+  "@b(Пример использования:)
+@begin[lang=lisp](code)
+ (package-symbol-graph :mnas-package)
+@end(code)
+"
   (when (symbolp package-name) (require package-name))
   (when (stringp package-name) (require package-name))
   (mnas-graph:view-graph (make-symbol-graph package-name) :graphviz-prg graphviz-prg))
+
+(export 'doc-template)
+(defun doc-template (&optional (pkg *package*))
+  "Пример использования:
+@begin[lang=lisp](code)
+ (doc-template)
+@end(code)
+"
+  (let ((f-b nil)
+	(b   nil))
+    (map 'nil
+	 #'(lambda (el)
+	     (when (fboundp (read-from-string el)) (push el f-b))
+	     (when (boundp  (read-from-string el)) (push el   b)))
+	 (let ((lst ()))                                                     
+	   (do-external-symbols (s pkg)
+	     (when (eq (find-package pkg) (symbol-package s)) (push (string-downcase (symbol-name s)) lst)))
+	   (sort lst #'string> )))
+    (format t "@cl:with-package[name=~S](~%" (string-downcase (package-name pkg)))
+    (map 'nil #'(lambda (el) (format t "@cl:doc(function ~a)~%" el) ) f-b)
+    (format t ")~%~%")
+    (format t "@cl:with-package[name=~S](~%" (string-downcase (package-name pkg)))
+    (map 'nil #'(lambda (el) (format t "@cl:doc(variable ~a)~%" el) )   b)
+    (format t ")~%~%")))
