@@ -2,29 +2,28 @@
 
 (in-package #:mnas-package)
 
-(defun package-symbols (package-name &aux (lst nil) (package (find-package package-name)))
-  "Выполнят поиск всех символов, определенных пакетом package-name
- Примеры использования:
- =====================
+(annot:enable-annot-syntax)
+
+@annot.doc:doc
+"@b(Описание:) package-symbols Выполнят поиск всех символов, 
+определенных пакетом @b(package-name).
+
+ @b(Пример использования:)
+ @begin[lang=lisp](code)
  (package-symbols 'mnas-package)
  (package-symbols :mnas-package)
  (package-symbols (find-package :mnas-package))
- (package-symbols \"MNAS-PACKAGE\")"
+ (package-symbols \"MNAS-PACKAGE\")
+@end(code)
+"
+(defun package-symbols (package-name &aux (lst nil) (package (find-package package-name)))
   (declare ((or package string symbol) package-name))
   (cond
     (package (do-symbols (s package ) (push s lst)) lst)
     (t (error "~S does not designate a package" package-name))))
 
-(defun package-symbols-by-category
-    (package-name
-     &key (external t) (internal t) (inherited nil)
-     &aux
-       (external-lst  nil)
-       (internal-lst  nil)
-       (inherited-lst nil)
-       (rez nil)
-       (package (find-package package-name)))
-  "Выполнят поиск всех символов, определенных пакетом package-name,
+@annot.doc:doc
+"Выполнят поиск всех символов, определенных пакетом package-name,
 которые удовлетворяют определенной категории:
  - external  t    - внешиние символы;
  - internal  t    - внутренние символы;
@@ -37,6 +36,16 @@
    :internal nil 
    :inherited t) ;; отбор только внешних и заимствованных символов;
 "
+(defun package-symbols-by-category
+    (package-name
+     &key (external t) (internal t) (inherited nil)
+     &aux
+       (external-lst  nil)
+       (internal-lst  nil)
+       (inherited-lst nil)
+       (rez nil)
+       (package (find-package package-name)))
+  
   (declare ((or package string symbol) package-name))
   (cond
     (package
@@ -79,6 +88,8 @@
     (t
      (string-downcase (format nil "~S" func)))))
 
+@annot.doc:doc
+""
 (defun defu-defm-name (func)
   (cond
     ((listp (first func))
@@ -86,6 +97,8 @@
     ((null (listp (first func)))
      (first func))))
 
+@annot.doc:doc
+""
 (defun who-calls (func)
   (let
       ((rez (swank/backend:who-calls func))
@@ -100,21 +113,26 @@
        rez)
       :test #'equal))))
 
+@annot.doc:doc
+""
 (defun who-calls-lst (func-lst)
   (apply #'append
    (mapcar #'who-calls
 	   func-lst)))
 
-(export 'make-call-graph)
+@export
+@annot.doc:doc
+"@b(Описание:) make-call-graph возвращает граф вызовов пакета @b(package-name).
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (mnas-package:make-call-graph :mnas-package)
+@end(code)
+"
 (defun make-call-graph (package-name
 			&aux
 			  (package (find-package package-name))
 			  (pkg-functions nil))
-  "@b(Пример использования:)
-@begin[lang=lisp](code)
- (mnas-package:make-call-graph :mnas-package)
-@end(code)
-  "
   (declare ((or package string symbol) package-name))
   (cond
     (package
@@ -125,34 +143,39 @@
       :nodes (mapcar #'(lambda (el) (func-to-string el)) pkg-functions)))
     (t (error "~S does not designate a package" package-name))))
 
-(defun package-call-graph (package-name
-			   &key
-			     (graphviz-prg :filter-dot))
-  "@b(Описание:)
-package-call-graph выполняет визуализацию графа вызовов пакета @b(package-name).
+@export
+@annot.doc:doc
+"@b(Описание:) package-call-graph выполняет визуализацию графа вызовов 
+пакета @b(package-name).
 
 @b(Пример использования:)
 @begin[lang=lisp](code)
  (package-call-graph :mnas-package)
 @end(code)
 "
+(defun package-call-graph (package-name
+			   &key
+			     (graphviz-prg :filter-dot))
   (when (symbolp package-name) (require package-name))
   (when (stringp package-name) (require package-name))
   (mnas-graph:view-graph (make-call-graph package-name) :graphviz-prg graphviz-prg))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+@export
+@annot.doc:doc
+"Возвращает список классов пакета.
+   Пример использования:
+ (mnas-package::package-classes :mnas-package)
+ (mnas-package::package-classes (find-package \"MNAS-PACKAGE\"))
+ (mnas-package::package-classes (find-package :mnas-package))"
 (defun package-classes
     (package-name
      &aux
        (rez nil)
        (class nil)
        (package (find-package package-name)))
-  "Возвращает список классов пакета.
-   Пример использования:
- (mnas-package::package-classes :mnas-package)
- (mnas-package::package-classes (find-package \"MNAS-PACKAGE\"))
- (mnas-package::package-classes (find-package :mnas-package))"
+  
   (declare ((or package string symbol) package-name))
   (mapc 
    #'(lambda (el)
@@ -163,13 +186,9 @@ package-call-graph выполняет визуализацию графа выз
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export 'make-class-graph)
-(defun make-class-graph
-    (package-name
-     &aux
-       (package (find-package package-name))
-       (graph (make-instance 'mnas-graph:graph)))
-  "@b(Описание:)
+@export
+@annot.doc:doc
+"@b(Описание:)
 
  make-class-graph создает граф наследования классов.
 
@@ -178,6 +197,12 @@ package-call-graph выполняет визуализацию графа выз
  (make-class-graph :mnas-package)
 @end(code)
 "
+(defun make-class-graph
+    (package-name
+     &aux
+       (package (find-package package-name))
+       (graph (make-instance 'mnas-graph:graph)))
+  
   (declare ((or package string symbol) package-name))
   (flet ((find-subclasses (class)
 	   (mapcar
@@ -199,13 +224,15 @@ package-call-graph выполняет визуализацию графа выз
      (package-classes package)))
   graph)
 
+@export
+@annot.doc:doc
+"Выводит визуальное представление иерархии классов (графа наследования)
+   Пример использования:
+ (mnas-package:mnas-package-demo-11)"
 (defun package-class-graph
     (package-name
      &key
        (graphviz-prg :filter-dot))
-  "Выводит визуальное представление иерархии классов (графа наследования)
-   Пример использования:
- (mnas-package:mnas-package-demo-11)"
   (when (symbolp package-name) (require package-name))
   (when (stringp package-name) (require package-name))
   (mnas-graph:view-graph
@@ -214,12 +241,13 @@ package-call-graph выполняет визуализацию графа выз
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun class-undirect-subclasses (class-01)
-  "Выполняет поиск всех подклассов класса class-01 и 
+@annot.doc:doc
+"Выполняет поиск всех подклассов класса class-01 и 
 возвращает список всех найденных классов.
 Пример использования:
  (class-undirect-subclasses (find-class 'number))
 "
+(defun class-undirect-subclasses (class-01)
   (let ((rez-classes nil)
 	(l-not-obr (list class-01)))
     (flet
@@ -234,8 +262,10 @@ package-call-graph выполняет визуализацию графа выз
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+@annot.doc:doc
+"Необходимо сделать описание"
 (defun make-mnas-systems ()
-  "Необходимо сделать описание"
+
   (let* ((sos (make-string-output-stream))
 	 (sis (make-string-input-stream 
 	       (progn
@@ -276,14 +306,15 @@ package-call-graph выполняет визуализацию графа выз
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun who-references (var)
-  "Выполняет поиск функций, в которых есть ссылка на внешнюю переменную var.
+@annot.doc:doc
+"Выполняет поиск функций, в которых есть ссылка на внешнюю переменную var.
 Возвращает список, каждым элементом которого является список следующего формата:
  (функция переменная).
 Пример использования:
  (who-references '*sample-var*) 
  => ((\"who-references\" \"*sample-var*\"))
 "
+(defun who-references (var)
   (let
       ((rez (swank/backend:who-references var))
        (func-str (func-to-string var)))
@@ -297,21 +328,25 @@ package-call-graph выполняет визуализацию графа выз
        rez)
       :test #'equal))))
 
+@annot.doc:doc
+""
 (defun who-references-lst (var-lst)
   (apply #'append
    (mapcar #'who-references
 	   var-lst)))
 
-(export 'make-symbol-graph)
-(defun make-symbol-graph (package-name
-			&aux
-			  (package (find-package package-name))
-			  (pkg-symbols nil))
-  "@b(Пример использования:)
+@export
+@annot.doc:doc
+"@b(Описание:) make-symbol-graph
+@b(Пример использования:)
 @begin[lang=lisp](code)
  (make-symbol-graph :mnas-package)
 @end(code)
 "
+(defun make-symbol-graph (package-name
+			&aux
+			  (package (find-package package-name))
+			  (pkg-symbols nil))
   (declare ((or package string symbol) package-name))
   (cond
     (package
@@ -322,15 +357,16 @@ package-call-graph выполняет визуализацию графа выз
       :nodes (mapcar #'(lambda (el) (func-to-string el)) pkg-symbols)))
     (t (error "~S does not designate a package" package-name))))
 
-
-(defun package-symbol-graph (package-name
-			   &key
-			     (graphviz-prg :filter-dot))
-  "@b(Пример использования:)
+@export
+@annot.doc:doc
+"@b(Пример использования:)
 @begin[lang=lisp](code)
  (package-symbol-graph :mnas-package)
 @end(code)
 "
+(defun package-symbol-graph (package-name
+			   &key
+			     (graphviz-prg :filter-dot))
   (when (symbolp package-name) (require package-name))
   (when (stringp package-name) (require package-name))
   (mnas-graph:view-graph (make-symbol-graph package-name) :graphviz-prg graphviz-prg))
@@ -409,7 +445,7 @@ package-call-graph выполняет визуализацию графа выз
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export 'make-system-graph)
+@export
 (defun make-system-graph (system)
   (mnas-graph:make-graph 
    (mapcar
@@ -421,9 +457,6 @@ package-call-graph выполняет визуализацию графа выз
      (append (list system) (dependency-tree system))
      :initial-value (make-list 0)))))
 
-(export 'package-system-graph)
+@export
 (defun package-system-graph (system)
   (mnas-graph:view-graph (make-system-graph system)))
-
-
-
