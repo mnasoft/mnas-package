@@ -1,28 +1,55 @@
 @begin(section)
 @title(Overview)
 
-My library does X, Y and Z.
+Система mnas-package предназначена для извлечения информации из acdf-систем.
 
+Информация извлекается в виде графов.
 
+Система позволяет построить следующие графы:
+@begin(list)
+ @item(package-system-graph
+ @image[src=/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/package-system-graph.gv.png]())
+ 
+ @item(package-call-graph
+ @image[src=/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/package-call-graph.gv.png]())
+ 
+ @item(package-class-graph
+ @image[src=/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/package-class-graph.gv.png]())
+
+ @item(package-symbol-graph
+ @image[src=/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/package-symbol-graph.gv.png height="42" width="42"]())
+
+@end(list)
 
 @end(section)
-
-
 
 @begin(section)
-@title(Functions)
-
-@cl:with-package[name="mnas-package"](
-@cl:doc(function doc-template)
-@cl:doc(function make-call-praph)
-@cl:doc(function make-class-graph)
-@cl:doc(function make-symbol-graph)
-@cl:doc(function package-call-graph)
-@cl:doc(function package-class-graph)
-@cl:doc(function package-classes)
-@cl:doc(function package-symbol-graph)
-@cl:doc(function unuse-mnas-package)
-@cl:doc(function use-mnas-package)
-)
-
+@title(doc-template)
+ @cl:with-package[name="mnas-package"](
+ @cl:doc(function doc-template))
 @end(section)
+
+@begin(section)
+@title(make-graph)
+ @cl:with-package[name="mnas-package"](
+ @cl:doc(function make-call-graph) 
+ @cl:doc(function make-class-graph)
+ @cl:doc(function make-symbol-graph)
+ @cl:doc(function make-system-graph))
+@end(section)
+
+@begin(section) @title(view-graph)
+ @cl:with-package[name="mnas-package"](
+  @cl:doc(function package-call-graph)
+  @cl:doc(function package-class-graph)
+  @cl:doc(function package-classes)    
+  @cl:doc(function package-symbol-graph)
+  @cl:doc(function PACKAGE-SYSTEM-GRAPH))
+@end(section)
+
+@begin(section) @title(use unuse)
+ @cl:with-package[name="mnas-package"](
+  @cl:doc(function unuse-mnas-package)
+  @cl:doc(function use-mnas-package))
+@end(section)
+

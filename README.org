@@ -1,9 +1,8 @@
-# mnas-package
-### _Nick Matvyeyev <mnasoft@gmail.com>_
+*  mnas-package
 
 This is a project to do ... something.
 
-## License
+* License
 
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later
 
@@ -25,4 +24,16 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later
 ** Определить правильный набор экспортируемых функций.
 
 ** DONE Справиться с предупреждениями при компиляции.
-
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+OPTIONS: author:t broken-links:nil c:nil creator:nil
+#+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+OPTIONS: timestamp:t title:t toc:t todo:t |:t
+#+TITLE: README
+#+DATE: <2020-01-04 Сб>
+#+AUTHOR: Nick Matvyeyev
+#+EMAIL: mnasoft@gmail.com>
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 26.3 (Org mode 9.1.9)

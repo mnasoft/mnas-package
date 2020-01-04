@@ -23,18 +23,24 @@
     (t (error "~S does not designate a package" package-name))))
 
 @annot.doc:doc
-"Выполнят поиск всех символов, определенных пакетом package-name,
-которые удовлетворяют определенной категории:
- - external  t    - внешиние символы;
- - internal  t    - внутренние символы;
- - inherited nil  - заимствованные символы.
- Примеры использования:
- =====================
- (package-symbols-by-category 'mnas-package :internal nil) ;; отбор только внешних символов;
- (package-symbols-by-category :mnas-package)               ;; отбор внешних и внутренних символов;
- (package-symbols-by-category \"MNAS-PACKAGE\" 
-   :internal nil 
-   :inherited t) ;; отбор только внешних и заимствованных символов;
+"@b(Описание:) package-symbols-by-category выполнят поиск символов, 
+определенных пакетом @b(package-name).
+
+ @b(Переменые:)
+@begin(list)
+ @item(package-name - имя пакета. Его можно указывать в виде нескольких вариантов:
+'mnas-package; :mnas-package; \"MNAS-PACKAGE\". 
+В случае указания имени пакета как строки символы должны быть в верхнем регистре;)
+ @item(external     - отбирать (t) или не отбирать (nil) внешиние символы;)
+ @item(internal     - отбирать (t) или не отбирать (nil) внутренние символы;)
+ @item(inherited    - отбирать (t) или не отбирать (nil) заимствованные символы.)
+@end(list)
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (package-symbols-by-category 'mnas-package :internal nil)                 ;; отбор только внешних символов;
+ (package-symbols-by-category :mnas-package)                               ;; отбор внешних и внутренних символов;
+ (package-symbols-by-category \"MNAS-PACKAGE\" :internal nil :inherited t) ;; отбор только внешних и заимствованных символов;
+@end(code)
 "
 (defun package-symbols-by-category
     (package-name
@@ -155,10 +161,22 @@
 "
 (defun package-call-graph (package-name
 			   &key
-			     (graphviz-prg :filter-dot))
+			     (fpath mnas-graph:*output-path*)
+			     (fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
+			     (graphviz-prg :filter-dot)
+			     (out-type "pdf")
+			     (dpi "300")
+			     (viewer mnas-graph:*viewer-path*))
   (when (symbolp package-name) (require package-name))
   (when (stringp package-name) (require package-name))
-  (mnas-graph:view-graph (make-call-graph package-name) :graphviz-prg graphviz-prg))
+  (mnas-graph:view-graph
+   (make-call-graph package-name)
+   :fpath        fpath
+   :fname        fname
+   :graphviz-prg graphviz-prg
+   :out-type     out-type
+   :dpi          dpi
+   :viewer       viewer))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -226,26 +244,44 @@
 
 @export
 @annot.doc:doc
-"Выводит визуальное представление иерархии классов (графа наследования)
-   Пример использования:
- (mnas-package:mnas-package-demo-11)"
+"@b(Описание:) package-class-graph выводит визуальное представление 
+иерархии классов (графа наследования).
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (mnas-package:mnas-package-demo-11)
+@end(code)
+"
 (defun package-class-graph
     (package-name
      &key
-       (graphviz-prg :filter-dot))
+       (fpath mnas-graph:*output-path*)
+       (fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
+       (graphviz-prg :filter-dot)
+       (out-type "pdf")
+       (dpi "300")
+       (viewer mnas-graph:*viewer-path*))
   (when (symbolp package-name) (require package-name))
   (when (stringp package-name) (require package-name))
   (mnas-graph:view-graph
    (make-class-graph package-name)
-    :graphviz-prg graphviz-prg))
+      :fpath        fpath
+   :fname        fname
+   :graphviz-prg graphviz-prg
+   :out-type     out-type
+   :dpi          dpi
+   :viewer       viewer))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 @annot.doc:doc
-"Выполняет поиск всех подклассов класса class-01 и 
-возвращает список всех найденных классов.
-Пример использования:
+"@b(Описание:) class-undirect-subclasses выполняет поиск всех 
+подклассов класса class-01 и возвращает список всех найденных классов.
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
  (class-undirect-subclasses (find-class 'number))
+@end(code)
 "
 (defun class-undirect-subclasses (class-01)
   (let ((rez-classes nil)
@@ -365,19 +401,32 @@
 @end(code)
 "
 (defun package-symbol-graph (package-name
-			   &key
-			     (graphviz-prg :filter-dot))
+			     &key
+			       (fpath mnas-graph:*output-path*)
+			       (fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
+			       (graphviz-prg :filter-dot)
+			       (out-type "pdf")
+			       (dpi "300")
+			       (viewer mnas-graph:*viewer-path*))
   (when (symbolp package-name) (require package-name))
   (when (stringp package-name) (require package-name))
-  (mnas-graph:view-graph (make-symbol-graph package-name) :graphviz-prg graphviz-prg))
+  (mnas-graph:view-graph (make-symbol-graph package-name)
+			    :fpath        fpath
+   :fname        fname
+   :graphviz-prg graphviz-prg
+   :out-type     out-type
+   :dpi          dpi
+   :viewer       viewer))
 
-(export 'doc-template)
-(defun doc-template (&optional (pkg *package*))
-  "Пример использования:
+@export
+@annot.doc:doc
+"Пример использования:
 @begin[lang=lisp](code)
  (doc-template)
 @end(code)
 "
+(defun doc-template (&optional (pkg *package*))
+  
   (let ((f-b nil)
 	(b   nil))
     (map 'nil
@@ -397,7 +446,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
 (defgeneric ->key (thing))
 
 (defmethod ->key ((thing string))
@@ -413,6 +461,7 @@
 ;;;; (defmethod ->key ((thing string)) thing)
 
 (defgeneric dependencies-of (system))
+
 (defmethod dependencies-of ((system symbol))
   (mapcar #'->key (slot-value (asdf/system:find-system system) 'asdf/component:sideway-dependencies)))
 
@@ -433,6 +482,7 @@
       (reverse res)))
 
 (defgeneric dependency-tree (system))
+
 (defmethod dependency-tree ((system symbol))
   (let ((res (make-hash-table)))
     (labels ((rec (sys) 
@@ -443,9 +493,16 @@
       (rec system))
     (ordered-dep-tree (alexandria:hash-table-alist res))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 @export
+@annot.doc:doc
+"@b(Описание:) make-system-graph возвращает граф систем, от которых зависит
+система @b(system).
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (mnas-package:make-system-graph :mnas-package)
+@end(code)
+"
 (defun make-system-graph (system)
   (mnas-graph:make-graph 
    (mapcar
@@ -458,5 +515,28 @@
      :initial-value (make-list 0)))))
 
 @export
-(defun package-system-graph (system)
-  (mnas-graph:view-graph (make-system-graph system)))
+@annot.doc:doc
+"@b(Описание:) package-system-graph визуализирует граф систем, от которых зависит
+система @b(system).
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (mnas-package:package-system-graph :mnas-package :out-type \"png\" :viewer nil)
+@end(code)
+"
+(defun package-system-graph (system
+			     &key
+			       (fpath mnas-graph:*output-path*)
+			       (fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
+			       (graphviz-prg :filter-dot)
+			       (out-type "pdf")
+			       (dpi "300")
+			       (viewer mnas-graph:*viewer-path*))
+  (mnas-graph:view-graph
+   (make-system-graph system)
+   :fpath        fpath
+   :fname        fname
+   :graphviz-prg graphviz-prg
+   :out-type     out-type
+   :dpi          dpi
+   :viewer       viewer))
