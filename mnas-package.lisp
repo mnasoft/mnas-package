@@ -219,7 +219,7 @@
     (package-name
      &aux
        (package (find-package package-name))
-       (graph (make-instance 'mnas-graph:graph)))
+       (graph (make-instance 'mnas-graph:<graph>)))
   
   (declare ((or package string symbol) package-name))
   (flet ((find-subclasses (class)
@@ -227,16 +227,16 @@
 	    #'(lambda (el)
 		(mnas-graph:insert-to
 		 (make-instance
-		  'mnas-graph:edge
-		  :from (make-instance 'mnas-graph:node :owner graph :name (string (class-name class)))
-		  :to   (make-instance 'mnas-graph:node :owner graph :name (string (class-name el))))
+		  'mnas-graph:<edge>
+		  :from (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name class)))
+		  :to   (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name el))))
 		 graph))
 	    (sb-mop:class-direct-subclasses class))
 	   graph))
     (mapc
      #'(lambda (el)
   	 (mnas-graph:insert-to
-	  (make-instance 'mnas-graph:node :owner graph :name (string (class-name el)))
+	  (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name el)))
 	  graph)
 	 (find-subclasses el))
      (package-classes package)))
