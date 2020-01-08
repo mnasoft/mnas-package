@@ -1,26 +1,27 @@
 @begin(section)
 @title(Overview)
 
-Система mnas-package предназначена для извлечения информации из acdf-систем.
+Система mnas-package предназначена для извлечения информации из asdf-систем.
 
 Информация извлекается в виде графов.
 
 Система позволяет построить следующие графы:
 @begin(list)
- @item(package-system-graph
- @image[src=/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/package-system-graph.gv.png]())
- 
- @item(package-call-graph
- @image[src=/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/package-call-graph.gv.png]())
- 
- @item(package-class-graph
- @image[src=/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/package-class-graph.gv.png]())
-
- @item(package-symbol-graph
- @image[src=/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/package-symbol-graph.gv.png height="42" width="42"]())
-
+ @item(package-system-graph @image[src=./system-graph.gv.png]())
+ @item(package-call-graph   @image[src=./call-graph.gv.png]())
+ @item(package-symbol-graph @image[src=./symbol-graph.gv.png]())
+ @item(package-class-graph @image[src=./class-graph.gv.png]())
 @end(list)
+@end(section)
 
+@begin(section)
+@title(Графы)
+@begin(list)
+ @item(system-graph @image[src=./system-graph.gv.png]())
+ @item(call-graph   @image[src=./call-graph.gv.png]())
+ @item(symbol-graph @image[src=./symbol-graph.gv.png]())
+ @item(class-graph  @image[src=./class-graph.gv.png]())
+@end(list)
 @end(section)
 
 @begin(section)
