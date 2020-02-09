@@ -1,29 +1,3 @@
-*  mnas-package
-
-This is a project to do ... something.
-
-* License
-
-GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later
-
-* Задачи
-
-** Определить функцию make-symbol-graph для создания графа использования функциями внешних-символов пакета.
-   По шаблону:
-   
-   функция -> внешний-символ
-
-** Определить функцию package-asdf-graph, которая-бы формировала граф зависимостей систем asdf.
-
-** Определить функцию package-package-use-graph, которая-бы формировала граф зависимостей пакетов.
- 
-** Определить функцию package-function-use-graph (package), которая-бы строила граф использования во всех функциях пакета глобальных параметров.
-
-** Определить функцию package-class-slot-graph (package class), которая-бы строила граф слотов класса.
-   
-** Определить правильный набор экспортируемых функций.
-
-** DONE Справиться с предупреждениями при компиляции.
 #+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
 #+OPTIONS: author:t broken-links:nil c:nil creator:nil
 #+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
@@ -37,3 +11,26 @@ GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later
 #+SELECT_TAGS: export
 #+EXCLUDE_TAGS: noexport
 #+CREATOR: Emacs 26.3 (Org mode 9.1.9)
+
+*  mnas-package
+
+This is a project to do ... something.
+
+* License
+
+GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later
+
+* [4/6] Задачи
+
+1. [ ] Определить функцию package-class-slot-graph (package class), которая-бы строила граф слотов класса.
+2. [ ] Определить правильный набор экспортируемых функций.
+3. [X] Справиться с предупреждениями при компиляции.
+4. [X] Определить функцию make-symbol-graph для создания графа использования функциями внешних-символов пакета. По шаблону: функция -> внешний-символ
+5. [X] Определить функцию package-symbol-graph (make-symbol-graph), которая-бы строила граф использования во всех функциях пакета глобальных параметров.
+6. [X] Определить функцию package-system-graph (make-system-graph), которая-бы формировала граф зависимостей систем asdf.
+7. [5/5] Выполнить переименование функций
+   - [X] package-call-graph -> view-call-graph;
+   - [X] package-system-graph -> view-system-graph;
+   - [X] package-symbol-graph -> view-symbol-graph;
+   - [X] package-class-graph -> view-class-graph;
+   - [X] выполнить переименования в файлах Developers-memo.org;

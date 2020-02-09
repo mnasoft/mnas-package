@@ -34,3 +34,17 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun find-all-methods (class prefix)
+"(pprint (find-all-methods (find-class 'mtf:<sector>) \"SEC\"))"
+  (loop for method in (sb-mop:specializer-direct-methods class)
+        for gf           = (sb-mop:method-generic-function method)
+        for fname        = (sb-mop:generic-function-name gf)
+        for fname-string = (when (symbolp fname) (symbol-name fname))
+        when (and (stringp fname-string)
+                  (>= (length fname-string)
+                      (length prefix))
+                  (string= fname-string prefix
+                           :end1 (length prefix)
+                           :end2 (length prefix)))
+        collect method))

@@ -107,7 +107,9 @@
 ""
 (defun who-calls (func)
   (let
-      ((rez (swank/backend:who-calls func))
+      (
+       ;;;;(rez (swank/backend:who-calls func))
+       (rez (slynk-backend:who-calls func))
        (func-str (func-to-string func)))
     (mapcar
      #'(lambda (el1)
@@ -151,15 +153,15 @@
 
 @export
 @annot.doc:doc
-"@b(Описание:) package-call-graph выполняет визуализацию графа вызовов 
+"@b(Описание:) view-call-graph выполняет визуализацию графа вызовов 
 пакета @b(package-name).
 
-@b(Пример использования:)
+ @b(Пример использования:)
 @begin[lang=lisp](code)
- (package-call-graph :mnas-package)
+ (view-call-graph :mnas-package)
 @end(code)
 "
-(defun package-call-graph (package-name
+(defun view-call-graph (package-name
 			   &key
 			     (fpath mnas-graph:*output-path*)
 			     (fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
@@ -182,11 +184,15 @@
 
 @export
 @annot.doc:doc
-"Возвращает список классов пакета.
-   Пример использования:
+"@b(Описание:) package-classes возвращает список классов пакета.
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
  (mnas-package::package-classes :mnas-package)
  (mnas-package::package-classes (find-package \"MNAS-PACKAGE\"))
- (mnas-package::package-classes (find-package :mnas-package))"
+ (mnas-package::package-classes (find-package :mnas-package))
+@end(code)
+"
 (defun package-classes
     (package-name
      &aux
@@ -206,11 +212,9 @@
 
 @export
 @annot.doc:doc
-"@b(Описание:)
+"@b(Описание:) make-class-graph создает граф наследования классов.
 
- make-class-graph создает граф наследования классов.
-
-@b(Пример использования:)
+ @b(Пример использования:)
 @begin[lang=lisp](code)
  (make-class-graph :mnas-package)
 @end(code)
@@ -244,7 +248,7 @@
 
 @export
 @annot.doc:doc
-"@b(Описание:) package-class-graph выводит визуальное представление 
+"@b(Описание:) view-class-graph выводит визуальное представление 
 иерархии классов (графа наследования).
 
  @b(Пример использования:)
@@ -252,7 +256,7 @@
  (mnas-package:mnas-package-demo-11)
 @end(code)
 "
-(defun package-class-graph
+(defun view-class-graph
     (package-name
      &key
        (fpath mnas-graph:*output-path*)
@@ -352,7 +356,9 @@
 "
 (defun who-references (var)
   (let
-      ((rez (swank/backend:who-references var))
+      (
+       ;;;;(rez (swank/backend:who-references var))
+       (rez (slynk-backend:who-references var))
        (func-str (func-to-string var)))
     (mapcar
      #'(lambda (el1)
@@ -373,10 +379,12 @@
 
 @export
 @annot.doc:doc
-"@b(Описание:) make-symbol-graph
-@b(Пример использования:)
+"@b(Описание:) make-symbol-graph строит граф использования методпми и функциями 
+внешних символов.
+
+ @b(Пример использования:)
 @begin[lang=lisp](code)
- (make-symbol-graph :mnas-package)
+ (make-symbol-graph :mnas-string)
 @end(code)
 "
 (defun make-symbol-graph (package-name
@@ -395,12 +403,16 @@
 
 @export
 @annot.doc:doc
-"@b(Пример использования:)
+"@b(Описание:) view-symbol-graph отображает граф зависимостей глобальных символов.
+
+ Позволяет ответить на вопрос: в какой функции используется тот или иной глобальный символ. 
+
+ @b(Пример использования:)
 @begin[lang=lisp](code)
- (package-symbol-graph :mnas-package)
+ (view-symbol-graph :mnas-package)
 @end(code)
 "
-(defun package-symbol-graph (package-name
+(defun view-symbol-graph (package-name
 			     &key
 			       (fpath mnas-graph:*output-path*)
 			       (fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
@@ -516,15 +528,15 @@
 
 @export
 @annot.doc:doc
-"@b(Описание:) package-system-graph визуализирует граф систем, от которых зависит
+"@b(Описание:) view-system-graph визуализирует граф систем, от которых зависит
 система @b(system).
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
- (mnas-package:package-system-graph :mnas-package :out-type \"png\" :viewer nil)
+ (mnas-package:view-system-graph :mnas-package :out-type \"png\" :viewer nil)
 @end(code)
 "
-(defun package-system-graph (system
+(defun view-system-graph (system
 			     &key
 			       (fpath mnas-graph:*output-path*)
 			       (fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))

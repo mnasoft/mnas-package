@@ -7,10 +7,10 @@
 
 Система позволяет построить следующие графы:
 @begin(list)
- @item(package-system-graph @image[src=./system-graph.gv.png]())
- @item(package-call-graph   @image[src=./call-graph.gv.png]())
- @item(package-symbol-graph @image[src=./symbol-graph.gv.png]())
- @item(package-class-graph @image[src=./class-graph.gv.png]())
+ @item(view-system-graph @image[src=./system-graph.gv.png]())
+ @item(view-call-graph   @image[src=./call-graph.gv.png]())
+ @item(view-symbol-graph @image[src=./symbol-graph.gv.png]())
+ @item(view-class-graph @image[src=./class-graph.gv.png]())
 @end(list)
 @end(section)
 
@@ -39,13 +39,14 @@
  @cl:doc(function make-system-graph))
 @end(section)
 
-@begin(section) @title(view-graph)
+@begin(section)
+@title(view-graph)
  @cl:with-package[name="mnas-package"](
-  @cl:doc(function package-call-graph)
-  @cl:doc(function package-class-graph)
+  @cl:doc(function view-call-graph)
+  @cl:doc(function view-class-graph)
   @cl:doc(function package-classes)    
-  @cl:doc(function package-symbol-graph)
-  @cl:doc(function PACKAGE-SYSTEM-GRAPH))
+  @cl:doc(function view-symbol-graph)
+  @cl:doc(function VIEW-SYSTEM-GRAPH))
 @end(section)
 
 @begin(section) @title(use unuse)
