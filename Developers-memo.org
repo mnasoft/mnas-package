@@ -1,11 +1,10 @@
-* Операции git  [[file:~/org/sbcl/Git-memo.org][Git-memo.org]]
-
-* Генерирование документации при помощи Codex
- [[file:~/org/sbcl/codex.org][Codex]]
- http://commondoc.github.io/codex/docs/tutorial.html
-
+* Ссылки
+1) Операции git  [[file:~/org/sbcl/Git-memo.org][Git-memo.org]]
+2) [[file:~/org/sbcl/codex.org][Генерирование документации при помощи Codex]]
+3) http://commondoc.github.io/codex/docs/tutorial.html
+4) [[file:~/.slynkrc]]
+5) [[~/.sbclrc]]
 * Генерирования документации
-
 #+name: pwd
 #+BEGIN_SRC shell
 pwd
@@ -16,12 +15,13 @@ pwd
 basename `pwd`
 #+END_SRC
 
+#+name:make-graph
 #+BEGIN_SRC lisp :var pwd=pwd :var basename-pwd=basename-pwd
   ;;;; (require :codex)
   ;;;; (require :mnas-package)
   ;;;;
   ;;;; (require :mnas-package)
-  (let ((pkg :mnas-package)
+  (let ((pkg :mnas-string)
 	(fpath (concatenate
 		'string
 		(cond ((uiop:getenv "MSYS_HOME")) (t ""))
@@ -34,5 +34,24 @@ basename `pwd`
     (mnas-package:view-symbol-graph pkg :out-type "png" :viewer nil :fpath fpath :fname "symbol-graph"))
 #+END_SRC
 
-#+RESULTS:
-: #GRAPH(VC=0 RC=0)
+* Публикация
+#+name: publish
+#+BEGIN_SRC shell :var make-graph=make-graph
+  if [[ `hostname` == "mnasoft-00" ]]
+  then
+      echo "mnasoft-00"
+      mkdir -p "$HOME/public_html/Common-Lisp-Programs/"
+      CDIR=`basename $PWD`
+      rm -rf "$HOME/public_html/Common-Lisp-Programs/$CDIR/"
+      cp -rf ./docs/build/* "$HOME/public_html/Common-Lisp-Programs/"
+  fi
+  if [[ `hostname` == "ko11-118383" ]]
+  then
+      CDIR=`basename $PWD`
+      rm -rf "\\\\n133619\\home\\_namatv\\public_html\\Site\\Development\\Common-Lisp-Programs\\$CDIR\\";
+      sleep 5;
+      cp -rf "./docs/build/$CDIR" "\\\\n133619\\home\\_namatv\\public_html\\Site\\Development\\Common-Lisp-Programs\\";
+   fi
+#+END_SRC
+
+#+RESULTS: publish
