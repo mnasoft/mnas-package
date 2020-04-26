@@ -69,20 +69,106 @@
      rez)
     (t (error "~S does not designate a package" package-name))))
 
-(defun package-filter-symbols (sym-list)
+@annot.doc:doc
+"@b(Описание:) функция package-filter-symbols возвращает список символов, являющихся сопряженными со значениями.
+
+ @b(Переменые:)
+@begin(deflist) 
+@term(symbols) @def(Список символов пакета)
+@end(deflist)
+"
+(defun package-filter-symbols (symbols)
   (let ((rez nil))
     (mapc
      #'(lambda (el)
 	 (when (boundp el)
 	   (push el rez)))
-     sym-list)
+     symbols)
     rez))
 
-(defun package-filter-functions (sym-list)
+"@b(Описание:) функция package-filter-functions возвращает список символов, являющихся сопряженными с функциями.
+
+ @b(Переменые:)
+@begin(deflist) 
+@term(symbols) @def(Список символов пакета)
+@end(deflist)
+"
+(defun package-filter-functions (symbols)
   (let ((rez nil))
     (mapc
      #'(lambda (el) (when (fboundp el) (push el rez)))
-     sym-list)
+     symbols)
+    rez))
+
+@export
+(defun symbols (package-name &key (external t) (internal nil) (inherited nil))
+  (package-filter-symbols (package-symbols-by-category package-name :external external :internal internal  :inherited inherited)))
+
+@export
+(defun functions (package-name &key (external t) (internal nil) (inherited nil) )
+  (let ((rez nil))
+    (map nil
+	 #'(lambda (el)
+	     (when (equal 'function (type-of (symbol-function el)))
+	       (push (symbol-function el) rez)))
+	 (package-filter-functions
+	  (package-symbols-by-category
+	   package-name
+	   :external external
+	   :internal internal
+	   :inherited inherited)))
+    rez))
+
+@export
+@annot.doc:doc
+"@b(Описание:) функция make-codex-section-functions выводит в поток stream
+секцию с документацией в формате codex, содержащую функции из пакета package-name.
+
+ @b(Переменые:)
+@begin(deflist)
+@term(package-name) @def(Пакет с функциями для вывода в поток.)
+@term(stream)       @def(Поток, в который выводятся даннные о функциях.)
+@term(external)     @def(Если не nil - в поток выводятся информация о эксполртируемых функциях.)
+@term(internal)     @def(Если не nil - в поток выводятся информация о внутренних функциях.)
+@term(inherited)    @def(Если не nil - в поток выводятся информация о заимствованных функциях.)
+@term(sort)         @def(Если не nil - функции сортируются в алфавитном порядке.)
+@end(deflist)
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (make-codex-section-functions :math :external nil :internal t   :sort t) 
+ (make-codex-section-functions :math :external t   :internal nil :sort t) 
+@end(code)
+"
+(defun make-codex-section-functions (package-name &key (stream t) (external t) (internal nil) (inherited nil) (sort t) &aux (package (find-package package-name)))
+  (declare ((or package string symbol) package-name))
+  (let ((funcs (functions package :external external :internal internal :inherited inherited)))
+    (format stream "@begin(section)~% @title(Функции)~% @cl:with-package[name=~S]("
+	    (string-downcase (package-name (find-package package-name))))
+    (map nil
+	 #'(lambda (el)
+	     (format stream "~%  @cl:doc(function ~A)"
+		     (string-downcase (slynk-backend:function-name el))))
+	 (if sort
+	     (sort funcs #'string< :key #'(lambda (elem) (string-downcase (slynk-backend:function-name elem))))
+	     funcs))
+    (format stream ")~%@end(section)")))
+
+
+
+@export
+(defun generic-functions (package-name &key (external t) (internal nil) (inherited nil) )
+  (let ((rez nil))
+    (map nil
+	 #'(lambda (el)
+	     (when (equal 'standard-generic-function (type-of (symbol-function el)))
+	       (push el rez)))
+	 (package-filter-functions
+	  (package-symbols-by-category
+	   package-name
+	   :external external
+	   :internal internal
+	   :inherited inherited)))
     rez))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
