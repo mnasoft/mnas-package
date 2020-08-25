@@ -1,23 +1,8 @@
-;;;; cl-user-import-symbols.lisp
+;;;; codex.lisp
 
 (in-package :mnas-package)
 
 (annot:enable-annot-syntax)
-
-@export
-@annot.doc:doc
-"@b(Описание:) use-mnas-package копирует внешние символы пакета
-:mnas-package в пространство имен пакета :cl-user."
-(defun use-mnas-package ()
-  (use-package (find-package :mnas-package) (find-package :cl-user)))
-
-@export
-@annot.doc:doc
-"@b(Описание:) unuse-mnas-package удаляет внешние символы пакета
-:mnas-package из пространства имен пакета :cl-user."
-(defun unuse-mnas-package ()
-  (unuse-package (find-package :mnas-package) (find-package :cl-user)))
-
 
 (defun codex-documentation-html (system-designator package-designator)
     (let ((system (asdf:find-system system-designator)))
@@ -27,6 +12,7 @@
 		   (string-downcase (package-name (find-package package-designator)))
 		   "/html")))
 
+@export
 (defun make-codex-documentation (system-designator package-designator)
     (let ((pkg  package-designator)
 	  (fpath (codex-documentation-html system-designator package-designator)))
