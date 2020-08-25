@@ -1,5 +1,4 @@
-@begin(section)
-@title(Overview)
+@begin(section) @title(Обзор)
 
 Система mnas-package предназначена для извлечения информации из asdf-систем.
 
