@@ -4,7 +4,7 @@
 
 (annot:enable-annot-syntax)
 
-@annot.doc:doc
+(defun package-symbols (package-name &aux (lst nil) (package (find-package package-name)))
 "@b(Описание:) package-symbols Выполнят поиск всех символов, 
 определенных пакетом @b(package-name).
 
@@ -16,14 +16,21 @@
  (package-symbols \"MNAS-PACKAGE\")
 @end(code)
 "
-(defun package-symbols (package-name &aux (lst nil) (package (find-package package-name)))
   (declare ((or package string symbol) package-name))
   (cond
     (package (do-symbols (s package ) (push s lst)) lst)
     (t (error "~S does not designate a package" package-name))))
 
-@annot.doc:doc
-"@b(Описание:) package-symbols-by-category выполнят поиск символов, 
+(defun package-symbols-by-category
+    (package-name
+     &key (external t) (internal t) (inherited nil)
+     &aux
+       (external-lst  nil)
+       (internal-lst  nil)
+       (inherited-lst nil)
+       (rez nil)
+       (package (find-package package-name)))
+  "@b(Описание:) package-symbols-by-category выполнят поиск символов, 
 определенных пакетом @b(package-name).
 
  @b(Переменые:)
@@ -42,16 +49,6 @@
  (package-symbols-by-category \"MNAS-PACKAGE\" :internal nil :inherited t) ;; отбор только внешних и заимствованных символов;
 @end(code)
 "
-(defun package-symbols-by-category
-    (package-name
-     &key (external t) (internal t) (inherited nil)
-     &aux
-       (external-lst  nil)
-       (internal-lst  nil)
-       (inherited-lst nil)
-       (rez nil)
-       (package (find-package package-name)))
-  
   (declare ((or package string symbol) package-name))
   (cond
     (package
@@ -69,7 +66,7 @@
      rez)
     (t (error "~S does not designate a package" package-name))))
 
-@annot.doc:doc
+(defun package-filter-symbols (symbols)
 "@b(Описание:) функция package-filter-symbols возвращает список символов, являющихся сопряженными со значениями.
 
  @b(Переменые:)
@@ -77,7 +74,6 @@
 @term(symbols) @def(Список символов пакета)
 @end(deflist)
 "
-(defun package-filter-symbols (symbols)
   (let ((rez nil))
     (mapc
      #'(lambda (el)
@@ -100,11 +96,11 @@
      symbols)
     rez))
 
-@export
+(export 'symbols )
 (defun symbols (package-name &key (external t) (internal nil) (inherited nil))
   (package-filter-symbols (package-symbols-by-category package-name :external external :internal internal  :inherited inherited)))
 
-@export
+(export 'functions )
 (defun functions (package-name &key (external t) (internal nil) (inherited nil) )
   (let ((rez nil))
     (map nil
@@ -119,8 +115,8 @@
 	   :inherited inherited)))
     rez))
 
-@export
-@annot.doc:doc
+(export 'make-codex-section-functions )
+(defun make-codex-section-functions (package-name &key (stream t) (external t) (internal nil) (inherited nil) (sort t) &aux (package (find-package package-name)))
 "@b(Описание:) функция make-codex-section-functions выводит в поток stream
 секцию с документацией в формате codex, содержащую функции из пакета package-name.
 
@@ -139,8 +135,7 @@
  (make-codex-section-functions :math :external nil :internal t   :sort t) 
  (make-codex-section-functions :math :external t   :internal nil :sort t) 
 @end(code)
-"
-(defun make-codex-section-functions (package-name &key (stream t) (external t) (internal nil) (inherited nil) (sort t) &aux (package (find-package package-name)))
+"  
   (declare ((or package string symbol) package-name))
   (let ((funcs (functions package :external external :internal internal :inherited inherited)))
     (format stream "@begin(section)~% @title(Функции)~% @cl:with-package[name=~S]("
@@ -154,9 +149,7 @@
 	     funcs))
     (format stream ")~%@end(section)")))
 
-
-
-@export
+(export 'generic-functions )
 (defun generic-functions (package-name &key (external t) (internal nil) (inherited nil) )
   (let ((rez nil))
     (map nil
@@ -180,18 +173,16 @@
     (t
      (string-downcase (format nil "~S" func)))))
 
-@annot.doc:doc
-""
 (defun defu-defm-name (func)
+""
   (cond
     ((listp (first func))
      (second (first func)))
     ((null (listp (first func)))
      (first func))))
 
-@annot.doc:doc
-""
 (defun who-calls (func)
+""
   (let
       (
        ;;;;(rez (swank/backend:who-calls func))
@@ -207,15 +198,17 @@
        rez)
       :test #'equal))))
 
-@annot.doc:doc
-""
 (defun who-calls-lst (func-lst)
+""
   (apply #'append
    (mapcar #'who-calls
 	   func-lst)))
 
-@export
-@annot.doc:doc
+(export 'make-call-graph )
+(defun make-call-graph (package-name
+			&aux
+			  (package (find-package package-name))
+			  (pkg-functions nil))
 "@b(Описание:) make-call-graph возвращает граф вызовов пакета @b(package-name).
 
  @b(Пример использования:)
@@ -223,10 +216,6 @@
  (mnas-package:make-call-graph :mnas-package)
 @end(code)
 "
-(defun make-call-graph (package-name
-			&aux
-			  (package (find-package package-name))
-			  (pkg-functions nil))
   (declare ((or package string symbol) package-name))
   (cond
     (package
@@ -237,8 +226,17 @@
       :nodes (mapcar #'(lambda (el) (func-to-string el)) pkg-functions)))
     (t (error "~S does not designate a package" package-name))))
 
-@export
-@annot.doc:doc
+(export 'view-call-graph )
+(defun view-call-graph (package-name
+			   &key
+			     (fpath mnas-graph:*output-path*)
+			     (fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
+			     (graphviz-prg :filter-dot)
+			     (out-type "pdf")
+			     (dpi "300")
+			     (viewer mnas-graph:*viewer-path*)
+			     (system-name package-name)
+			     )
 "@b(Описание:) view-call-graph выполняет визуализацию графа вызовов 
 пакета @b(package-name).
 
@@ -247,16 +245,11 @@
  (view-call-graph :mnas-package)
 @end(code)
 "
-(defun view-call-graph (package-name
-			   &key
-			     (fpath mnas-graph:*output-path*)
-			     (fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
-			     (graphviz-prg :filter-dot)
-			     (out-type "pdf")
-			     (dpi "300")
-			     (viewer mnas-graph:*viewer-path*))
-  (when (symbolp package-name) (require package-name))
-  (when (stringp package-name) (require package-name))
+  (break ":001 ~S ~S" package-name system-name)
+  (when (symbolp package-name) (require system-name))
+    (break ":002")
+  (when (stringp package-name) (require system-name))
+      (break ":003")
   (mnas-graph:view-graph
    (make-call-graph package-name)
    :fpath        fpath
@@ -268,8 +261,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-@export
-@annot.doc:doc
+(export 'package-classes )
+(defun package-classes (package-name
+			&aux
+			  (rez nil)
+			  (class nil)
+			  (package (find-package package-name)))
 "@b(Описание:) package-classes возвращает список классов пакета.
 
  @b(Пример использования:)
@@ -279,13 +276,6 @@
  (mnas-package::package-classes (find-package :mnas-package))
 @end(code)
 "
-(defun package-classes
-    (package-name
-     &aux
-       (rez nil)
-       (class nil)
-       (package (find-package package-name)))
-  
   (declare ((or package string symbol) package-name))
   (mapc 
    #'(lambda (el)
@@ -296,8 +286,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-@export
-@annot.doc:doc
+(export 'make-class-graph )
+(defun make-class-graph (package-name
+			 &aux
+			   (package (find-package package-name))
+			   (graph (make-instance 'mnas-graph:<graph>)))
 "@b(Описание:) make-class-graph создает граф наследования классов.
 
  @b(Пример использования:)
@@ -305,12 +298,6 @@
  (make-class-graph :mnas-package)
 @end(code)
 "
-(defun make-class-graph
-    (package-name
-     &aux
-       (package (find-package package-name))
-       (graph (make-instance 'mnas-graph:<graph>)))
-  
   (declare ((or package string symbol) package-name))
   (flet ((find-subclasses (class)
 	   (mapcar
@@ -332,8 +319,15 @@
      (package-classes package)))
   graph)
 
-@export
-@annot.doc:doc
+(export 'view-class-graph )
+(defun view-class-graph (package-name
+			 &key
+			   (fpath mnas-graph:*output-path*)
+			   (fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
+			   (graphviz-prg :filter-dot)
+			   (out-type "pdf")
+			   (dpi "300")
+			   (viewer mnas-graph:*viewer-path*))
 "@b(Описание:) view-class-graph выводит визуальное представление 
 иерархии классов (графа наследования).
 
@@ -342,20 +336,11 @@
  (mnas-package:mnas-package-demo-11)
 @end(code)
 "
-(defun view-class-graph
-    (package-name
-     &key
-       (fpath mnas-graph:*output-path*)
-       (fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
-       (graphviz-prg :filter-dot)
-       (out-type "pdf")
-       (dpi "300")
-       (viewer mnas-graph:*viewer-path*))
   (when (symbolp package-name) (require package-name))
   (when (stringp package-name) (require package-name))
   (mnas-graph:view-graph
    (make-class-graph package-name)
-      :fpath        fpath
+   :fpath        fpath
    :fname        fname
    :graphviz-prg graphviz-prg
    :out-type     out-type
@@ -364,7 +349,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-@annot.doc:doc
+(defun class-undirect-subclasses (class-01)
 "@b(Описание:) class-undirect-subclasses выполняет поиск всех 
 подклассов класса class-01 и возвращает список всех найденных классов.
 
@@ -373,7 +358,6 @@
  (class-undirect-subclasses (find-class 'number))
 @end(code)
 "
-(defun class-undirect-subclasses (class-01)
   (let ((rez-classes nil)
 	(l-not-obr (list class-01)))
     (flet
@@ -388,10 +372,8 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-@annot.doc:doc
-"Необходимо сделать описание"
 (defun make-mnas-systems ()
-
+"Необходимо сделать описание"
   (let* ((sos (make-string-output-stream))
 	 (sis (make-string-input-stream 
 	       (progn
@@ -432,7 +414,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-@annot.doc:doc
+(defun who-references (var)
 "Выполняет поиск функций, в которых есть ссылка на внешнюю переменную var.
 Возвращает список, каждым элементом которого является список следующего формата:
  (функция переменная).
@@ -440,7 +422,6 @@
  (who-references '*sample-var*) 
  => ((\"who-references\" \"*sample-var*\"))
 "
-(defun who-references (var)
   (let
       (
        ;;;;(rez (swank/backend:who-references var))
@@ -456,15 +437,17 @@
        rez)
       :test #'equal))))
 
-@annot.doc:doc
-""
 (defun who-references-lst (var-lst)
+"who-references-lst"
   (apply #'append
    (mapcar #'who-references
 	   var-lst)))
 
-@export
-@annot.doc:doc
+(export 'make-symbol-graph )
+(defun make-symbol-graph (package-name
+			&aux
+			  (package (find-package package-name))
+			  (pkg-symbols nil))
 "@b(Описание:) make-symbol-graph строит граф использования методпми и функциями 
 внешних символов.
 
@@ -473,10 +456,6 @@
  (make-symbol-graph :mnas-string)
 @end(code)
 "
-(defun make-symbol-graph (package-name
-			&aux
-			  (package (find-package package-name))
-			  (pkg-symbols nil))
   (declare ((or package string symbol) package-name))
   (cond
     (package
@@ -487,8 +466,15 @@
       :nodes (mapcar #'(lambda (el) (func-to-string el)) pkg-symbols)))
     (t (error "~S does not designate a package" package-name))))
 
-@export
-@annot.doc:doc
+(export 'view-symbol-graph )
+(defun view-symbol-graph (package-name
+			     &key
+			       (fpath mnas-graph:*output-path*)
+			       (fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
+			       (graphviz-prg :filter-dot)
+			       (out-type "pdf")
+			       (dpi "300")
+			       (viewer mnas-graph:*viewer-path*))
 "@b(Описание:) view-symbol-graph отображает граф зависимостей глобальных символов.
 
  Позволяет ответить на вопрос: в какой функции используется тот или иной глобальный символ. 
@@ -498,14 +484,6 @@
  (view-symbol-graph :mnas-package)
 @end(code)
 "
-(defun view-symbol-graph (package-name
-			     &key
-			       (fpath mnas-graph:*output-path*)
-			       (fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
-			       (graphviz-prg :filter-dot)
-			       (out-type "pdf")
-			       (dpi "300")
-			       (viewer mnas-graph:*viewer-path*))
   (when (symbolp package-name) (require package-name))
   (when (stringp package-name) (require package-name))
   (mnas-graph:view-graph (make-symbol-graph package-name)
@@ -516,15 +494,13 @@
    :dpi          dpi
    :viewer       viewer))
 
-@export
-@annot.doc:doc
+(export 'doc-template )
+(defun doc-template (&optional (pkg *package*))
 "Пример использования:
 @begin[lang=lisp](code)
  (doc-template)
 @end(code)
 "
-(defun doc-template (&optional (pkg *package*))
-  
   (let ((f-b nil)
 	(b   nil))
     (map 'nil
@@ -591,8 +567,8 @@
       (rec system))
     (ordered-dep-tree (alexandria:hash-table-alist res))))
 
-@export
-@annot.doc:doc
+(export 'make-system-graph )
+(defun make-system-graph (system)
 "@b(Описание:) make-system-graph возвращает граф систем, от которых зависит
 система @b(system).
 
@@ -601,7 +577,6 @@
  (mnas-package:make-system-graph :mnas-package)
 @end(code)
 "
-(defun make-system-graph (system)
   (mnas-graph:make-graph 
    (mapcar
     #'(lambda (el)
@@ -612,16 +587,7 @@
      (append (list system) (dependency-tree system))
      :initial-value (make-list 0)))))
 
-@export
-@annot.doc:doc
-"@b(Описание:) view-system-graph визуализирует граф систем, от которых зависит
-система @b(system).
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (mnas-package:view-system-graph :mnas-package :out-type \"png\" :viewer nil)
-@end(code)
-"
+(export 'view-system-graph )
 (defun view-system-graph (system
 			     &key
 			       (fpath mnas-graph:*output-path*)
@@ -630,6 +596,14 @@
 			       (out-type "pdf")
 			       (dpi "300")
 			       (viewer mnas-graph:*viewer-path*))
+"@b(Описание:) view-system-graph визуализирует граф систем, от которых зависит
+система @b(system).
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (mnas-package:view-system-graph :mnas-package :out-type \"png\" :viewer nil)
+@end(code)
+"
   (mnas-graph:view-graph
    (make-system-graph system)
    :fpath        fpath
