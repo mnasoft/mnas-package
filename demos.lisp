@@ -2,23 +2,21 @@
 
 (in-package #:mnas-package)
 
-(annot:enable-annot-syntax)
-
 (defparameter *sample-var-1* '(1 2 3))
 (defparameter *sample-var-2* ())
 (defparameter *sample-var-3* "3")
 
-@export
+(export 'mnas-package-demo-1 )
 (defun mnas-package-demo-1 ()
   *sample-var-1*
   (package-symbols-by-category :mnas-package :internal nil))
 
-@export
+(export 'mnas-package-demo-2 )
 (defun mnas-package-demo-2 ()
   *sample-var-2*
   (package-symbols-by-category :mnas-package))
 
-@export
+(export 'mnas-package-demo-3 )
 (defun mnas-package-demo-3 ()
   *sample-var-3*
   (make-call-praph :mnas-package))
@@ -40,7 +38,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-@export
+(export 'mnas-package-demo )
 (defun mnas-package-demo ()
   (mnas-package-demo-1)
   (mnas-package-demo-2)

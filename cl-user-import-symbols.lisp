@@ -9,16 +9,8 @@
   (use-package (find-package :mnas-package) (find-package :cl-user)))
 
 (export 'unuse-mnas-package)
+
 (defun unuse-mnas-package ()
 "@b(Описание:) unuse-mnas-package удаляет внешние символы пакета
 :mnas-package из пространства имен пакета :cl-user."
   (unuse-package (find-package :mnas-package) (find-package :cl-user)))
-(defun codex-documentation-html (system-designator package-designator)
-    (let ((system (asdf:find-system system-designator)))
-      (concatenate 'string
-		   (namestring (asdf:system-source-directory system))
-		   "docs/build/"
-		   (string-downcase (package-name (find-package package-designator)))
-		   "/html")))
-
-

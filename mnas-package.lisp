@@ -2,8 +2,6 @@
 
 (in-package #:mnas-package)
 
-(annot:enable-annot-syntax)
-
 (defun package-symbols (package-name &aux (lst nil) (package (find-package package-name)))
 "@b(Описание:) package-symbols Выполнят поиск всех символов, 
 определенных пакетом @b(package-name).

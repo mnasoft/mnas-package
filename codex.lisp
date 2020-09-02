@@ -2,8 +2,6 @@
 
 (in-package :mnas-package)
 
-(annot:enable-annot-syntax)
-
 (defun codex-documentation-html (system-designator package-designator)
     (let ((system (asdf:find-system system-designator)))
       (concatenate 'string
