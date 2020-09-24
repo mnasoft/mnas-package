@@ -243,11 +243,8 @@
  (view-call-graph :mnas-package)
 @end(code)
 "
-  (break ":001 ~S ~S" package-name system-name)
   (when (symbolp package-name) (require system-name))
-    (break ":002")
   (when (stringp package-name) (require system-name))
-      (break ":003")
   (mnas-graph:view-graph
    (make-call-graph package-name)
    :fpath        fpath

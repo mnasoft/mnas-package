@@ -2,27 +2,45 @@
 
 (in-package :mnas-package)
 
-(defun codex-documentation-html (system-designator package-designator)
+(defun codex-documentation-docs (system-designator)
+    (let ((system (asdf:find-system system-designator)))
+      (concatenate 'string
+		   (namestring (asdf:system-source-directory system))
+		   "docs")))
+
+(defun codex-documentation-html (system-designator)
     (let ((system (asdf:find-system system-designator)))
       (concatenate 'string
 		   (namestring (asdf:system-source-directory system))
 		   "docs/build/"
-		   (string-downcase (package-name (find-package package-designator)))
+		   (car (last (mnas-string:split "/" (namestring  (asdf:system-source-directory system-designator)))))
+;;;; 		   (string-downcase (package-name (find-package package-designator)))		   
 		   "/html")))
 
 (export 'make-codex-documentation )
+
 (defun make-codex-documentation (system-designator package-designator)
-  (let ((pkg  package-designator)
-	(sys  system-designator)
-	(fpath (codex-documentation-html system-designator package-designator)))
-    (break ":100000000000")
-    (codex:document sys)
-    (break ":200000000000")
-    (mnas-package:view-call-graph   pkg :out-type "png" :viewer nil :fpath fpath :fname "call-graph" :system-name sys)
-    (break ":3")
-    (mnas-package:view-system-graph sys :out-type "png" :viewer nil :fpath fpath :fname "system-graph")
-    (break ":4")
-    (mnas-package:view-class-graph  pkg :out-type "png" :viewer nil :fpath fpath :fname "class-graph")
-    (break ":5")    
-    (mnas-package:view-symbol-graph pkg :out-type "png" :viewer nil :fpath fpath :fname "symbol-graph"))
-      (break ":6"))
+  (let* ((pkg  package-designator)
+	 (sys  system-designator)
+	 (fpath (codex-documentation-html sys))
+	 (pkg-name (mnas-string:replace-all
+		    (string-downcase (package-name (find-package pkg)))
+		    "/" "-")))
+    (view-call-graph   pkg :out-type "png" :viewer nil :fpath fpath
+			   :fname (concatenate 'string "call-graph"  "-" pkg-name))
+    (view-system-graph sys :out-type "png" :viewer nil :fpath fpath
+			   :fname (concatenate 'string "system-graph" "-" pkg-name))
+    (view-class-graph  pkg :out-type "png" :viewer nil :fpath fpath
+			   :fname (concatenate 'string "class-graph" "-" pkg-name))
+    (view-symbol-graph pkg :out-type "png" :viewer nil :fpath fpath
+			   :fname (concatenate 'string "symbol-graph" "-" pkg-name))
+    (with-open-file (os (concatenate 'string (codex-documentation-docs sys) "/" pkg-name "-graph.scr")
+			:if-exists :supersede :direction :output)
+      (format os " @begin(section) @title(Графы ~A)
+  @begin(list)
+   @item(system-graph @image[src=./system-graph-~A.gv.png]())
+   @item(call-graph   @image[src=./call-graph-~A.gv.png]())
+   @item(symbol-graph @image[src=./symbol-graph-~A.gv.png]())
+   @item(class-graph  @image[src=./class-graph-~A.gv.png]())
+  @end(list)
+ @end(section)" pkg-name pkg-name pkg-name pkg-name pkg-name))))
