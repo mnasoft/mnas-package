@@ -7,8 +7,13 @@
   :version "0.0.6"
   :serial nil
   :depends-on ("mnas-string" "mnas-graph" "codex" )
-  :components ((:file "package")
-	       (:file "mnas-package" :depends-on ("package"))
-	       (:file "codex" :depends-on ("package" "mnas-package"))
-;;;;	       (:file "demos" :depends-on ("mnas-package"))
-	       (:file "cl-user-import-symbols" :depends-on ("mnas-package"))))
+  :components
+  ((:file "package")
+   (:module "src" :depends-on ("package")
+    :serial nil
+    :components
+    ((:file "mnas-package")
+     (:file "codex" :depends-on ("mnas-package"))
+     (:file "cl-user-import-symbols" :depends-on ("mnas-package"))
+;; (:file "demos" :depends-on ("mnas-package"))     
+     ))))
