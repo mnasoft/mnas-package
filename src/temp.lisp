@@ -48,3 +48,11 @@
                            :end1 (length prefix)
                            :end2 (length prefix)))
         collect method))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(find-all-methods class prefix)
+
+(require :temperature-fild/splot)
+		  
+(codex-documentation-docs :mnas-package)

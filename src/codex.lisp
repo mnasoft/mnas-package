@@ -3,12 +3,29 @@
 (in-package :mnas-package)
 
 (defun codex-documentation-docs (system-designator)
+  "@b(Описание:) функция @b(codex-documentation-docs) возвращает строку,
+содержащую расположение каталога ./docs системы @b(system-designator) на диске.
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (codex-documentation-docs :mnas-package) 
+ => \"D:/PRG/msys32/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs\"
+@end(code)
+"
     (let ((system (asdf:find-system system-designator)))
       (concatenate 'string
 		   (namestring (asdf:system-source-directory system))
 		   "docs")))
 
 (defun codex-documentation-html (system-designator)
+  "@b(Описание:) функция @b(codex-documentation-html) возвращает строку,
+содержащую расположение каталога ./docs/build/mnas-package/html системы 
+@b(system-designator) на диске.
+
+ (codex-documentation-html :mnas-package) 
+ \"D:/PRG/msys32/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/build/mnas-package/html\"
+ 
+"
     (let ((system (asdf:find-system system-designator)))
       (concatenate 'string
 		   (namestring (asdf:system-source-directory system))
