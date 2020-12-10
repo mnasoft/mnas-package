@@ -65,12 +65,13 @@
     (t (error "~S does not designate a package" package-name))))
 
 (defun package-filter-symbols (symbols)
-"@b(Описание:) функция package-filter-symbols возвращает список символов, являющихся сопряженными со значениями.
+"@b(Описание:) функция package-filter-symbols возвращает список символов, 
+являющихся сопряженными со значениями.
 
  @b(Переменые:)
-@begin(deflist) 
-@term(symbols) @def(Список символов пакета)
-@end(deflist)
+@begin(list) 
+@item(symbols - список символов пакета.)
+@end(list)
 "
   (let ((rez nil))
     (mapc
@@ -80,14 +81,15 @@
      symbols)
     rez))
 
-"@b(Описание:) функция package-filter-functions возвращает список символов, являющихся сопряженными с функциями.
+(defun package-filter-functions (symbols)
+"@b(Описание:) функция package-filter-functions возвращает список символов,
+являющихся сопряженными с функциями.
 
  @b(Переменые:)
-@begin(deflist) 
-@term(symbols) @def(Список символов пакета)
-@end(deflist)
+@begin(list) 
+@item(symbols - список символов пакета.)
+@end(list)
 "
-(defun package-filter-functions (symbols)
   (let ((rez nil))
     (mapc
      #'(lambda (el) (when (fboundp el) (push el rez)))
@@ -95,11 +97,43 @@
     rez))
 
 (export 'symbols )
+
 (defun symbols (package-name &key (external t) (internal nil) (inherited nil))
-  (package-filter-symbols (package-symbols-by-category package-name :external external :internal internal  :inherited inherited)))
+  "@b(Описание:) функция @b(symbols) возвращает список функций пакета @b(package-name).
+"
+  (package-filter-symbols
+   (package-symbols-by-category
+    package-name
+    :external external
+    :internal internal
+    :inherited inherited)))
 
 (export 'functions )
+
 (defun functions (package-name &key (external t) (internal nil) (inherited nil) )
+  "@b(Описание:) функция @b(functions) возвращает список функций пакета.
+
+ @b(Переменые:)
+@begin(list)
+@item(package-name - пакет;) 
+@item(external - если равно @b(t) функция возвращает экспортируемые фукции пакета;)
+@item(internal - если равно @b(t) функция возвращает внутренние фукции пакета;)
+@item(internal - если равно @b(t) импортированные функции пакетаж;)
+@end(list)
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (functions :mnas-package)
+  => (#<FUNCTION MAKE-CLASS-GRAPH> #<FUNCTION GENERIC-FUNCTIONS>
+      #<FUNCTION PACKAGE-CLASSES> #<FUNCTION SYMBOLS> #<FUNCTION VIEW-CALL-GRAPH>
+      #<FUNCTION MAKE-CODEX-SECTION-FUNCTIONS> #<FUNCTION DOC-TEMPLATE>
+      #<FUNCTION USE-MNAS-PACKAGE> #<FUNCTION VIEW-SYSTEM-GRAPH>
+      #<FUNCTION UNUSE-MNAS-PACKAGE> #<FUNCTION VIEW-CLASS-GRAPH>
+      #<FUNCTION MAKE-SYMBOL-GRAPH> #<FUNCTION MAKE-CALL-GRAPH>
+      #<FUNCTION VIEW-SYMBOL-GRAPH> #<FUNCTION MAKE-CODEX-DOCUMENTATION>
+      #<FUNCTION FUNCTIONS> #<FUNCTION MAKE-SYSTEM-GRAPH>)
+@end(code)
+"
   (let ((rez nil))
     (map nil
 	 #'(lambda (el)
@@ -113,25 +147,25 @@
 	   :inherited inherited)))
     rez))
 
-(export 'make-codex-section-functions )
+(export 'make-codex-section-functions)
+(require :math/stat)
 (defun make-codex-section-functions (package-name &key (stream t) (external t) (internal nil) (inherited nil) (sort t) &aux (package (find-package package-name)))
 "@b(Описание:) функция make-codex-section-functions выводит в поток stream
 секцию с документацией в формате codex, содержащую функции из пакета package-name.
 
  @b(Переменые:)
-@begin(deflist)
-@term(package-name) @def(Пакет с функциями для вывода в поток.)
-@term(stream)       @def(Поток, в который выводятся даннные о функциях.)
-@term(external)     @def(Если не nil - в поток выводятся информация о эксполртируемых функциях.)
-@term(internal)     @def(Если не nil - в поток выводятся информация о внутренних функциях.)
-@term(inherited)    @def(Если не nil - в поток выводятся информация о заимствованных функциях.)
-@term(sort)         @def(Если не nil - функции сортируются в алфавитном порядке.)
-@end(deflist)
+@begin(list)
+@item(package-name - пакет с функциями для вывода в поток.)
+@item(stream       - поток, в который выводятся даннные о функциях.)
+@item(external     - если не nil - в поток выводятся информация о эксполртируемых функциях.)
+@item(internal     - если не nil - в поток выводятся информация о внутренних функциях.)
+@item(inherited    - если не nil - в поток выводятся информация о заимствованных функциях.)
+@item(sort         - если не nil - функции сортируются в алфавитном порядке.)
+@end(list)
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
- (make-codex-section-functions :math :external nil :internal t   :sort t) 
- (make-codex-section-functions :math :external t   :internal nil :sort t) 
+ (make-codex-section-functions :math/stat :external t :internal t :sort t) 
 @end(code)
 "  
   (declare ((or package string symbol) package-name))
@@ -148,6 +182,7 @@
     (format stream ")~%@end(section)")))
 
 (export 'generic-functions )
+
 (defun generic-functions (package-name &key (external t) (internal nil) (inherited nil) )
   (let ((rez nil))
     (map nil
@@ -162,6 +197,7 @@
 	   :inherited inherited)))
     rez))
 
+;;;;(generic-functions :math/stat :external t :internal t  :inherited t)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun func-to-string (func)

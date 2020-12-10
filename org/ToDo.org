@@ -1,0 +1,27 @@
+#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+OPTIONS: author:t broken-links:nil c:nil creator:nil
+#+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+OPTIONS: timestamp:t title:t toc:t todo:t |:t
+#+TITLE: README
+#+DATE: <2020-01-04 Сб>
+#+AUTHOR: Nick Matvyeyev
+#+EMAIL: mnasoft@gmail.com>
+#+LANGUAGE: en
+#+SELECT_TAGS: export
+#+EXCLUDE_TAGS: noexport
+#+CREATOR: Emacs 26.3 (Org mode 9.1.9)
+
+* [4/6] Задачи
+1. [ ] Определить функцию package-class-slot-graph (package class), которая-бы строила граф слотов класса.
+2. [ ] Определить правильный набор экспортируемых функций.
+3. [X] Справиться с предупреждениями при компиляции.
+4. [X] Определить функцию make-symbol-graph для создания графа использования функциями внешних-символов пакета. По шаблону: функция -> внешний-символ
+5. [X] Определить функцию package-symbol-graph (make-symbol-graph), которая-бы строила граф использования во всех функциях пакета глобальных параметров.
+6. [X] Определить функцию package-system-graph (make-system-graph), которая-бы формировала граф зависимостей систем asdf.
+7. [5/5] Выполнить переименование функций
+   - [X] package-call-graph -> view-call-graph;
+   - [X] package-system-graph -> view-system-graph;
+   - [X] package-symbol-graph -> view-symbol-graph;
+   - [X] package-class-graph -> view-class-graph;
+   - [X] выполнить переименования в файлах Developers-memo.org;

@@ -47,7 +47,11 @@
                   (string= fname-string prefix
                            :end1 (length prefix)
                            :end2 (length prefix)))
-        collect method))
+          collect method))
+
+(require :temperature-fild/plot)
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

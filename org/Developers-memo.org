@@ -23,33 +23,22 @@
     :do (mnas-package:make-codex-documentation i i))
 #+END_SRC
 
-#+RESULTS: graphs
-: NIL
-
-#+RESULTS: make-html
-: NIL
 * Публикация
 #+name: publish
-#+BEGIN_SRC shell :var make-html=make-html
-  mkdir -p "$HOME/public_html/Common-Lisp-Programs/"
-  CDIR=`basename $PWD`
-  rsync -Pavzh ./docs/build/$CDIR/html/* $HOME/public_html/Common-Lisp-Programs/$CDIR 
-  if [[ `hostname` == "mnasoft-00" ]]
-  then
-      echo "mnasoft-00"
-  fi
-  if [[ `hostname` == "N118383" ]]
-  then
-      echo "N118383"
-      mkdir -p //n133619/home/_namatv/public_html/Site/Development/Common-Lisp-Programs/$CDIR
-      rsync -Pavzh ./docs/build/$CDIR/html/* //n133619/home/_namatv/public_html/Site/Development/Common-Lisp-Programs/$CDIR
-   fi
+#+BEGIN_SRC shell :var graphs=graphs
+    mkdir -p "$HOME/public_html/Common-Lisp-Programs/"
+    CDIR=`dirname $PWD | xargs basename`
+    rsync -Pazh --delete ../docs/build/$CDIR/html/ $HOME/public_html/Common-Lisp-Programs/$CDIR 
+    if [[ `hostname` == "mnasoft-00" ]]
+    then
+	echo "mnasoft-00"
+  #     sh ~/bin/pi-html
+    fi
+    if [[ `hostname` == "N118383" ]]
+    then
+	echo "N118383"
+        CPL="//n133619/home/_namatv/public_html/Site/Development/Common-Lisp-Programs"
+	mkdir -p $CPL/$CDIR
+	rsync -Pazh --delete ../docs/build/$CDIR/html/ $CPL/$CDIR
+     fi
 #+END_SRC
-
-#+RESULTS: publish
-| sending    | incremental | file  | list     |         |       |      |           |
-| sent       | 19          | bytes | received |      12 | bytes | 62.0 | bytes/sec |
-| total      | size        | is    | 0        | speedup | is    |  0.0 |           |
-| mnasoft-00 |             |       |          |         |       |      |           |
-
-
