@@ -6,7 +6,7 @@
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :version "0.0.6"
   :serial nil
-  :depends-on ("mnas-string" "mnas-graph" "codex" )
+  :depends-on ("mnas-string" "mnas-graph" "codex" "trivial-documentation")
   :components
   ((:file "package")
    (:module "src" :depends-on ("package")
