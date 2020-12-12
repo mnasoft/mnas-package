@@ -56,8 +56,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;home
 (require :temperature-fild)
-(defparameter *m*
-  (let* ((m-all (find-all-methods (find-class 'mtf/t-fild:<t-fild>) ""))
+
+(defparameter *m* (find-all-methods (find-class 'mtf/t-fild:<t-fild>) ""))
+
+(defun td-make-doc (package class prefix)
+  (let* ((m-all (find-all-methods (find-class 'mtf/t-fild:<t-fild>) prefix))
          (m-0 (elt m-all 0))
          (m-0-type (type-of m-0))
          (m-0-doc (when (member m-0-type '(standard-method))
@@ -70,8 +73,11 @@
     m-0-type
     m-0-doc
     m-0-ll
-    m-0-nm
+;;    m-0-nm
     ))
+
+
+(td-make-doc (find-package :mtf/t-fild) (find-class 'mtf/t-fild:<t-fild>) "")
 
 (type-of (first (find-all-methods (find-class 'mtf/sector:<sector>) "")))
 (sb-mop:method-lambda-list (first (find-all-methods (find-class 'mtf/sector:<sector>) "")))
@@ -93,6 +99,23 @@
 (defparameter *d* (multiple-value-list
 		   (trivial-documentation:package-api :temperature-fild)))
 
+(defun td-symbol-split (symbol) (mnas-string:split ":" (format nil "~S" symbol)))
+
+(defun td-symbol-name (symbol) (string-downcase (second (td-symbol-split symbol))))
+
+(defun td-symbol-package (symbol) (string-downcase (first (td-symbol-split symbol))))
+
+(
+'(TEMPERATURE-FILD::T03-2D-LIST TEMPERATURE-FILD::T-FILD))
+
+(td-symbol-package 'TEMPERATURE-FILD:CONVERT-T-FILD-TO-GP-DATA)
+
+*package*
+
+
+(defun td-symbol-package (symbol)
+
+(td-get-name 'TEMPERATURE-FILD::CONVERT-T-FILD-TO-GP-DATA)
 
 (defun td-doc (package)
   (second (multiple-value-list
