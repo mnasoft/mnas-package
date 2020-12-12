@@ -47,8 +47,37 @@
                   (string= fname-string prefix
                            :end1 (length prefix)
                            :end2 (length prefix)))
-        collect method))
+          collect method))
 
+(require :temperature-fild/plot)
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;home
+(require :temperature-fild)
+(defparameter *m*
+  (let* ((m-all (find-all-methods (find-class 'mtf/t-fild:<t-fild>) ""))
+         (m-0 (elt m-all 0))
+         (m-0-type (type-of m-0))
+         (m-0-doc (when (member m-0-type '(standard-method))
+                    (documentation m-0 t)))
+         (m-0-ll (mopp:method-lambda-list m-0))
+         (m-0-nm (mopp:generic-function-name
+                  (mopp:method-generic-function m-0))))
+    m-all
+    m-0
+    m-0-type
+    m-0-doc
+    m-0-ll
+    m-0-nm
+    ))
+
+(type-of (first (find-all-methods (find-class 'mtf/sector:<sector>) "")))
+(sb-mop:method-lambda-list (first (find-all-methods (find-class 'mtf/sector:<sector>) "")))
+(type-of (first (find-all-methods (find-class 'mtf/sector:<sector>) "")))
+(documentation (first (find-all-methods (find-class 'mtf/sector:<sector>) "")) t)
+'STANDARD-METHOD
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (find-all-methods class prefix)
