@@ -15,5 +15,6 @@
     ((:file "mnas-package")
      (:file "codex" :depends-on ("mnas-package"))
      (:file "cl-user-import-symbols" :depends-on ("mnas-package"))
+     (:file "codex-method")
 ;; (:file "demos" :depends-on ("mnas-package"))     
      ))))

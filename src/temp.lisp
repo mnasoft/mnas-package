@@ -31,67 +31,41 @@
  :out-type "png"
  :viewer nil)
 
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Исследование
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun find-all-methods (class prefix)
-"(pprint (find-all-methods (find-class 'mtf:<sector>) \"SEC\"))"
-  (loop for method in (sb-mop:specializer-direct-methods class)
-        for gf           = (sb-mop:method-generic-function method)
-        for fname        = (sb-mop:generic-function-name gf)
-        for fname-string = (when (symbolp fname) (symbol-name fname))
-        when (and (stringp fname-string)
-                  (>= (length fname-string)
-                      (length prefix))
-                  (string= fname-string prefix
-                           :end1 (length prefix)
-                           :end2 (length prefix)))
-          collect method))
-
+;;;; Тестирование
 (require :temperature-fild/plot)
 
+(in-package :temperature-fild/plot)
 
+(defparameter *m* (mnas-package::find-all-methods (find-class 'mtf/t-fild:<t-fild>) ""))
+
+(let ((mm (elt *m* 1)))
+  (mnas-package::td-standard-method-doc mm))
+
+;;;;;;;;;;;;;;;;;;;;
+
+(let ((mm (elt *m* 1)))
+  (mnas-package::td-make-doc
+    mm))
+
+;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;home
-(require :temperature-fild)
+(mnas-package::td-make-docs
+ (find-package :mtf/plot)
+ (find-class 'mtf/t-fild:<t-fild>) "")
 
-(defparameter *m* (find-all-methods (find-class 'mtf/t-fild:<t-fild>) ""))
-
-(defun td-make-doc (package class prefix)
-  (let* ((m-all (find-all-methods (find-class 'mtf/t-fild:<t-fild>) prefix))
-         (m-0 (elt m-all 0))
-         (m-0-type (type-of m-0))
-         (m-0-doc (when (member m-0-type '(standard-method))
-                    (documentation m-0 t)))
-         (m-0-ll (mopp:method-lambda-list m-0))
-         (m-0-nm (mopp:generic-function-name
-                  (mopp:method-generic-function m-0))))
-    m-all
-    m-0
-    m-0-type
-    m-0-doc
-    m-0-ll
-;;    m-0-nm
-    ))
-
-
-(td-make-doc (find-package :mtf/t-fild) (find-class 'mtf/t-fild:<t-fild>) "")
-
-(type-of (first (find-all-methods (find-class 'mtf/sector:<sector>) "")))
-(sb-mop:method-lambda-list (first (find-all-methods (find-class 'mtf/sector:<sector>) "")))
-(type-of (first (find-all-methods (find-class 'mtf/sector:<sector>) "")))
-(documentation (first (find-all-methods (find-class 'mtf/sector:<sector>) "")) t)
-'STANDARD-METHOD
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(find-all-methods class prefix)
 
 (require :temperature-fild/splot)
 		  
 (codex-documentation-docs :mnas-package)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require :temperature-fild)
@@ -99,23 +73,6 @@
 (defparameter *d* (multiple-value-list
 		   (trivial-documentation:package-api :temperature-fild)))
 
-(defun td-symbol-split (symbol) (mnas-string:split ":" (format nil "~S" symbol)))
-
-(defun td-symbol-name (symbol) (string-downcase (second (td-symbol-split symbol))))
-
-(defun td-symbol-package (symbol) (string-downcase (first (td-symbol-split symbol))))
-
-(
-'(TEMPERATURE-FILD::T03-2D-LIST TEMPERATURE-FILD::T-FILD))
-
-(td-symbol-package 'TEMPERATURE-FILD:CONVERT-T-FILD-TO-GP-DATA)
-
-*package*
-
-
-(defun td-symbol-package (symbol)
-
-(td-get-name 'TEMPERATURE-FILD::CONVERT-T-FILD-TO-GP-DATA)
 
 (defun td-doc (package)
   (second (multiple-value-list
@@ -132,9 +89,6 @@
 	;; (symbol-name i)
 	  )))
 
-
-(nbutfirst '(1 2 3 4 5 6) 10)
- 
 
 (defun nbutfirst (lst &optional (n 1))
   	     (loop :for i :in lst

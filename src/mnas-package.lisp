@@ -148,7 +148,7 @@
     rez))
 
 (export 'make-codex-section-functions)
-(require :math/stat)
+
 (defun make-codex-section-functions (package-name &key (stream t) (external t) (internal nil) (inherited nil) (sort t) &aux (package (find-package package-name)))
 "@b(Описание:) функция make-codex-section-functions выводит в поток stream
 секцию с документацией в формате codex, содержащую функции из пакета package-name.
