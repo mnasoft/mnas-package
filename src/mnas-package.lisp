@@ -2,6 +2,18 @@
 
 (in-package #:mnas-package)
 
+(defun function-name (function)
+  "@b(Описание:) функция @b(function-name) возвращает символ,
+представляющий имя функции.
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (function-name #'function-name)  
+ => function-name
+@end(code)
+"
+  (nth-value 2 (function-lambda-expression function)))
+
 (defun package-symbols (package-name &aux (lst nil) (package (find-package package-name)))
 "@b(Описание:) package-symbols Выполнят поиск всех символов, 
 определенных пакетом @b(package-name).

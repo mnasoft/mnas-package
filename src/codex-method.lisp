@@ -55,6 +55,10 @@
     (when (= 3 (length rez)) (setf (second rez) "::"))
     rez))
 
+
+(package-name (symbol-package (function-name (first (mpkg:functions :mpkg)))))
+(symbol-name (function-name (first (mpkg:functions :mpkg))))
+
 (defun smbl-name (symbol)
   (let ((lst (smbl-split symbol)))
     (string-downcase
@@ -63,7 +67,7 @@
        (2 (second lst))
        (3 (third  lst))))))
 
-(defun smbl-separator (symbol)
+(defun smbl-separator-bak (symbol)
   (let ((lst (smbl-split symbol)))
     (string-downcase
      (ecase (length lst)
@@ -71,7 +75,23 @@
        (2 ":")
        (3 "::")))))
 
-(defun smbl-package (symbol)
+(defmethod smbl-separator ((symbol symbol))
+  (let ((type (nth-value 1 (find-symbol (symbol-name symbol) (symbol-package symbol)))))
+         (ecase type
+       (:external  "")
+       (:inherited ":")
+       (:internal  "::"))))
+
+(defmethod smbl-separator ((function function))
+  (let ((type (nth-value 1 (find-symbol
+                            (symbol-name (function-name function))
+                            (symbol-package (function-name function))))))
+    (ecase type
+      (:external  "")
+      (:inherited ":")
+      (:internal  "::"))))
+
+(defun smbl-package-bak (symbol)
   (let ((lst (smbl-split symbol)))
     (string-downcase
      (ecase (length lst)
@@ -79,12 +99,18 @@
        (2 (first lst))
        (3 (first lst))))))
 
+(defmethod smbl-package ((symbol symbol))
+  (if (eq :external (nth-value 1 (find-symbol (symbol-name '*mmm*)))) ""
+      (package-name (symbol-package symbol))))
+
+(defmethod smbl-package ((function function))
+  (if (eq :external (nth-value 1 (find-symbol (symbol-name '*mmm*)))) ""
+  (package-name (symbol-package symbol))))
+
 (defun smbl-name-downcase (symbol)
   (string-downcase (smbl-name symbol)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
 
 (defun make-doc-for-standard-method (m &key (stream t))
 #|
@@ -151,5 +177,8 @@ scr-файл системы документирования codex. Этот р�
        (find-all-methods class prefix)))
     (format stream " ~%)"))
 
-
 ;;;;;;;;;;
+
+#|
+(make-doc-methods (find-package :mtf/splot) (find-class 'mtf::<t-fild>) "SPLOT")
+|#

@@ -2,22 +2,24 @@
 
 (defpackage #:mnas-package
   (:use #:cl )
-  (:export make-codex-section-functions
-	   make-class-graph
-	   use-mnas-package
-	   view-call-graph
+  (:nicknames "MPKG")
+  (:export function-name)
+  (:export make-codex-documentation
+           make-codex-section-functions)
+  (:export make-symbol-graph
+           make-class-graph
+           make-call-graph
+           make-system-graph)
+  (:export view-call-graph
 	   view-system-graph
-	   package-classes
-	   doc-template
-	   unuse-mnas-package
-	   functions
-	   view-class-graph
-	   make-symbol-graph
-	   make-codex-documentation
+           view-class-graph
+           view-symbol-graph)
+  (:export doc-template)
+  (:export functions
+           generic-functions
 	   symbols
-	   view-symbol-graph
-	   make-call-graph
-	   generic-functions
-	   make-system-graph))
+           package-classes)
+  (:export use-mnas-package
+           unuse-mnas-package))
 
 ;;;; (declaim (optimize (compilation-speed 0) (debug 3) (safety 0) (space 0) (speed 0)))
