@@ -1,18 +1,11 @@
-* Ссылки
-1) Операции git  [[file:~/org/sbcl/Git-memo.org][Git-memo.org]]
-2) [[file:~/org/sbcl/codex.org][Генерирование документации при помощи Codex]]
-3) http://commondoc.github.io/codex/docs/tutorial.html
-4) [[/home/namatv/.slynkrc]]
-5) Тестирование при помощи FiveAm
-   - [[https://common-lisp.net/project/fiveam/][FiveAm]]
-   - [[http://turtleware.eu/posts/Tutorial-Working-with-FiveAM.html][Tutorial]]
-   - [[https://www.darkchestnut.com/2018/how-to-write-5am-test-fixtures/][Fixtures]]
- 
+* Ссылки [[~/org/sbcl/sbcl-referencies.org][Ссылки]]
 * Генерирование документации
 #+name: codex
 #+BEGIN_SRC lisp
   (codex:document :mnas-package)
 #+END_SRC
+
+#+RESULTS: codex
 
 #+name: graphs
 #+BEGIN_SRC lisp :var codex=codex
@@ -20,7 +13,7 @@
     :for i :in
     '(:mnas-package
       )
-    :do (mnas-package:make-codex-documentation i i))
+    :do (mnas-package:make-codex-graphs i i))
 #+END_SRC
 
 * Публикация

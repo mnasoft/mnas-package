@@ -111,7 +111,20 @@
 (export 'symbols )
 
 (defun symbols (package-name &key (external t) (internal nil) (inherited nil))
-  "@b(Описание:) функция @b(symbols) возвращает список функций пакета @b(package-name).
+  "@b(Описание:) функция @b(symbols) возвращает список символов пакета @b(package-name).
+
+ @b(Переменые:)
+@begin(list)
+@item(package-name - пакет;) 
+@item(external - если равно @b(t) функция возвращает экспортируемые символы пакета;)
+@item(internal - если равно @b(t) функция возвращает внутренние символы пакета;)
+@item(internal - если равно @b(t) импортированные символы пакета.)
+@end(list)
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (symbols :mnas-package :inherited t)
+@end(code)
 "
   (package-filter-symbols
    (package-symbols-by-category
@@ -119,6 +132,10 @@
     :external external
     :internal internal
     :inherited inherited)))
+
+#|
+(symbols :mnas-package :inherited t)
+|#
 
 (export 'functions )
 
@@ -136,13 +153,8 @@
  @b(Пример использования:)
 @begin[lang=lisp](code)
  (functions :mnas-package)
-  => (#<FUNCTION MAKE-CLASS-GRAPH> #<FUNCTION GENERIC-FUNCTIONS>
-      #<FUNCTION PACKAGE-CLASSES> #<FUNCTION SYMBOLS> #<FUNCTION VIEW-CALL-GRAPH>
-      #<FUNCTION MAKE-CODEX-SECTION-FUNCTIONS> #<FUNCTION DOC-TEMPLATE>
-      #<FUNCTION USE-MNAS-PACKAGE> #<FUNCTION VIEW-SYSTEM-GRAPH>
-      #<FUNCTION UNUSE-MNAS-PACKAGE> #<FUNCTION VIEW-CLASS-GRAPH>
-      #<FUNCTION MAKE-SYMBOL-GRAPH> #<FUNCTION MAKE-CALL-GRAPH>
-      #<FUNCTION VIEW-SYMBOL-GRAPH> #<FUNCTION MAKE-CODEX-DOCUMENTATION>
+  => (#<FUNCTION MAKE-CLASS-GRAPH> #<FUNCTION GENERIC-FUNCTIONS> 
+      ...
       #<FUNCTION FUNCTIONS> #<FUNCTION MAKE-SYSTEM-GRAPH>)
 @end(code)
 "
@@ -193,6 +205,11 @@
 	     funcs))
     (format stream ")~%@end(section)")))
 
+#|
+(setf *print-case* :upcase)
+(make-codex-section-functions :mnas-package)
+|#
+
 (export 'generic-functions )
 
 (defun generic-functions (package-name &key (external t) (internal nil) (inherited nil) )
@@ -209,7 +226,49 @@
 	   :inherited inherited)))
     rez))
 
-;;;;(generic-functions :math/stat :external t :internal t  :inherited t)
+#|
+(setf *print-case* :downcase)
+(setf *print-case* :upcase)
+(generic-functions :mnas-package :external t :internal t  :inherited nil)
+|#
+
+(export '(make-codex-section-generic-functions))
+
+(defun make-codex-section-generic-functions (package-name &key (stream t) (external t) (internal nil) (inherited nil) (sort t) &aux (package (find-package package-name)))
+  (declare ((or package string symbol) package-name))
+  (let ((g-funcs (generic-functions package :external external :internal internal :inherited inherited)))
+        (format stream "@begin(section)~% @title(Обобщенные функции)~% @cl:with-package[name=~S]("
+	    (string-downcase (package-name package)))
+    (map nil
+	 #'(lambda (el)
+	     (format stream "~%  @cl:doc(generic ~A)" el))
+	 (if sort
+	     (sort g-funcs #'string< :key #'(lambda (elem) (string-downcase (slynk-backend:function-name elem))))
+	     g-funcs))
+    (format stream ")~%@end(section)")))
+#|
+    (break ":")
+    (format stream "@begin(section)~% @title(Обобщенные функции)~% @cl:with-package[name=~S]("
+	    (string-downcase (package-name package)))
+    (map nil
+	 #'(lambda (el)
+	     (format stream "~%  @cl:doc(generic ~A)"
+		     (string-downcase (function-name el))))
+	 (if sort
+	     (sort g-funcs #'string< :key #'(lambda (elem) (string-downcase (slynk-backend:function-name elem))))
+	     g-funcs))
+    (format stream ")~%@end(section)")
+;;;;
+(defparameter *gf* (first (make-codex-section-generic-functions :mnas-package :internal t)))
+
+(make-codex-section-generic-functions :mnas-package :internal t :sort nil)
+
+(setf *print-case* :downcase)
+(setf *print-case* :upcase)
+(package-name :mnas-package)
+|#
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun func-to-string (func)

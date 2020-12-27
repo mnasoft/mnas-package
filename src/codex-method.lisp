@@ -3,6 +3,7 @@
 (in-package :mnas-package)
 
 (setf *print-case* :downcase)
+(setf *print-case* :upcase)
 
 (defun find-all-generics (class prefix)
   "@b(Описание:) функция @b(find-all-generics) возвращает список
@@ -152,6 +153,18 @@
     (block method-end
       (format stream ")"))))
 
+
+#|
+
+(defparameter *m* (first (find-all-methods (find-class 'mtf::<t-fild>) "PLOT")))
+(mopp:class-name (print (first (last (mopp:method-specializers *m*)))))
+(print (first (last (mopp:method-specializers *m*))))
+(mopp:method-lambda-list *m*)
+(make-doc-for-standard-method                        
+ )
+
+|#
+
 (defun make-doc-method (m &key (stream t) (min-doc-length 80))
   (let ((m-type (type-of m)))
     (case m-type
@@ -160,6 +173,8 @@
          (make-doc-for-standard-method m :stream stream)))
       (otherwise "uncnoun"))))
 
+(export '(make-doc-methods))
+
 (defun make-doc-methods (package class prefix &key (stream t) (min-doc-length 80))
   "@b(Описание:) функция @b(make-doc-methods) выводит в поток
 @b(stream) раздел документации, подготовленной для вставки в 
@@ -167,18 +182,23 @@ scr-файл системы документирования codex. Этот р�
 методы класса @b(class), имена которых начинаются 
 с префикса @b(prefix).
 "
+  (setf *print-case* :downcase)
   (format stream " @cl:with-package[name=~S](~%"
-          (string-downcase (package-name :temperature-fild/plot)))
+          (string-downcase (package-name package)))
   (setf *package* package)
   (block make-doc-for-methods
-      (map 'nil
-       #'(lambda (el)
-           (make-doc-method el :stream stream :min-doc-length min-doc-length))
-       (find-all-methods class prefix)))
-    (format stream " ~%)"))
+    (map 'nil
+         #'(lambda (el)
+             (make-doc-method el :stream stream :min-doc-length min-doc-length))
+         (find-all-methods class prefix)))
+  (format stream " ~%)")
+  (setf *print-case* :upcase))
 
 ;;;;;;;;;;
 
 #|
+(ql:quickload :font-discovery)
+(require :temperature-fild)
+(make-doc-methods (find-package :mtf/plot) (find-class 'mtf::<t-fild>) "PLOT")
 (make-doc-methods (find-package :mtf/splot) (find-class 'mtf::<t-fild>) "SPLOT")
 |#

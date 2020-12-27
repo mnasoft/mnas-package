@@ -13,6 +13,15 @@
 @end(list)
 @end(section)
 
+@begin(section)
+@title(API)
+Прочие функции
+
+ @cl:with-package[name="mnas-package"](
+ @cl:doc(function mnas-package:doc-template)
+ @cl:doc(function package-classes))
+@end(section)
+
 @begin(section) @title(make-graph)
 Функции создания графов
  @cl:with-package[name="mnas-package"](
@@ -36,32 +45,5 @@
  @cl:with-package[name="mnas-package"](
   @cl:doc(function unuse-mnas-package)
   @cl:doc(function use-mnas-package))
-@end(section)
-
-@begin(section)
-@title(API)
-Прочие функции
-
- @cl:with-package[name="mnas-package"](
-  @cl:doc(function make-codex-graphs)
-  @cl:doc(function make-codex-section-functions)
-  @cl:doc(function make-doc-methods)
-  @cl:doc(function doc-template)
-  @cl:doc(function function-name)
-  @cl:doc(function symbols)
-  @cl:doc(function functions)
-  @cl:doc(function generic-functions)
-  @cl:doc(function package-classes)
-  )
-@end(section)
-
-@begin(section)
- @title(Обобщенные функции)
- @cl:with-package[name="mnas-package"](
-  @cl:doc(generic DEPENDENCIES-OF)
-  @cl:doc(generic DEPENDENCY-TREE)
-  @cl:doc(generic ->KEY)
-  @cl:doc(generic SMBL-SEPARATOR)
-  @cl:doc(generic SMBL-PACKAGE))
 @end(section)
 

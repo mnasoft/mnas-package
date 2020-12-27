@@ -34,9 +34,19 @@
 ;;;; 		   (string-downcase (package-name (find-package package-designator)))		   
 		   "/html")))
 
-(export 'make-codex-documentation )
+(export 'make-codex-graphs)
 
-(defun make-codex-documentation (system-designator package-designator)
+(defun make-codex-graphs (system-designator package-designator)
+"  @b(Описание:) функция @b(make-codex-graphs) создает в каталоге
+./docs/build/mnas-package/html gv-файлы и png-файлы, содержащие графы,
+отображающие завмсимости
+@begin(list)
+ @item(классов;)
+ @item(систем;)
+ @item(символов;)
+ @item(вызовов.)
+@end(list)
+"
   (let* ((pkg  package-designator)
 	 (sys  system-designator)
 	 (fpath (codex-documentation-html sys))
@@ -61,3 +71,6 @@
    @item(class-graph  @image[src=./class-graph-~A.gv.png]())
   @end(list)
  @end(section)" pkg-name pkg-name pkg-name pkg-name pkg-name))))
+#|
+(make-codex-graphs :mnas-package :mnas-package)
+|#
