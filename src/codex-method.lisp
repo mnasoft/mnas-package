@@ -2,9 +2,6 @@
 
 (in-package :mnas-package)
 
-(setf *print-case* :downcase)
-(setf *print-case* :upcase)
-
 (defun find-all-generics (class prefix)
   "@b(Описание:) функция @b(find-all-generics) возвращает список
 обобщенных функций, связанных с классом @b(class), начинающихся с 
@@ -55,10 +52,6 @@
   (let ((rez (mnas-string:split ":" (format nil "~S" symbol) :omit-nulls nil)))
     (when (= 3 (length rez)) (setf (second rez) "::"))
     rez))
-
-
-(package-name (symbol-package (function-name (first (mpkg:functions :mpkg)))))
-(symbol-name (function-name (first (mpkg:functions :mpkg))))
 
 (defun smbl-name (symbol)
   (let ((lst (smbl-split symbol)))
@@ -111,59 +104,29 @@
 (defun smbl-name-downcase (symbol)
   (string-downcase (smbl-name symbol)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defun make-doc-for-standard-method (m &key (stream t))
-#|
-1) Попробовать переписать без использования функций:
- smbl-split 
- smbl-name 
- smbl-separator
- smbl-package.
-2) Проверить необходимость генерации имен для вставки в codex именно в нижнем регистре:
- - если нижний регистр не является необходимым не использовать string-downcase
-|#
-
-  (let ((mll (mopp:method-lambda-list m))
-        (msp (mopp:method-specializers m)))
-    (block method-name
-      (format stream "~&  @cl:doc(method")
-      (format stream " ~a" (smbl-name-downcase
-                            (mopp:generic-function-name
-                             (mopp:method-generic-function m)))))
-    (block method-required-args
-      (map 'nil
-           #'(lambda (name class)
-               (cond
-                 ((eq class t)
-                  (format stream " ~a" (smbl-name-downcase name)))
-                 ((not (eq class t))
-                  (format stream " (~a ~a~a~a)"
-                          (smbl-name-downcase name)
-                          (smbl-package class)
-                          (smbl-separator class)
-                          (smbl-name class)))))
-           mll
-           (mapcar #'class-name msp)))
-    (block method-rest-args
-      (map 'nil
-           #'(lambda (el)
-               (format stream "~a" (string-downcase (format nil " ~s" el))))
-           (nthcdr (length msp) mll)))
-    (block method-end
-      (format stream ")"))))
-
-
-#|
-
-(defparameter *m* (first (find-all-methods (find-class 'mtf::<t-fild>) "PLOT")))
-(mopp:class-name (print (first (last (mopp:method-specializers *m*)))))
-(print (first (last (mopp:method-specializers *m*))))
-(mopp:method-lambda-list *m*)
-(make-doc-for-standard-method                        
- )
-
-|#
+  (block method-name
+    (let ((gfn (mopp:generic-function-name (mopp:method-generic-function m))))
+      (when (eq (symbol-package gfn) *package*)
+        (format stream "~&  @cl:doc(method")
+        (format stream " ~s" gfn)
+        (let ((mll (mopp:method-lambda-list m))
+              (msp (mopp:method-specializers m)))
+          (block method-required-args
+            (map 'nil
+                 #'(lambda (name class)
+                     (cond
+                       ((eq class (find-class t))
+                        (format stream " ~s" name))
+                       ((not (eq class (find-class t)))
+                        (format stream " (~s ~s)" name (class-name class)))))
+                 mll msp))
+          (block method-rest-args
+            (map 'nil
+                 #'(lambda (el) (format stream "~a" (format nil " ~s" el)))
+                 (nthcdr (length msp) mll)))
+          (block method-end
+            (format stream ")")))))))
 
 (defun make-doc-method (m &key (stream t) (min-doc-length 80))
   (let ((m-type (type-of m)))
@@ -182,23 +145,65 @@ scr-файл системы документирования codex. Этот р�
 методы класса @b(class), имена которых начинаются 
 с префикса @b(prefix).
 "
-  (setf *print-case* :downcase)
-  (format stream " @cl:with-package[name=~S](~%"
-          (string-downcase (package-name package)))
-  (setf *package* package)
-  (block make-doc-for-methods
-    (map 'nil
-         #'(lambda (el)
-             (make-doc-method el :stream stream :min-doc-length min-doc-length))
-         (find-all-methods class prefix)))
-  (format stream " ~%)")
-  (setf *print-case* :upcase))
+  (let ((print-case *print-case*)
+        (pkg-old    *package*))
+    (setf *print-case* :downcase
+          *package* package)
+    (format stream " @cl:with-package[name=~S](~%"
+            (string-downcase (package-name package)))
+    (block make-doc-for-methods
+      (map 'nil
+           #'(lambda (el)
+               (make-doc-method el :stream stream :min-doc-length min-doc-length))
+           (find-all-methods class prefix)))
+    (format stream ")~%")
+    (setf *print-case* print-case
+          *package* pkg-old)))
 
 ;;;;;;;;;;
 
 #|
-(ql:quickload :font-discovery)
 (require :temperature-fild)
-(make-doc-methods (find-package :mtf/plot) (find-class 'mtf::<t-fild>) "PLOT")
-(make-doc-methods (find-package :mtf/splot) (find-class 'mtf::<t-fild>) "SPLOT")
+(with-open-file (os "~/123.scr" :direction :output :if-exists :supersede)
+  (make-doc-methods (find-package :mtf/plot)  (find-class 'mtf::<t-fild>) "PLOT" :stream os)
+  (make-doc-methods (find-package :mtf/splot) (find-class 'mtf::<t-fild>) "SPLOT" :stream os))
+|#
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun make-doc-generic (g  &key (stream t)  (min-doc-length 80))
+   (let ((gfn (mopp:generic-function-name g)))
+     (when (and (eq (symbol-package gfn) *package*)
+                (< min-doc-length (length (documentation g t))))
+        (format stream "~&  @cl:doc(generic")
+        (format stream " ~s)" gfn))))
+
+(export '(make-doc-generics))
+
+(defun make-doc-generics (package class prefix &key (stream t) (min-doc-length 80))
+  "@b(Описание:) функция @b(make-doc-methods) выводит в поток
+@b(stream) раздел документации, подготовленной для вставки в 
+scr-файл системы документирования codex. Этот раздел содержит 
+методы класса @b(class), имена которых начинаются 
+с префикса @b(prefix).
+"
+  (let ((print-case *print-case*)
+        (pkg-old    *package*))
+    (setf *print-case* :downcase
+          *package* package)
+    (format stream " @cl:with-package[name=~S](~%"
+            (string-downcase (package-name package)))
+    (block make-doc-for-generics
+      (map 'nil
+           #'(lambda (el)
+               (make-doc-generic el :stream stream :min-doc-length min-doc-length))
+           (find-all-generics class prefix)))
+    (format stream ")~%")
+    (setf *print-case* print-case
+          *package* pkg-old)))
+
+#|
+(require :temperature-fild)
+(with-open-file (os "~/123.scr" :direction :output :if-exists :supersede)
+  (make-doc-generics (find-package 'mtf) (find-class 'mtf/t-fild::<t-fild>) "" :stream os :min-doc-length 50))
 |#
