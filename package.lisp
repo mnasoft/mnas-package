@@ -3,7 +3,9 @@
 (defpackage #:mnas-package
   (:use #:cl )
   (:nicknames "MPKG")
-  (:export function-name)
+  (:export function-name
+           generic-name
+           method-name)
   (:export make-codex-documentation)
   (:export make-codex-section-variables
            make-codex-section-functions

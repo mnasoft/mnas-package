@@ -37,6 +37,64 @@
   (generic-name 
    (mopp:method-generic-function method)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;
+(defmethod name ((function function))
+  "@b(Описание:) метод @b(name) возвращает символ,
+представляющий имя функции.
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (name (second (package-functions :mnas-package)))
+@end(code)"
+  (function-name function))
+
+(defmethod name ((generic standard-generic-function))
+    "@b(Описание:) метод @b(name) возвращает символ,
+представляющий имя обобщенной функции.
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (require :dxf)
+ (name (first (package-generics :dxf)))
+@end(code)
+"
+  (generic-name generic))
+
+(defmethod name ((method method))
+      "@b(Описание:) метод @b(name) возвращает символ,
+представляющий имя метода.
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (require :dxf)
+ (name (second (mopp:generic-function-methods (first (package-generics :dxf)))))
+@end(code)"
+  (method-name method))
+
+(defmethod name ((class class))
+  "@b(Описание:) метод @b(name) возвращает символ,
+представляющий имя класса.
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+  (name (first (package-classes :dxf :internal t)))
+@end(code)"
+  (class-name class))
+
+(defmethod name ((package package))
+  "@b(Описание:) метод @b(name) возвращает символ,
+представляющий имя класса.
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+  (name (find-package :dxf))
+@end(code)"
+  (package-name))
+
+;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun package-symbols-all (package-name &aux (lst nil) (package (find-package package-name)))
 "@b(Описание:) package-symbols-all Выполнят поиск всех символов, 
 определенных пакетом @b(package-name).
