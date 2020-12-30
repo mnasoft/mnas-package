@@ -14,16 +14,39 @@
 "
   (nth-value 2 (function-lambda-expression function)))
 
-(defun package-symbols (package-name &aux (lst nil) (package (find-package package-name)))
-"@b(Описание:) package-symbols Выполнят поиск всех символов, 
+(defun generic-name (generic)
+  "@b(Описание:) функция @b(generic-name) возвращает символ,
+представляющий имя обобщенной функции.
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (generic-name (first (package-generics :dxf)))
+@end(code)
+"
+  (mopp:generic-function-name generic))
+
+(defun method-name (method)
+    "@b(Описание:) функция @b(generic-name) возвращает символ,
+представляющий имя метода.
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (method-name (first (mopp:generic-function-methods (first (package-generics :dxf)))))
+@end(code)
+"
+  (generic-name 
+   (mopp:method-generic-function method)))
+
+(defun package-symbols-all (package-name &aux (lst nil) (package (find-package package-name)))
+"@b(Описание:) package-symbols-all Выполнят поиск всех символов, 
 определенных пакетом @b(package-name).
 
  @b(Пример использования:)
  @begin[lang=lisp](code)
- (package-symbols 'mnas-package)
- (package-symbols :mnas-package)
- (package-symbols (find-package :mnas-package))
- (package-symbols \"MNAS-PACKAGE\")
+ (package-symbols-all 'mnas-package)
+ (package-symbols-all :mnas-package)
+ (package-symbols-all (find-package :mnas-package))
+ (package-symbols-all \"MNAS-PACKAGE\")
 @end(code)
 "
   (declare ((or package string symbol) package-name))
@@ -69,7 +92,7 @@
 	      (:internal  (push smbl internal-lst))
 	      (:external  (push smbl external-lst))
 	      (:inherited (push smbl inherited-lst)))))
-      (package-symbols package))
+      (package-symbols-all package))
      (when external  (setf rez (union rez external-lst)))
      (when internal  (setf rez (union rez internal-lst)))
      (when inherited (setf rez (union rez inherited-lst)))
@@ -108,10 +131,10 @@
      symbols)
     rez))
 
-(export 'symbols )
+(export 'package-variables )
 
-(defun symbols (package-name &key (external t) (internal nil) (inherited nil))
-  "@b(Описание:) функция @b(symbols) возвращает список символов пакета @b(package-name).
+(defun package-variables (package-name &key (external t) (internal nil) (inherited nil))
+  "@b(Описание:) функция @b(package-variables) возвращает список символов пакета @b(package-name).
 
  @b(Переменые:)
 @begin(list)
@@ -123,7 +146,7 @@
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
- (symbols :mnas-package :inherited t)
+ (package-variables :mnas-package :inherited t)
 @end(code)
 "
   (package-filter-symbols
@@ -134,25 +157,25 @@
     :inherited inherited)))
 
 #|
-(symbols :mnas-package :inherited t)
+(package-variables :mnas-package :inherited t)
 |#
 
-(export 'functions )
+(export 'package-functions )
 
-(defun functions (package-name &key (external t) (internal nil) (inherited nil) )
-  "@b(Описание:) функция @b(functions) возвращает список функций пакета.
+(defun package-functions (package-name &key (external t) (internal nil) (inherited nil) )
+  "@b(Описание:) функция @b(package-functions) возвращает список функций пакета @b(package-name).
 
  @b(Переменые:)
 @begin(list)
 @item(package-name - пакет;) 
 @item(external - если равно @b(t) функция возвращает экспортируемые фукции пакета;)
 @item(internal - если равно @b(t) функция возвращает внутренние фукции пакета;)
-@item(internal - если равно @b(t) импортированные функции пакетаж;)
+@item(internal - если равно @b(t) импортированные функции пакета.)
 @end(list)
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
- (functions :mnas-package)
+ (package-functions :mnas-package)
   => (#<FUNCTION MAKE-CLASS-GRAPH> #<FUNCTION GENERIC-FUNCTIONS> 
       ...
       #<FUNCTION FUNCTIONS> #<FUNCTION MAKE-SYSTEM-GRAPH>)
@@ -173,8 +196,15 @@
 
 (export 'make-codex-section-functions)
 
-(defun make-codex-section-functions (package-name &key (stream t) (external t) (internal nil) (inherited nil) (sort t) &aux (package (find-package package-name)))
-"@b(Описание:) функция make-codex-section-functions выводит в поток stream
+(defun make-codex-section-functions (package-name
+                                     &key
+                                       (stream t)
+                                       (external t)
+                                       (internal nil)
+                                       (inherited nil)
+                                       (sort t)
+                                     &aux (package (find-package package-name)))
+  "@b(Описание:) функция make-codex-section-functions выводит в поток stream
 секцию с документацией в формате codex, содержащую функции из пакета package-name.
 
  @b(Переменые:)
@@ -193,31 +223,54 @@
 @end(code)
 "  
   (declare ((or package string symbol) package-name))
-  (let ((funcs (functions package :external external :internal internal :inherited inherited)))
-    (format stream "@begin(section)~% @title(Функции)~% @cl:with-package[name=~S]("
-	    (string-downcase (package-name (find-package package-name))))
-    (map nil
-	 #'(lambda (el)
-	     (format stream "~%  @cl:doc(function ~A)"
-		     (string-downcase (slynk-backend:function-name el))))
-	 (if sort
-	     (sort funcs #'string< :key #'(lambda (elem) (string-downcase (slynk-backend:function-name elem))))
-	     funcs))
-    (format stream ")~%@end(section)")))
+  (let ((pkg-old *package*)
+        (print-case *print-case*))
+    (setf *package* package *print-case* :downcase)
+    (let ((funcs (package-functions package :external external :internal internal :inherited inherited)))
+      (format stream "@begin(section)~% @title(Функции)~% @cl:with-package[name=~S]("
+	      (string-downcase (package-name (find-package package-name))))
+      (map nil
+	   #'(lambda (el)
+	       (format stream "~%  @cl:doc(function ~s)"
+		       (string-downcase (function-name el))))
+	   (if sort
+	       (sort funcs #'string< :key #'(lambda (elem) (string-downcase (slynk-backend:function-name elem))))
+	       funcs))
+      (format stream ")~%@end(section)~%"))
+    (setf *package* pkg-old *print-case* print-case)))
 
 #|
 (setf *print-case* :upcase)
 (make-codex-section-functions :mnas-package)
 |#
 
-(export 'generic-functions )
+(export 'package-generics )
 
-(defun generic-functions (package-name &key (external t) (internal nil) (inherited nil) )
+(defun package-generics (package-name &key (external t) (internal nil) (inherited nil))
+  "@b(Описание:) функция @b(package-generics) возвращает список обобщенных функций
+пакета @b(package-name).
+
+ @b(Переменые:)
+@begin(list)
+@item(package-name - пакет;) 
+@item(external - если равно @b(t) функция возвращает экспортируемые фукции пакета;)
+@item(internal - если равно @b(t) функция возвращает внутренние фукции пакета;)
+@item(internal - если равно @b(t) импортированные функции пакета.)
+@end(list)
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+  (package-generics :mnas-package :internal t)
+   => (#<STANDARD-GENERIC-FUNCTION MNAS-PACKAGE::->KEY (2)>
+       ...
+       #<STANDARD-GENERIC-FUNCTION MNAS-PACKAGE::DEPENDENCIES-OF (1)>)
+@end(code)
+"
   (let ((rez nil))
     (map nil
 	 #'(lambda (el)
 	     (when (equal 'standard-generic-function (type-of (symbol-function el)))
-	       (push el rez)))
+	       (push (ensure-generic-function el) rez)))
 	 (package-filter-functions
 	  (package-symbols-by-category
 	   package-name
@@ -226,46 +279,59 @@
 	   :inherited inherited)))
     rez))
 
-#|
-(setf *print-case* :downcase)
-(setf *print-case* :upcase)
-(generic-functions :mnas-package :external t :internal t  :inherited nil)
-|#
+(export '(make-codex-section-generics))
 
-(export '(make-codex-section-generic-functions))
+(defun make-codex-section-generics (package-name
+                                             &key
+                                               (stream t)
+                                               (external t)
+                                               (internal nil)
+                                               (inherited nil)
+                                               (sort t)
+                                               (min-doc-length 80)
+                                             &aux (package (find-package package-name)))
+  "@b(Описание:) функция @b(make-codex-section-generics) выводит в поток stream
+секцию с документацией в формате codex, содержащую обобщенные функции из пакета @b(package-name).
 
-(defun make-codex-section-generic-functions (package-name &key (stream t) (external t) (internal nil) (inherited nil) (sort t) &aux (package (find-package package-name)))
+ @b(Переменые:)
+@begin(list)
+@item(package-name   - пакет с функциями для вывода в поток;)
+@item(stream         - поток, в который выводятся даннные о функциях;)
+@item(external       - если не nil - в поток выводятся информация о эксполртируемых функциях;)
+@item(internal       - если не nil - в поток выводятся информация о внутренних функциях;)
+@item(inherited      - если не nil - в поток выводятся информация о заимствованных функциях;)
+@item(sort           - если не nil - функции сортируются в алфавитном порядке;)
+@item(min-doc-length - минимальная длина, при которой вывод документации выполняется.)
+@end(list)
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (make-codex-section-generics :math/core :sort t) 
+@end(code)
+"  
   (declare ((or package string symbol) package-name))
-  (let ((g-funcs (generic-functions package :external external :internal internal :inherited inherited)))
-        (format stream "@begin(section)~% @title(Обобщенные функции)~% @cl:with-package[name=~S]("
-	    (string-downcase (package-name package)))
-    (map nil
-	 #'(lambda (el)
-	     (format stream "~%  @cl:doc(generic ~A)" el))
-	 (if sort
-	     (sort g-funcs #'string< :key #'(lambda (elem) (string-downcase (slynk-backend:function-name elem))))
-	     g-funcs))
-    (format stream ")~%@end(section)")))
+  (let ((pkg-old *package*)
+        (print-case *print-case*))
+        (setf *package* package *print-case* :downcase)
+    (let ((g-funcs (package-generics package :external external :internal internal :inherited inherited)))
+      (format stream "@begin(section)~% @title(Обобщенные функции)~% @cl:with-package[name=~S]("
+              (string-downcase (package-name package)))
+      (map nil
+	   #'(lambda (el)
+               (make-doc-generic el :stream stream :min-doc-length min-doc-length))
+	   (if sort
+	       (sort g-funcs #'string<
+                     :key #'(lambda (elem)
+                              (string-downcase (mopp:generic-function-name elem))))
+	       g-funcs))
+      (format stream ")~%@end(section)~%"))
+    (setf *package* pkg-old *print-case* print-case)))
+
 #|
-    (break ":")
-    (format stream "@begin(section)~% @title(Обобщенные функции)~% @cl:with-package[name=~S]("
-	    (string-downcase (package-name package)))
-    (map nil
-	 #'(lambda (el)
-	     (format stream "~%  @cl:doc(generic ~A)"
-		     (string-downcase (function-name el))))
-	 (if sort
-	     (sort g-funcs #'string< :key #'(lambda (elem) (string-downcase (slynk-backend:function-name elem))))
-	     g-funcs))
-    (format stream ")~%@end(section)")
-;;;;
-(defparameter *gf* (first (make-codex-section-generic-functions :mnas-package :internal t)))
+;;;;; Примет использования
+(require :math)
+(make-codex-section-generics :math/core :sort t) 
 
-(make-codex-section-generic-functions :mnas-package :internal t :sort nil)
-
-(setf *print-case* :downcase)
-(setf *print-case* :upcase)
-(package-name :mnas-package)
 |#
 
 
@@ -331,7 +397,8 @@
       :nodes (mapcar #'(lambda (el) (func-to-string el)) pkg-functions)))
     (t (error "~S does not designate a package" package-name))))
 
-(export 'view-call-graph )
+(export 'view-call-graph)
+
 (defun view-call-graph (package-name
 			   &key
 			     (fpath mnas-graph:*output-path*)
@@ -340,9 +407,8 @@
 			     (out-type "pdf")
 			     (dpi "300")
 			     (viewer mnas-graph:*viewer-path*)
-			     (system-name package-name)
-			     )
-"@b(Описание:) view-call-graph выполняет визуализацию графа вызовов 
+			     (system-name package-name))
+" @b(Описание:) функция @b(view-call-graph) выполняет визуализацию графа вызовов 
 пакета @b(package-name).
 
  @b(Пример использования:)
@@ -363,19 +429,23 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export 'package-classes )
+(export 'package-classes)
+
 (defun package-classes (package-name
+                        &key
+                          (external t)
+                          (internal nil)
+                          (inherited nil)
 			&aux
 			  (rez nil)
 			  (class nil)
 			  (package (find-package package-name)))
-"@b(Описание:) package-classes возвращает список классов пакета.
+  "@b(Описание:) package-classes возвращает список классов пакета.
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
- (mnas-package::package-classes :mnas-package)
- (mnas-package::package-classes (find-package \"MNAS-PACKAGE\"))
- (mnas-package::package-classes (find-package :mnas-package))
+ (package-classes :mtf/t-fild)
+ (package-classes :mtf/sector)
 @end(code)
 "
   (declare ((or package string symbol) package-name))
@@ -383,21 +453,30 @@
    #'(lambda (el)
        (setf class (find-class el nil))
        (when class (push class rez)))
-   (package-symbols-by-category package))
+   (package-symbols-by-category
+    package
+    :external  external 
+    :internal  internal
+    :inherited inherited))
   rez)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (export 'make-class-graph )
+
 (defun make-class-graph (package-name
+                         &key
+                           (external t)
+                           (internal nil)
+                           (inherited nil)
 			 &aux
 			   (package (find-package package-name))
 			   (graph (make-instance 'mnas-graph:<graph>)))
-"@b(Описание:) make-class-graph создает граф наследования классов.
+  "@b(Описание:) make-class-graph создает граф наследования классов.
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
- (make-class-graph :mnas-package)
+ (make-class-graph :mnas-package )
 @end(code)
 "
   (declare ((or package string symbol) package-name))
@@ -418,7 +497,11 @@
 	  (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name el)))
 	  graph)
 	 (find-subclasses el))
-     (package-classes package)))
+     (package-classes
+      package
+      :external  external 
+      :internal  internal
+      :inherited inherited)))
   graph)
 
 (export 'view-class-graph )
@@ -669,7 +752,8 @@
       (rec system))
     (ordered-dep-tree (alexandria:hash-table-alist res))))
 
-(export 'make-system-graph )
+(export 'make-system-graph)
+
 (defun make-system-graph (system)
 "@b(Описание:) make-system-graph возвращает граф систем, от которых зависит
 система @b(system).

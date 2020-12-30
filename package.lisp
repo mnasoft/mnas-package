@@ -4,10 +4,12 @@
   (:use #:cl )
   (:nicknames "MPKG")
   (:export function-name)
-  (:export make-codex-documentation
+  (:export make-codex-documentation)
+  (:export make-codex-section-variables
            make-codex-section-functions
-           make-codex-section-generic-functions
-           )
+           make-codex-section-generics
+           make-codex-section-methods
+           make-codex-section-classes)
   (:export make-codex-graphs
            make-symbol-graph
            make-class-graph
@@ -18,9 +20,9 @@
            view-class-graph
            view-symbol-graph)
   (:export doc-template)
-  (:export functions
-           generic-functions
-	   symbols
+  (:export package-functions
+           package-generics
+	   package-variables
            package-classes)
   (:export use-mnas-package
            unuse-mnas-package)

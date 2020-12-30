@@ -99,7 +99,7 @@
 
 (defmethod smbl-package ((function function))
   (if (eq :external (nth-value 1 (find-symbol (symbol-name '*mmm*)))) ""
-  (package-name (symbol-package symbol))))
+  (package-name (symbol-package (function-name function)))))
 
 (defun smbl-name-downcase (symbol)
   (string-downcase (smbl-name symbol)))

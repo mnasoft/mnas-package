@@ -1,4 +1,3 @@
-
 * Ссылки [[~/org/sbcl/sbcl-referencies.org][Ссылки]]
 * Генерирование документации
 #+name: codex
