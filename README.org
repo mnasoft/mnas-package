@@ -12,9 +12,17 @@
 #+EXCLUDE_TAGS: noexport
 #+CREATOR: Emacs 26.3 (Org mode 9.1.9)
 
-*  mnas-package
+* Description
 
-This is a project to do ... something.
+The *mnas-package* system is designed to extract information from asdf systems.
+
+The extracted information is presented in the form of graphs.
+
+The system allows you to build the following graphs:
+- system dependencies;
+- function calls;
+- variable using;
+- class inheritance.
 
 * License
 
