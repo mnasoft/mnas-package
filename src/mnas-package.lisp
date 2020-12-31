@@ -38,61 +38,171 @@
    (mopp:method-generic-function method)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;
-(defmethod name ((function function))
-  "@b(Описание:) метод @b(name) возвращает символ,
+(export '(obj-name))
+
+(defgeneric obj-name (obj)
+  (:documentation "@b(Описание:) обобщенная функция @b(obj-name)
+возвращает символ, представляющий имя объекта obj."))
+
+(export '(obj-name-string))
+
+(defgeneric obj-name-string (obj)
+  (:documentation "@b(Описание:) обобщенная функция @b(obj-name-string)
+возвращает символ, представляющий имя объекта obj."))
+
+(export '(obj-package))
+
+(defgeneric obj-package (obj)
+  (:documentation "@b(Описание:) обобщенная функция @b(obj-package)
+возвращает пакет, в котором определен объект obj."))
+
+(export '(obj-package-string))
+
+(defgeneric obj-package-string (obj)
+  (:documentation "@b(Описание:) обобщенная функция @b(obj-package-string)
+возвращает строку, представляющую имя пакета, в котором определен объект @b(obj)."))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod obj-name ((function function))
+  "@b(Описание:) метод @b(obj-name) возвращает символ,
 представляющий имя функции.
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
- (name (second (package-functions :mnas-package)))
+ (obj-name (second (package-functions :mnas-package)))
 @end(code)"
   (function-name function))
 
-(defmethod name ((generic standard-generic-function))
-    "@b(Описание:) метод @b(name) возвращает символ,
+(defmethod obj-name ((generic standard-generic-function))
+    "@b(Описание:) метод @b(obj-name) возвращает символ,
 представляющий имя обобщенной функции.
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
  (require :dxf)
- (name (first (package-generics :dxf)))
+ (obj-name (first (package-generics :dxf)))
 @end(code)
 "
   (generic-name generic))
 
-(defmethod name ((method method))
-      "@b(Описание:) метод @b(name) возвращает символ,
+(defmethod obj-name ((method method))
+      "@b(Описание:) метод @b(obj-name) возвращает символ,
 представляющий имя метода.
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
  (require :dxf)
- (name (second (mopp:generic-function-methods (first (package-generics :dxf)))))
+ (obj-name (second (mopp:generic-function-methods (first (package-generics :dxf)))))
 @end(code)"
   (method-name method))
 
-(defmethod name ((class class))
-  "@b(Описание:) метод @b(name) возвращает символ,
+(defmethod obj-name ((class class))
+  "@b(Описание:) метод @b(obj-name) возвращает символ,
 представляющий имя класса.
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
-  (name (first (package-classes :dxf :internal t)))
+  (obj-name (first (package-classes :dxf :internal t)))
 @end(code)"
   (class-name class))
 
-(defmethod name ((package package))
-  "@b(Описание:) метод @b(name) возвращает символ,
+(defmethod obj-name ((package package))
+  "@b(Описание:) метод @b(obj-name) возвращает символ,
 представляющий имя класса.
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
-  (name (find-package :dxf))
+  (obj-name (find-package :dxf))
 @end(code)"
-  (package-name))
+  (package-name package))
 
-;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod obj-name-string ((obj t))
+  "@b(Описание:) метод @b(obj-name) возвращает строку,
+представляющую имя функции.
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (progn
+   (require :dxf)
+   (obj-name-string (second (package-functions :mnas-package)))
+   (obj-name-string (second (package-functions :dxf)))
+   (obj-name (first (package-generics :dxf)))
+   (obj-name (second (mopp:generic-function-methods (first (package-generics :dxf))))))
+@end(code)"
+  (format nil "~s" (obj-name obj)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod obj-package ((function function))
+  "@b(Описание:) метод @b(obj-package) возвращает символ,
+представляющий имя функции.
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (obj-package (second (package-functions :mnas-package)))
+@end(code)"
+  (symbol-package (name function)))
+
+(defmethod obj-package ((generic standard-generic-function))
+    "@b(Описание:) метод @b(obj-package) возвращает символ,
+представляющий имя обобщенной функции.
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (require :dxf)
+ (obj-package (first (package-generics :dxf)))
+@end(code)
+"
+  (symbol-package (name generic)))
+
+(defmethod obj-package ((method method))
+      "@b(Описание:) метод @b(obj-package) возвращает символ,
+представляющий имя метода.
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (require :dxf)
+ (obj-package (second (mopp:generic-function-methods (first (package-generics :dxf)))))
+@end(code)"
+  (symbol-package (name method)))
+
+(defmethod obj-package ((class class))
+  "@b(Описание:) метод @b(obj-package) возвращает символ,
+представляющий имя класса.
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+  (obj-package (first (package-classes :dxf :internal t)))
+@end(code)"
+  (symbol-package (name class)))
+
+(defmethod obj-package ((package package))
+  "@b(Описание:) метод @b(obj-package) возвращает символ,
+представляющий имя класса.
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+  (require :dxf)
+  (obj-package (find-package :dxf))
+@end(code)"
+  package)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod obj-package-string ((obj t))
+    "@b(Описание:) метод @b(obj-package-string)
+возвращает строку, представляющую имя пакета, в котором определен объект @b(obj).
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+  (require :dxf)
+  (obj-package-string (find-package :dxf))
+@end(code)"
+  (package-name (obj-package obj)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun package-symbols-all (package-name &aux (lst nil) (package (find-package package-name)))
@@ -157,8 +267,8 @@
      rez)
     (t (error "~S does not designate a package" package-name))))
 
-(defun package-filter-symbols (symbols)
-"@b(Описание:) функция package-filter-symbols возвращает список символов, 
+(defun filter-variables (symbols)
+"@b(Описание:) функция filter-variables возвращает список символов, 
 являющихся сопряженными со значениями.
 
  @b(Переменые:)
@@ -174,8 +284,8 @@
      symbols)
     rez))
 
-(defun package-filter-functions (symbols)
-"@b(Описание:) функция package-filter-functions возвращает список символов,
+(defun filter-functions (symbols)
+"@b(Описание:) функция filter-functions возвращает список символов,
 являющихся сопряженными с функциями.
 
  @b(Переменые:)
@@ -207,7 +317,7 @@
  (package-variables :mnas-package :inherited t)
 @end(code)
 "
-  (package-filter-symbols
+  (filter-variables
    (package-symbols-by-category
     package-name
     :external external
@@ -244,7 +354,7 @@
 	 #'(lambda (el)
 	     (when (equal 'function (type-of (symbol-function el)))
 	       (push (symbol-function el) rez)))
-	 (package-filter-functions
+	 (filter-functions
 	  (package-symbols-by-category
 	   package-name
 	   :external external
@@ -329,7 +439,7 @@
 	 #'(lambda (el)
 	     (when (equal 'standard-generic-function (type-of (symbol-function el)))
 	       (push (ensure-generic-function el) rez)))
-	 (package-filter-functions
+	 (filter-functions
 	  (package-symbols-by-category
 	   package-name
 	   :external external
@@ -448,7 +558,7 @@
   (declare ((or package string symbol) package-name))
   (cond
     (package
-     (setf pkg-functions (package-filter-functions (package-symbols-by-category package)))
+     (setf pkg-functions (filter-functions (package-symbols-by-category package)))
      (mnas-graph:make-graph
       (who-calls-lst
        pkg-functions)
@@ -702,7 +812,7 @@
   (declare ((or package string symbol) package-name))
   (cond
     (package
-     (setf pkg-symbols (package-filter-symbols (package-symbols-by-category package)))
+     (setf pkg-symbols (filter-variables (package-symbols-by-category package)))
      (mnas-graph:make-graph
       (who-references-lst
        pkg-symbols)
@@ -832,6 +942,7 @@
      :initial-value (make-list 0)))))
 
 (export 'view-system-graph )
+
 (defun view-system-graph (system
 			     &key
 			       (fpath mnas-graph:*output-path*)
