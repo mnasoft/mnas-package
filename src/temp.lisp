@@ -2,8 +2,6 @@
 
 (in-package :mnas-package)
 
-
-
 (require :temperature-fild)
 
 (make-codex-documentation :math :internal t)

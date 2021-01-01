@@ -2,41 +2,6 @@
 
 (in-package #:mnas-package)
 
-(defun function-name (function)
-  "@b(Описание:) функция @b(function-name) возвращает символ,
-представляющий имя функции.
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (function-name #'function-name)  
- => function-name
-@end(code)
-"
-  (nth-value 2 (function-lambda-expression function)))
-
-(defun generic-name (generic)
-  "@b(Описание:) функция @b(generic-name) возвращает символ,
-представляющий имя обобщенной функции.
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (generic-name (first (package-generics :dxf)))
-@end(code)
-"
-  (mopp:generic-function-name generic))
-
-(defun method-name (method)
-    "@b(Описание:) функция @b(generic-name) возвращает символ,
-представляющий имя метода.
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (method-name (first (mopp:generic-function-methods (first (package-generics :dxf)))))
-@end(code)
-"
-  (generic-name 
-   (mopp:method-generic-function method)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (export '(obj-name))
 
@@ -62,7 +27,19 @@
   (:documentation "@b(Описание:) обобщенная функция @b(obj-package-string)
 возвращает строку, представляющую имя пакета, в котором определен объект @b(obj)."))
 
+(defgeneric insert-codex-doc (obj &key stream min-doc-length)
+  (:documentation "@b(Описание:) обобщенная функция @b(make-codex-doc)
+выводит в поток @b(stream) код для вставки документации, относящейся к 
+объекту @b(obj). Документация объекта выводится в поток только если
+ее длина превышает @b(min-doc-length).
+"))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod obj-name ((symbol symbol))
+  "@b(Описание:) метод @b(obj-name) возвращает символ,
+представляющий имя функции."
+  symbol)
 
 (defmethod obj-name ((function function))
   "@b(Описание:) метод @b(obj-name) возвращает символ,
@@ -72,10 +49,10 @@
 @begin[lang=lisp](code)
  (obj-name (second (package-functions :mnas-package)))
 @end(code)"
-  (function-name function))
+  (nth-value 2 (function-lambda-expression function)))
 
 (defmethod obj-name ((generic standard-generic-function))
-    "@b(Описание:) метод @b(obj-name) возвращает символ,
+  "@b(Описание:) метод @b(obj-name) возвращает символ,
 представляющий имя обобщенной функции.
 
  @b(Пример использования:)
@@ -84,7 +61,7 @@
  (obj-name (first (package-generics :dxf)))
 @end(code)
 "
-  (generic-name generic))
+  (mopp:generic-function-name generic))
 
 (defmethod obj-name ((method method))
       "@b(Описание:) метод @b(obj-name) возвращает символ,
@@ -95,7 +72,8 @@
  (require :dxf)
  (obj-name (second (mopp:generic-function-methods (first (package-generics :dxf)))))
 @end(code)"
-  (method-name method))
+  (mopp:generic-function-name
+   (mopp:method-generic-function method)))
 
 (defmethod obj-name ((class class))
   "@b(Описание:) метод @b(obj-name) возвращает символ,
@@ -144,7 +122,7 @@
 @begin[lang=lisp](code)
  (obj-package (second (package-functions :mnas-package)))
 @end(code)"
-  (symbol-package (name function)))
+  (symbol-package (obj-name function)))
 
 (defmethod obj-package ((generic standard-generic-function))
     "@b(Описание:) метод @b(obj-package) возвращает символ,
@@ -156,7 +134,7 @@
  (obj-package (first (package-generics :dxf)))
 @end(code)
 "
-  (symbol-package (name generic)))
+  (symbol-package (obj-name generic)))
 
 (defmethod obj-package ((method method))
       "@b(Описание:) метод @b(obj-package) возвращает символ,
@@ -167,7 +145,7 @@
  (require :dxf)
  (obj-package (second (mopp:generic-function-methods (first (package-generics :dxf)))))
 @end(code)"
-  (symbol-package (name method)))
+  (symbol-package (obj-name method)))
 
 (defmethod obj-package ((class class))
   "@b(Описание:) метод @b(obj-package) возвращает символ,
@@ -177,7 +155,7 @@
 @begin[lang=lisp](code)
   (obj-package (first (package-classes :dxf :internal t)))
 @end(code)"
-  (symbol-package (name class)))
+  (symbol-package (obj-name class)))
 
 (defmethod obj-package ((package package))
   "@b(Описание:) метод @b(obj-package) возвращает символ,
@@ -202,6 +180,62 @@
   (obj-package-string (find-package :dxf))
 @end(code)"
   (package-name (obj-package obj)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod insert-codex-doc ((function function) &key (stream t) (min-doc-length 80))
+  (when (and (eq (obj-package function) *package*)
+             (< min-doc-length (length (documentation function t))))
+    (format stream "~%  @cl:doc(function ~s)" (obj-name function))))
+
+
+(defmethod insert-codex-doc ((generic standard-generic-function) &key (stream t) (min-doc-length 80))
+  (when (and (eq (obj-package generic) *package*)
+             (< min-doc-length (length (documentation generic t))))
+    (format stream "~&  @cl:doc(generic ~s)" (obj-name generic))))
+
+#|
+(insert-codex-doc (first (find-all-generics (find-class 'standard-generic-function) "")))
+|#
+
+(defmethod insert-codex-doc ((class class) &key (stream t) (min-doc-length 80))
+  (when (and (eq (obj-package class) *package*)
+             (< min-doc-length (length (documentation class t))))
+    (format stream "~&  @cl:doc(class ~s)" (obj-name class))))
+
+#|
+(mpkg::insert-codex-doc (find-class 'dxf::acad-line))
+|#
+
+(defmethod insert-codex-doc ((method method) &key (stream t) (min-doc-length 80))
+  "(insert-codex-doc (find-package :mpkg))"
+  (when (and (eq (obj-package method) *package*)
+             (< min-doc-length (length (documentation method t))))
+    (block method-name
+      (format stream "~&  @cl:doc(method ~s" (obj-name method))
+      (let ((mll (mopp:method-lambda-list method))
+            (msp (mopp:method-specializers method)))
+        (block method-required-args
+          (map 'nil
+               #'(lambda (name class)
+                   (cond
+                     ((eq class (find-class t))
+                      (format stream " ~s" name))
+                     ((not (eq class (find-class t)))
+                      (format stream " (~s ~s)" name (class-name class)))))
+               mll msp))
+        (block method-rest-args
+          (map 'nil
+               #'(lambda (el) (format stream "~a" (format nil " ~s" el)))
+               (nthcdr (length msp) mll)))
+        (block method-end
+          (format stream ")"))))))
+
+(defmethod insert-codex-doc ((package package) &key (stream t) (min-doc-length 80))
+  "(insert-codex-doc (find-package :mpkg))"
+  (when (and (eq (obj-package package) *package*)
+             (< min-doc-length (length (documentation package t))))
+    (format stream "~s" (documentation package t))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -371,6 +405,7 @@
                                        (internal nil)
                                        (inherited nil)
                                        (sort t)
+                                       (min-doc-length 80)
                                      &aux (package (find-package package-name)))
   "@b(Описание:) функция make-codex-section-functions выводит в поток stream
 секцию с документацией в формате codex, содержащую функции из пакета package-name.
@@ -396,11 +431,8 @@
     (setf *package* package *print-case* :downcase)
     (let ((funcs (package-functions package :external external :internal internal :inherited inherited)))
       (format stream "@begin(section)~% @title(Функции)~% @cl:with-package[name=~S]("
-	      (string-downcase (package-name (find-package package-name))))
-      (map nil
-	   #'(lambda (el)
-	       (format stream "~%  @cl:doc(function ~s)"
-		       (string-downcase (function-name el))))
+	      (obj-name package))
+      (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
 	   (if sort
 	       (sort funcs #'string< :key #'(lambda (elem) (string-downcase (slynk-backend:function-name elem))))
 	       funcs))
@@ -412,7 +444,7 @@
 (make-codex-section-functions :mnas-package)
 |#
 
-(export 'package-generics )
+(export '(package-generics))
 
 (defun package-generics (package-name &key (external t) (internal nil) (inherited nil))
   "@b(Описание:) функция @b(package-generics) возвращает список обобщенных функций
@@ -450,14 +482,14 @@
 (export '(make-codex-section-generics))
 
 (defun make-codex-section-generics (package-name
-                                             &key
-                                               (stream t)
-                                               (external t)
-                                               (internal nil)
-                                               (inherited nil)
-                                               (sort t)
-                                               (min-doc-length 80)
-                                             &aux (package (find-package package-name)))
+                                    &key
+                                      (stream t)
+                                      (external t)
+                                      (internal nil)
+                                      (inherited nil)
+                                      (sort t)
+                                      (min-doc-length 80)
+                                    &aux (package (find-package package-name)))
   "@b(Описание:) функция @b(make-codex-section-generics) выводит в поток stream
 секцию с документацией в формате codex, содержащую обобщенные функции из пакета @b(package-name).
 
@@ -480,17 +512,13 @@
   (declare ((or package string symbol) package-name))
   (let ((pkg-old *package*)
         (print-case *print-case*))
-        (setf *package* package *print-case* :downcase)
+    (setf *package* package *print-case* :downcase)
     (let ((g-funcs (package-generics package :external external :internal internal :inherited inherited)))
       (format stream "@begin(section)~% @title(Обобщенные функции)~% @cl:with-package[name=~S]("
-              (string-downcase (package-name package)))
-      (map nil
-	   #'(lambda (el)
-               (make-doc-generic el :stream stream :min-doc-length min-doc-length))
+              (obj-name package))
+      (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
 	   (if sort
-	       (sort g-funcs #'string<
-                     :key #'(lambda (elem)
-                              (string-downcase (mopp:generic-function-name elem))))
+               (sort g-funcs #'string< :key #'(lambda (elem) (string-downcase (obj-name elem))))
 	       g-funcs))
       (format stream ")~%@end(section)~%"))
     (setf *package* pkg-old *print-case* print-case)))
@@ -499,9 +527,11 @@
 ;;;;; Примет использования
 (require :math)
 (make-codex-section-generics :math/core :sort t) 
-
 |#
 
+
+            
+            
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -673,15 +703,19 @@
   graph)
 
 (export 'view-class-graph )
+
 (defun view-class-graph (package-name
-			 &key
+                         &key
+                           (external t)
+                           (internal t)
+                           (inherited nil)
 			   (fpath mnas-graph:*output-path*)
 			   (fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
 			   (graphviz-prg :filter-dot)
 			   (out-type "pdf")
 			   (dpi "300")
 			   (viewer mnas-graph:*viewer-path*))
-"@b(Описание:) view-class-graph выводит визуальное представление 
+  "@b(Описание:) view-class-graph выводит визуальное представление 
 иерархии классов (графа наследования).
 
  @b(Пример использования:)
@@ -692,7 +726,9 @@
   (when (symbolp package-name) (require package-name))
   (when (stringp package-name) (require package-name))
   (mnas-graph:view-graph
-   (make-class-graph package-name)
+   (make-class-graph package-name :external     external
+                                  :internal     internal
+                                  :inherited    inherited)
    :fpath        fpath
    :fname        fname
    :graphviz-prg graphviz-prg
@@ -702,20 +738,25 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(export '(class-undirect-subclasses))
+
 (defun class-undirect-subclasses (class-01)
-"@b(Описание:) class-undirect-subclasses выполняет поиск всех 
-подклассов класса class-01 и возвращает список всех найденных классов.
+"@b(Описание:) функция @b(class-undirect-subclasses)
+ выполняет поиск всех подклассов класса class-01 и 
+ возвращает список всех найденных классов.
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
- (class-undirect-subclasses (find-class 'number))
+ (progn
+  (require :dxf)
+  (class-undirect-subclasses (find-class 'dxf::object))
+  (class-undirect-subclasses (find-class 'number)))
 @end(code)
 "
   (let ((rez-classes nil)
 	(l-not-obr (list class-01)))
     (flet
 	((bar (class)
-	   (format t "~S~%" (class-name class))
 	   (setf l-not-obr (append l-not-obr (sb-mop:class-direct-subclasses class)))))
       (do ((class nil))
 	  ((null l-not-obr) rez-classes)
@@ -723,49 +764,7 @@
 	(push class rez-classes)
 	(bar class)))))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defun make-mnas-systems ()
-"Необходимо сделать описание"
-  (let* ((sos (make-string-output-stream))
-	 (sis (make-string-input-stream 
-	       (progn
-		 (when (uiop:directory-exists-p (pathname "d:/PRG/msys32/home/namatv/quicklisp/local-projects/mnas/mnas-systems"))
-		   (uiop:delete-directory-tree (pathname "d:/PRG/msys32/home/namatv/quicklisp/local-projects/mnas/mnas-systems/") :validate t))
-		 (sb-ext:run-program
-		  (cond
-		    ((uiop:os-windows-p) "d:/PRG/msys32/usr/bin/bash.exe")
-		    (t "/bin/bash"))
-		  '("-c" "find /home/namatv/quicklisp/local-projects/ -name '*.asd'") :output sos)
-		 (get-output-stream-string sos))))
-	 (asd (loop for line = (read-line sis nil nil)
-		 while line
-		 collect (pathname-name line))))
-    (ensure-directories-exist
-     (pathname
-      (concatenate 'string (namestring (user-homedir-pathname)) "quicklisp/local-projects/mnas/mnas-systems/")))
-    (with-open-file
-	(asd-file
-	 (pathname (concatenate 'string (namestring (user-homedir-pathname)) "quicklisp/local-projects/mnas/mnas-systems/" "mnas-systems.asd"))
-	 :direction :output :if-exists :supersede)
-      (format asd-file ";;;; mnas-systems.asd~%~%")
-      (format asd-file "(defsystem #:mnas-systems~%")
-      (format asd-file "  :components ((:file \"mnas-systems\"))~%")
-      (format asd-file "  :depends-on (~%")
-      (loop for i in asd
-	 do (format asd-file "	       #:~a~%" i))
-      (format asd-file "  ))"))
-    (with-open-file
-	(lisp-file
-	 (pathname (concatenate 'string (namestring (user-homedir-pathname)) "quicklisp/local-projects/mnas/mnas-systems/" "mnas-systems.lisp"))
-	 :direction :output :if-exists :supersede)
-      (format lisp-file ";;;; mnas-systems.lisp~%~%")
-      (format lisp-file "(defpackage #:mnas-systems)~%~%")
-      (format lisp-file "(in-package #:mnas-systems)"))))
-
-;;; (make-mnas-systems)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun who-references (var)
 "Выполняет поиск функций, в которых есть ссылка на внешнюю переменную var.
@@ -846,30 +845,6 @@
    :out-type     out-type
    :dpi          dpi
    :viewer       viewer))
-
-(export 'doc-template )
-(defun doc-template (&optional (pkg *package*))
-"Пример использования:
-@begin[lang=lisp](code)
- (doc-template)
-@end(code)
-"
-  (let ((f-b nil)
-	(b   nil))
-    (map 'nil
-	 #'(lambda (el)
-	     (when (fboundp (read-from-string el)) (push el f-b))
-	     (when (boundp  (read-from-string el)) (push el   b)))
-	 (let ((lst ()))                                                     
-	   (do-external-symbols (s pkg)
-	     (when (eq (find-package pkg) (symbol-package s)) (push (string-downcase (symbol-name s)) lst)))
-	   (sort lst #'string> )))
-    (format t "@cl:with-package[name=~S](~%" (string-downcase (package-name pkg)))
-    (map 'nil #'(lambda (el) (format t "@cl:doc(function ~a)~%" el) ) f-b)
-    (format t ")~%~%")
-    (format t "@cl:with-package[name=~S](~%" (string-downcase (package-name pkg)))
-    (map 'nil #'(lambda (el) (format t "@cl:doc(variable ~a)~%" el) )   b)
-    (format t ")~%~%")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
