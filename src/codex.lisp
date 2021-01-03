@@ -34,8 +34,6 @@
 ;;;; 		   (string-downcase (package-name (find-package package-designator)))		   
 		   "/html")))
 
-(export 'make-codex-graphs)
-
 (defun make-codex-graphs (system-designator package-designator
                           &key
                             (external t)
@@ -86,8 +84,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(export '(make-codex-section-classes))
-
 (defun make-codex-section-classes (package-name
                                      &key
                                        (stream t)
@@ -117,16 +113,14 @@
  @end(code)
 "  
   (declare ((or package string symbol) package-name))
-  (let ((classes (package-classes package :external external :internal internal :inherited inherited)))
+  (let ((classes (mpkg/pkg:package-classes package :external external :internal internal :inherited inherited)))
     (format stream "@begin(section)~% @title(Классы)~% @cl:with-package[name=~S]("
-	    (obj-name package))
+	    (mpkg/core:obj-name package))
     (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
 	 (if sort
-	     (sort classes #'string< :key #'(lambda (elem) (string-downcase (obj-name elem))))
+	     (sort classes #'string< :key #'(lambda (elem) (string-downcase (mpkg/core:obj-name elem))))
 	     classes))
     (format stream ")~%@end(section)~%")))
-
-(export '(make-codex-section-variables))
 
 (defun make-codex-section-variables (package-name
                                      &key
@@ -160,12 +154,12 @@
   (let ((pkg-old *package*)
         (print-case *print-case*))
     (setf *package* package *print-case* :downcase)
-    (let ((variables (package-variables package :external external :internal internal :inherited inherited)))
+    (let ((variables (mpkg/pkg:package-variables package :external external :internal internal :inherited inherited)))
       (format stream "@begin(section)~% @title(Переменные)~% @cl:with-package[name=~S]("
-	      (obj-name package))
+	      (mpkg/core:obj-name package))
       (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
 	   (if sort
-	       (sort variables #'string< :key #'(lambda (elem) (string-downcase (obj-name elem))))
+	       (sort variables #'string< :key #'(lambda (elem) (string-downcase (mpkg/core:obj-name elem))))
 	       variables))
       (format stream ")~%@end(section)~%"))
     (setf *package* pkg-old *print-case* print-case)))
@@ -177,30 +171,6 @@
 (package-generics :dxf)
 (method-name (first (mopp:generic-function-methods (first (package-generics :dxf)))))
 |#
-
-(defun package-methods (package-name &key (external t) (internal nil) (inherited nil))
-  "@b(Описание:) функция @b(package-methods) возвращает список методов
-пакета @b(package-name).
-
- @b(Переменые:)
-@begin(list)
-@item(package-name - пакет;) 
-@item(external - если равно @b(t) функция возвращает экспортируемые фукции пакета;)
-@item(internal - если равно @b(t) функция возвращает внутренние фукции пакета;)
-@item(internal - если равно @b(t) импортированные функции пакета.)
-@end(list)
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
-  (package-methods :mnas-package :internal t)
-   => (#<STANDARD-METHOD MNAS-PACKAGE::DEPENDENCY-TREE (SYMBOL) {1007EE7CA3}>
-       ...
-       #<STANDARD-METHOD MNAS-PACKAGE:OBJ-PACKAGE-STRING (T) {1007EE79C3}>)
-@end(code)
-"
-  (apply #'append
-         (loop :for generic :in (package-generics package-name :external external :internal internal :inherited inherited)
-        :collect (mopp:generic-function-methods generic))))
 
 (defun make-codex-section-methods (package-name
                                    &key
@@ -234,23 +204,31 @@
   (let ((pkg-old *package*)
         (print-case *print-case*))
     (setf *package* package *print-case* :downcase)
-    (let ((methods (package-methods package :external external :internal internal :inherited inherited)))
+    (let ((methods (mpkg/pkg:package-methods package :external external :internal internal :inherited inherited)))
       (format stream "@begin(section)~% @title(Методы)~% @cl:with-package[name=~S]("
-              (obj-name package))
+              (mpkg/core:obj-name package))
       (map nil
 	   #'(lambda (el)
                (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
 	   (if sort
 	       (sort methods #'string<
                      :key #'(lambda (elem)
-                              (string-downcase (obj-name elem))))
+                              (string-downcase (mpkg/core:obj-name elem))))
 	       methods))
       (format stream ")~%@end(section)~%"))
     (setf *package* pkg-old *print-case* print-case)))
 
-;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defun make-codex-section-package (package-name
+                                   &key (stream t) (min-doc-length 80)
+                                   &aux (package (find-package package-name)))
+  "(make-codex-section-package :mnas-package)"
+  (format stream "@begin(section) @title(Обзор)~2%")
+  (insert-codex-doc package :stream stream :min-doc-length min-doc-length)
+  (format stream "@end(section)~%"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (export '(make-codex-documentation))
 
@@ -275,10 +253,12 @@
  @b(Пример использования:)
 @begin[lang=lisp](code)
  (require :temperature-fild)
+ (make-codex-documentation :mnas-package) 
  (make-codex-documentation :mtf/splot)
  (make-codex-documentation :mtf/t-fild)
 @end(code)
 "
+  (make-codex-section-package   package :stream stream)
   (make-codex-section-variables package :stream stream :external external :internal internal :inherited inherited :sort sort)
   (make-codex-section-functions package :stream stream :external external :internal internal :inherited inherited :sort sort)
   (make-codex-section-generics  package :stream stream :external external :internal internal :inherited inherited :sort sort)

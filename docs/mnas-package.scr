@@ -10,62 +10,7 @@
  @item(вызовов функций     @image[src=./call-graph-mnas-package.gv.png]())
  @item(использования символов функциями @image[src=./symbol-graph-mnas-package.gv.png]())
  @item(наследования классов  @image[src=./class-graph-mnas-package.gv.png]())
-@end(list)
-@end(section)
-
-@begin(section) @title(make-graph)
-Функции создания графов
- @cl:with-package[name="mnas-package"](
-  @cl:doc(function make-call-graph) 
-  @cl:doc(function make-class-graph)
-  @cl:doc(function make-symbol-graph)
-  @cl:doc(function make-system-graph))
-@end(section)
-
-@begin(section) @title(view-graph)
-Функции визуализации графов
- @cl:with-package[name="mnas-package"](
-  @cl:doc(function view-call-graph)
-  @cl:doc(function view-class-graph)
-  @cl:doc(function view-symbol-graph)
-  @cl:doc(function view-system-graph))
-@end(section)
-
-@begin(section) @title(use unuse)
-Функции копирования/удаления в пространство имен cl-user
- @cl:with-package[name="mnas-package"](
-  @cl:doc(function unuse-mnas-package)
-  @cl:doc(function use-mnas-package))
-@end(section)
-
-@begin(section)
-@title(API)
-Прочие функции
-
- @cl:with-package[name="mnas-package"](
-  @cl:doc(function make-codex-graphs)
-  @cl:doc(function make-codex-section-functions)
-  @cl:doc(function make-doc-methods)
-  @cl:doc(function doc-template)
-  @cl:doc(function function-name)
-  @cl:doc(function symbols)
-  @cl:doc(function functions)
-  @cl:doc(function generic-functions)
-  @cl:doc(function package-classes)
-  )
-@end(section)
-
-@begin(section)
- @title(Обобщенные функции)
- @cl:with-package[name="mnas-package"](
-  @cl:doc(generic DEPENDENCIES-OF)
-  @cl:doc(generic DEPENDENCY-TREE)
-  @cl:doc(generic ->KEY)
-  @cl:doc(generic SMBL-SEPARATOR)
-  @cl:doc(generic SMBL-PACKAGE))
-@end(section)
-
-
+@end(list)@end(section)
 @begin(section)
  @title(Переменные)
  @cl:with-package[name="MNAS-PACKAGE"]()
@@ -81,7 +26,6 @@
   @cl:doc(function make-codex-section-classes)
   @cl:doc(function make-codex-section-functions)
   @cl:doc(function make-codex-section-generics)
-  @cl:doc(function make-codex-section-methods)
   @cl:doc(function make-codex-section-variables)
   @cl:doc(function make-doc-generics)
   @cl:doc(function make-doc-methods)
@@ -92,8 +36,6 @@
   @cl:doc(function package-generics)
   @cl:doc(function package-methods)
   @cl:doc(function package-variables)
-  @cl:doc(function unuse-mnas-package)
-  @cl:doc(function use-mnas-package)
   @cl:doc(function view-call-graph)
   @cl:doc(function view-class-graph)
   @cl:doc(function view-symbol-graph)
@@ -102,7 +44,6 @@
 @begin(section)
  @title(Обобщенные функции)
  @cl:with-package[name="MNAS-PACKAGE"](
-  @cl:doc(generic insert-codex-doc)
   @cl:doc(generic obj-name)
   @cl:doc(generic obj-name-string)
   @cl:doc(generic obj-package)
@@ -116,13 +57,19 @@
   @cl:doc(method obj-name (method method))
   @cl:doc(method obj-name (generic standard-generic-function))
   @cl:doc(method obj-name (function function))
-  @cl:doc(method obj-name-string (obj t))
+  @cl:doc(method obj-name-string obj)
   @cl:doc(method obj-package (package package))
   @cl:doc(method obj-package (class class))
   @cl:doc(method obj-package (method method))
   @cl:doc(method obj-package (generic standard-generic-function))
   @cl:doc(method obj-package (function function))
-  @cl:doc(method obj-package-string (obj t)))
+  @cl:doc(method obj-package (package package))
+  @cl:doc(method obj-package (class class))
+  @cl:doc(method obj-package (method method))
+  @cl:doc(method obj-package (generic standard-generic-function))
+  @cl:doc(method obj-package (function function))
+  @cl:doc(method obj-package-string obj)
+  @cl:doc(method obj-package-string obj))
 @end(section)
 @begin(section)
  @title(Классы)

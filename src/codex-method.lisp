@@ -61,7 +61,7 @@ scr-файл системы документирования codex. Этот р�
         (pkg-old    *package*))
     (setf *print-case* :downcase
           *package* package)
-    (format stream " @cl:with-package[name=~S](~%" (obj-name package))
+    (format stream " @cl:with-package[name=~S](~%" (mpkg/core:obj-name package))
     (block make-doc-for-methods
       (map 'nil
            #'(lambda (el)
@@ -95,7 +95,7 @@ scr-файл системы документирования codex. Этот р�
         (pkg-old    *package*))
     (setf *print-case* :downcase
           *package* package)
-    (format stream " @cl:with-package[name=~s](~%" (obj-name package))
+    (format stream " @cl:with-package[name=~s](~%" (mpkg/core:obj-name package))
     (block make-doc-for-generics
       (map 'nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
            (find-all-generics class prefix)))
