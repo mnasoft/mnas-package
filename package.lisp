@@ -6,18 +6,14 @@
   (:intern insert-codex-doc)
   (:export class-undirect-subclasses)
   (:export make-codex-documentation)
-  (:intern make-codex-section-package ;; Информация о пакете  пока не реализована
-           make-codex-section-system ;; Информация о системе пока не реализована
+  (:intern make-codex-section-package ;;; Информация о пакете  пока не реализована
+           make-codex-section-system  ;;; Информация о системе пока не реализована
            make-codex-section-variables 
            make-codex-section-functions
            make-codex-section-generics
            make-codex-section-methods
            make-codex-section-classes)
   (:export make-codex-graphs)
-  (:export view-call-graph
-	   view-system-graph
-           view-class-graph
-           view-symbol-graph)
   (:export make-doc-generics
            make-doc-methods)
   (:documentation

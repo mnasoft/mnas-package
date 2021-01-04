@@ -56,17 +56,17 @@
 	 (pkg-name (mnas-string:replace-all
 		    (string-downcase (package-name (find-package pkg)))
 		    "/" "-")))
-    (view-call-graph   pkg :out-type "png" :viewer nil :fpath fpath
+    (mpkg/view:call-graph   pkg :out-type "png" :viewer nil :fpath fpath
 			   :fname (concatenate 'string "call-graph"  "-" pkg-name))
-    (view-system-graph sys :out-type "png" :viewer nil :fpath fpath
+    (mpkg/view:system-graph sys :out-type "png" :viewer nil :fpath fpath
 			   :fname (concatenate 'string "system-graph" "-" pkg-name))
-    (view-class-graph  pkg
+    (mpkg/view:class-graph  pkg
                        :external external
                        :internal internal
                        :inherited inherited
                        :out-type "png" :viewer nil :fpath fpath
 		       :fname (concatenate 'string "class-graph" "-" pkg-name))
-    (view-symbol-graph pkg :out-type "png" :viewer nil :fpath fpath
+    (mpkg/view:symbol-graph pkg :out-type "png" :viewer nil :fpath fpath
 			   :fname (concatenate 'string "symbol-graph" "-" pkg-name))
     (with-open-file (os (concatenate 'string (codex-docs-pathname sys) "/" pkg-name "-graph.scr")
 			:if-exists :supersede :direction :output)
@@ -115,10 +115,10 @@
   (declare ((or package string symbol) package-name))
   (let ((classes (mpkg/pkg:package-classes package :external external :internal internal :inherited inherited)))
     (format stream "@begin(section)~% @title(Классы)~% @cl:with-package[name=~S]("
-	    (mpkg/core:obj-name package))
+	    (mpkg/obj:obj-name package))
     (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
 	 (if sort
-	     (sort classes #'string< :key #'(lambda (elem) (string-downcase (mpkg/core:obj-name elem))))
+	     (sort classes #'string< :key #'(lambda (elem) (string-downcase (mpkg/obj:obj-name elem))))
 	     classes))
     (format stream ")~%@end(section)~%")))
 
@@ -156,10 +156,10 @@
     (setf *package* package *print-case* :downcase)
     (let ((variables (mpkg/pkg:package-variables package :external external :internal internal :inherited inherited)))
       (format stream "@begin(section)~% @title(Переменные)~% @cl:with-package[name=~S]("
-	      (mpkg/core:obj-name package))
+	      (mpkg/obj:obj-name package))
       (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
 	   (if sort
-	       (sort variables #'string< :key #'(lambda (elem) (string-downcase (mpkg/core:obj-name elem))))
+	       (sort variables #'string< :key #'(lambda (elem) (string-downcase (mpkg/obj:obj-name elem))))
 	       variables))
       (format stream ")~%@end(section)~%"))
     (setf *package* pkg-old *print-case* print-case)))
@@ -206,14 +206,14 @@
     (setf *package* package *print-case* :downcase)
     (let ((methods (mpkg/pkg:package-methods package :external external :internal internal :inherited inherited)))
       (format stream "@begin(section)~% @title(Методы)~% @cl:with-package[name=~S]("
-              (mpkg/core:obj-name package))
+              (mpkg/obj:obj-name package))
       (map nil
 	   #'(lambda (el)
                (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
 	   (if sort
 	       (sort methods #'string<
                      :key #'(lambda (elem)
-                              (string-downcase (mpkg/core:obj-name elem))))
+                              (string-downcase (mpkg/obj:obj-name elem))))
 	       methods))
       (format stream ")~%@end(section)~%"))
     (setf *package* pkg-old *print-case* print-case)))

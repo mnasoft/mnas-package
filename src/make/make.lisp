@@ -1,8 +1,8 @@
-;;;; ./src/make-graph/make-graph.lisp
+;;;; ./src/make/make.lisp
 
-(defpackage #:mnas-package/make-graph
+(defpackage #:mnas-package/make
   (:use #:cl ) ;; :mnas-package/pkg
-  (:nicknames "MPKG/MAKE-GRAPH")
+  (:nicknames "MPKG/MAKE")
   (:export system-graph
            symbol-graph
            class-graph
@@ -21,7 +21,7 @@
 @end(list)"
    ))
 
-(in-package :mnas-package/make-graph)
+(in-package :mnas-package/make)
 
 (defun system-graph (system)
 "@b(Описание:) make-system-graph возвращает граф систем, от которых зависит

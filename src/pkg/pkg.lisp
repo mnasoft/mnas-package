@@ -43,7 +43,6 @@
 
 (defgeneric ->key (thing))
 
-
 (defgeneric dependency-tree (system))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -400,4 +399,4 @@
 "
   (apply #'append
          (loop :for generic :in (package-generics package-name :external external :internal internal :inherited inherited)
-        :collect (mopp:generic-function-methods generic))))
+        :collect (sb-mop:generic-function-methods generic))))

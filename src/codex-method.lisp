@@ -13,9 +13,9 @@
  (find-all-generics (find-class 'mtf/t-fild:<t-fild>) \"SPLOT\")
 @end(code)
 "
-  (loop :for method :in (mopp:specializer-direct-methods class)
-        :for gf           = (mopp:method-generic-function method)
-        :for fname        = (mopp:generic-function-name gf)
+  (loop :for method :in (sb-mop:specializer-direct-methods class)
+        :for gf           = (sb-mop:method-generic-function method)
+        :for fname        = (sb-mop:generic-function-name gf)
         :for fname-string = (when (symbolp fname) (symbol-name fname))
         :when (and (stringp fname-string)
                    (>= (length fname-string)
@@ -28,7 +28,7 @@
 #|
 (require :temperature-fild/t-fild)
 (find-all-generics (find-class 'mtf/t-fild:<t-fild>) "SPLOT")
-(mopp:generic-function-name
+(sb-mop:generic-function-name
  (first                                  
   (mnas-package::find-all-generics (find-class 'mtf/t-fild:<t-fild>) "SPLOT")))
 |#
@@ -36,9 +36,9 @@
 
 (defun find-all-methods (class prefix)
   "(pprint (find-all-methods (find-class 'mtf:<sector>) \"SEC\"))"
-  (loop :for method :in (mopp:specializer-direct-methods class)
-        :for gf           = (mopp:method-generic-function method)
-        :for fname        = (mopp:generic-function-name gf)
+  (loop :for method :in (sb-mop:specializer-direct-methods class)
+        :for gf           = (sb-mop:method-generic-function method)
+        :for fname        = (sb-mop:generic-function-name gf)
         :for fname-string = (when (symbolp fname) (symbol-name fname))
         :when (and (stringp fname-string)
                    (>= (length fname-string)
@@ -61,7 +61,7 @@ scr-файл системы документирования codex. Этот р�
         (pkg-old    *package*))
     (setf *print-case* :downcase
           *package* package)
-    (format stream " @cl:with-package[name=~S](~%" (mpkg/core:obj-name package))
+    (format stream " @cl:with-package[name=~S](~%" (mpkg/obj:obj-name package))
     (block make-doc-for-methods
       (map 'nil
            #'(lambda (el)
@@ -95,7 +95,7 @@ scr-файл системы документирования codex. Этот р�
         (pkg-old    *package*))
     (setf *print-case* :downcase
           *package* package)
-    (format stream " @cl:with-package[name=~s](~%" (mpkg/core:obj-name package))
+    (format stream " @cl:with-package[name=~s](~%" (mpkg/obj:obj-name package))
     (block make-doc-for-generics
       (map 'nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
            (find-all-generics class prefix)))

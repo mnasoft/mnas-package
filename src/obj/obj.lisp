@@ -1,8 +1,8 @@
-;;;; ./src/core/core.lisp
-
-(defpackage #:mnas-package/core
+;;;; ./src/obj/obj.lisp
+ 
+(defpackage #:mnas-package/obj
   (:use #:cl )
-  (:nicknames "MPKG/CORE")
+  (:nicknames "MPKG/OBJ")
   (:export obj-package
            obj-package-string
            obj-name
@@ -21,7 +21,7 @@
 @end(list)"
    ))
 
-(in-package #:mnas-package/core)
+(in-package #:mnas-package/obj)
 
 (defgeneric obj-name (obj)
   (:documentation "@b(Описание:) обобщенная функция @b(obj-name)
@@ -66,7 +66,7 @@
  (obj-name (first (package-generics :dxf)))
 @end(code)
 "
-  (mopp:generic-function-name generic))
+  (sb-mop:generic-function-name generic))
 
 (defmethod obj-name ((method method))
       "@b(Описание:) метод @b(obj-name) возвращает символ,
@@ -75,10 +75,10 @@
  @b(Пример использования:)
 @begin[lang=lisp](code)
  (require :dxf)
- (obj-name (second (mopp:generic-function-methods (first (package-generics :dxf)))))
+ (obj-name (second (sb-mop:generic-function-methods (first (package-generics :dxf)))))
 @end(code)"
-  (mopp:generic-function-name
-   (mopp:method-generic-function method)))
+  (sb-mop:generic-function-name
+   (sb-mop:method-generic-function method)))
 
 (defmethod obj-name ((class class))
   "@b(Описание:) метод @b(obj-name) возвращает символ,
@@ -113,7 +113,7 @@
    (obj-name-string (second (package-functions :mnas-package)))
    (obj-name-string (second (package-functions :dxf)))
    (obj-name (first (package-generics :dxf)))
-   (obj-name (second (mopp:generic-function-methods (first (package-generics :dxf))))))
+   (obj-name (second (sb-mop:generic-function-methods (first (package-generics :dxf))))))
 @end(code)"
   (format nil "~s" (obj-name obj)))
 
@@ -148,7 +148,7 @@
  @b(Пример использования:)
 @begin[lang=lisp](code)
  (require :dxf)
- (obj-package (second (mopp:generic-function-methods (first (package-generics :dxf)))))
+ (obj-package (second (sb-mop:generic-function-methods (first (package-generics :dxf)))))
 @end(code)"
   (symbol-package (obj-name method)))
 

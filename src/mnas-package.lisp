@@ -14,23 +14,23 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod insert-codex-doc ((function function) &key (stream t) (min-doc-length 80))
-  (when (and (eq (mpkg/core:obj-package function) *package*)
+  (when (and (eq (mpkg/obj:obj-package function) *package*)
              (< min-doc-length (length (documentation function t))))
-    (format stream "~%  @cl:doc(function ~s)" (mpkg/core:obj-name function))))
+    (format stream "~%  @cl:doc(function ~s)" (mpkg/obj:obj-name function))))
 
 (defmethod insert-codex-doc ((generic standard-generic-function) &key (stream t) (min-doc-length 80))
-  (when (and (eq (mpkg/core:obj-package generic) *package*)
+  (when (and (eq (mpkg/obj:obj-package generic) *package*)
              (< min-doc-length (length (documentation generic t))))
-    (format stream "~&  @cl:doc(generic ~s)" (mpkg/core:obj-name generic))))
+    (format stream "~&  @cl:doc(generic ~s)" (mpkg/obj:obj-name generic))))
 
 #|
 (insert-codex-doc (first (find-all-generics (find-class 'standard-generic-function) "")))
 |#
 
 (defmethod insert-codex-doc ((class class) &key (stream t) (min-doc-length 80))
-  (when (and (eq (mpkg/core:obj-package class) *package*)
+  (when (and (eq (mpkg/obj:obj-package class) *package*)
              (< min-doc-length (length (documentation class t))))
-    (format stream "~&  @cl:doc(class ~s)" (mpkg/core:obj-name class))))
+    (format stream "~&  @cl:doc(class ~s)" (mpkg/obj:obj-name class))))
 
 #|
 (mpkg::insert-codex-doc (find-class 'dxf::acad-line))
@@ -38,12 +38,12 @@
 
 (defmethod insert-codex-doc ((method method) &key (stream t) (min-doc-length 80))
   "(insert-codex-doc (find-package :mpkg))"
-  (when (and (eq (mpkg/core:obj-package method) *package*)
+  (when (and (eq (mpkg/obj:obj-package method) *package*)
              (< min-doc-length (length (documentation method t))))
     (block method-name
-      (format stream "~&  @cl:doc(method ~s" (mpkg/core:obj-name method))
-      (let ((mll (mopp:method-lambda-list method))
-            (msp (mopp:method-specializers method)))
+      (format stream "~&  @cl:doc(method ~s" (mpkg/obj:obj-name method))
+      (let ((mll (sb-mop:method-lambda-list method))
+            (msp (sb-mop:method-specializers method)))
         (block method-required-args
           (map 'nil
                #'(lambda (name class)
@@ -51,7 +51,7 @@
                      ((eq class (find-class t))
                       (format stream " ~s" name))
                      ((not (eq class (find-class t)))
-                      (format stream " (~s ~s)" name (mpkg/core:obj-name class)))))
+                      (format stream " (~s ~s)" name (mpkg/obj:obj-name class)))))
                mll msp))
         (block method-rest-args
           (map 'nil
@@ -62,7 +62,7 @@
 
 (defmethod insert-codex-doc ((package package) &key (stream t) (min-doc-length 80))
   "(insert-codex-doc (find-package :mpkg))"
-  (when (and (eq (mpkg/core:obj-package package) *package*)
+  (when (and (eq (mpkg/obj:obj-package package) *package*)
              (< min-doc-length (length (documentation package t))))
     (format stream "~a" (documentation package t))))
 
@@ -101,7 +101,7 @@
     (setf *package* package *print-case* :downcase)
     (let ((funcs (mpkg/pkg:package-functions package :external external :internal internal :inherited inherited)))
       (format stream "@begin(section)~% @title(Функции)~% @cl:with-package[name=~S]("
-	      (mpkg/core:obj-name package))
+	      (mpkg/obj:obj-name package))
       (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
 	   (if sort
 	       (sort funcs #'string< :key #'(lambda (elem) (string-downcase (slynk-backend:function-name elem))))
@@ -139,7 +139,7 @@
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
- (make-codex-section-generics :math/core :sort t) 
+ (make-codex-section-generics :math/obj :sort t) 
 @end(code)
 "  
   (declare ((or package string symbol) package-name))
@@ -148,10 +148,10 @@
     (setf *package* package *print-case* :downcase)
     (let ((g-funcs (mpkg/pkg:package-generics package :external external :internal internal :inherited inherited)))
       (format stream "@begin(section)~% @title(Обобщенные функции)~% @cl:with-package[name=~S]("
-              (mpkg/core:obj-name package))
+              (mpkg/obj:obj-name package))
       (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
 	   (if sort
-               (sort g-funcs #'string< :key #'(lambda (elem) (string-downcase (mpkg/core:obj-name elem))))
+               (sort g-funcs #'string< :key #'(lambda (elem) (string-downcase (mpkg/obj:obj-name elem))))
 	       g-funcs))
       (format stream ")~%@end(section)~%"))
     (setf *package* pkg-old *print-case* print-case)))
@@ -159,82 +159,8 @@
 #|
 ;;;;; Примет использования
 (require :math)
-(make-codex-section-generics :math/core :sort t) 
+(make-codex-section-generics :math/obj :sort t) 
 |#
-            
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-(export 'view-call-graph)
-
-(defun view-call-graph (package-name
-			   &key
-			     (fpath mnas-graph:*output-path*)
-			     (fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
-			     (graphviz-prg :filter-dot)
-			     (out-type "pdf")
-			     (dpi "300")
-			     (viewer mnas-graph:*viewer-path*)
-			     (system-name package-name))
-" @b(Описание:) функция @b(view-call-graph) выполняет визуализацию графа вызовов 
-пакета @b(package-name).
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (view-call-graph :mnas-package)
-@end(code)
-"
-  (when (symbolp package-name) (require system-name))
-  (when (stringp package-name) (require system-name))
-  (mnas-graph:view-graph
-   (mpkg/make-graph:call-graph package-name)
-   :fpath        fpath
-   :fname        fname
-   :graphviz-prg graphviz-prg
-   :out-type     out-type
-   :dpi          dpi
-   :viewer       viewer))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-(export 'view-class-graph )
-
-(defun view-class-graph (package-name
-                         &key
-                           (external t)
-                           (internal t)
-                           (inherited nil)
-			   (fpath mnas-graph:*output-path*)
-			   (fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
-			   (graphviz-prg :filter-dot)
-			   (out-type "pdf")
-			   (dpi "300")
-			   (viewer mnas-graph:*viewer-path*))
-  "@b(Описание:) view-class-graph выводит визуальное представление 
-иерархии классов (графа наследования).
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (mnas-package:mnas-package-demo-11)
-@end(code)
-"
-  (when (symbolp package-name) (require package-name))
-  (when (stringp package-name) (require package-name))
-  (mnas-graph:view-graph
-   (mpkg/make-graph:class-graph package-name :external     external
-                                  :internal     internal
-                                  :inherited    inherited)
-   :fpath        fpath
-   :fname        fname
-   :graphviz-prg graphviz-prg
-   :out-type     out-type
-   :dpi          dpi
-   :viewer       viewer))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -263,67 +189,3 @@
 	(setf class (pop l-not-obr))
 	(push class rez-classes)
 	(bar class)))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-(export 'view-symbol-graph )
-
-(defun view-symbol-graph (package-name
-			     &key
-			       (fpath mnas-graph:*output-path*)
-			       (fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
-			       (graphviz-prg :filter-dot)
-			       (out-type "pdf")
-			       (dpi "300")
-			       (viewer mnas-graph:*viewer-path*))
-"@b(Описание:) view-symbol-graph отображает граф зависимостей глобальных символов.
-
- Позволяет ответить на вопрос: в какой функции используется тот или иной глобальный символ. 
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (view-symbol-graph :mnas-package)
-@end(code)
-"
-  (when (symbolp package-name) (require package-name))
-  (when (stringp package-name) (require package-name))
-  (mnas-graph:view-graph (mpkg/make-graph:symbol-graph package-name)
-			    :fpath        fpath
-   :fname        fname
-   :graphviz-prg graphviz-prg
-   :out-type     out-type
-   :dpi          dpi
-   :viewer       viewer))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(export 'view-system-graph )
-
-(defun view-system-graph (system
-			     &key
-			       (fpath mnas-graph:*output-path*)
-			       (fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
-			       (graphviz-prg :filter-dot)
-			       (out-type "pdf")
-			       (dpi "300")
-			       (viewer mnas-graph:*viewer-path*))
-"@b(Описание:) view-system-graph визуализирует граф систем, от которых зависит
-система @b(system).
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (mnas-package:view-system-graph :mnas-package :out-type \"png\" :viewer nil)
-@end(code)
-"
-  (mnas-graph:view-graph
-   (mpkg/make-graph:system system)
-   :fpath        fpath
-   :fname        fname
-   :graphviz-prg graphviz-prg
-   :out-type     out-type
-   :dpi          dpi
-   :viewer       viewer))
-
-;;;; (unuse-package :mnas-package/make-graph)
