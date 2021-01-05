@@ -34,8 +34,6 @@
 ;;;; 		   (string-downcase (package-name (find-package package-designator)))		   
 		   "/html")))
 
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun find-all-generics (class prefix)
@@ -124,6 +122,9 @@
              (< min-doc-length (length (documentation method t))))
     (block method-name
       (format stream "~&  @cl:doc(method ~s" (mpkg/obj:obj-name method))
+      (let ((mqs (sb-mop:method-qualifiers method)))
+        (when (and mqs (listp mqs) (= 1 (length mqs)))
+          (format stream " ~s" (mpkg/obj:obj-name (first mqs)))))
       (let ((mll (sb-mop:method-lambda-list method))
             (msp (sb-mop:method-specializers method)))
         (block method-required-args
@@ -147,8 +148,6 @@
   (when (and (eq (mpkg/obj:obj-package package) *package*)
              (< min-doc-length (length (documentation package t))))
     (format stream "~a" (documentation package t))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -233,12 +232,6 @@
     (setf *package* pkg-old *print-case* print-case)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;
-#|
-(require :dxf)
-(package-generics :dxf)
-(method-name (first (mopp:generic-function-methods (first (package-generics :dxf)))))
-|#
 
 (defun make-codex-section-methods (package-name
                                    &key
@@ -295,16 +288,6 @@
   (format stream "@begin(section) @title(Обзор)~2%")
   (insert-codex-doc package :stream stream :min-doc-length min-doc-length)
   (format stream "@end(section)~%"))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(export '(make-doc-methods))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun make-codex-section-functions (package-name
                                      &key
@@ -430,6 +413,8 @@ scr-файл системы документирования codex. Этот р�
 (with-open-file (os "~/123.scr" :direction :output :if-exists :supersede)
   (make-doc-generics (find-package 'mtf) (find-class 'mtf/t-fild::<t-fild>) "" :stream os :min-doc-length 50))
 |#
+
+(export '(make-doc-methods))
 
 (defun make-doc-methods (package class prefix &key (stream t) (min-doc-length 80))
   "@b(Описание:) функция @b(make-doc-methods) выводит в поток

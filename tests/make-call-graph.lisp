@@ -1,11 +1,17 @@
 ;;;; ./tests/make-call-graph.lisp
+                        
+(mpkg::make-codex-section-methods :mnas-package/example :internal t)
 
-(defpackage #:mnas-package-tests/functions (:use #:cl))
+ @begin(section)
+  @title(Методы)
+  @cl:with-package[name="MNAS-PACKAGE/EXAMPLE"](
+   @cl:doc(method m-foo :around (x <a>) (y <b>) z)
+   @cl:doc(method m-foo :before (x <a>) (y <b>) z)
+   @cl:doc(method m-foo :after (x <a>) (y <b>) z)
+   @cl:doc(method m-foo (x <a>) (y <b>) z)
+   @cl:doc(method m-foo :around (x <a>) (y <b>) (z <c>))
+   @cl:doc(method m-foo :before (x <a>) (y <b>) (z <c>))
+   @cl:doc(method m-foo :after (x <a>) (y <b>) (z <c>))
+   @cl:doc(method m-foo (x <a>) (y <b>) (z <c>)))
+ @end(section)
 
-(in-package :mnas-package-tests/functions)
-
-(defun foo () t)
-
-(defun bar () (foo))
-
-(defun baz () (bar))

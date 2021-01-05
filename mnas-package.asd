@@ -71,11 +71,11 @@
 		:serial nil
                 :components ((:file "view")))))
 
-(defsystem #:mnas-package/tests
+(defsystem "mnas-package/tests"
   :description "Тестирование систем, входящих  в проект mnas-package"
   :author "Nick Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
-  :depends-on (:mnas-package :fiveam)
+  :depends-on ("mnas-package" "mnas-package/example" "fiveam")
   :perform (test-op (o s)
 		    (uiop:symbol-call :math-tests :test-math))
   :components ((:module "tests"
@@ -83,6 +83,14 @@
 			:components ((:file "package")
 				     (:file "main")
 				     (:file "matrix")))))
+
+(defsystem "mnas-package/example"
+  :description "Пример системы для выполнения тестирования пакета mnas-package"
+  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
+  :components ((:module "src/example"
+			:serial t
+			:components ((:file "example")))))
 
 (defsystem "mnas-package/docs"
   :description "Зависимости для сборки документации"

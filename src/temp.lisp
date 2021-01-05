@@ -12,6 +12,8 @@ class-undirect-subclasses
 make-codex-documentation
 make-doc-generics
 make-doc-methods
+make-codex-graphs
+insert-codex-doc
 
 (require :temperature-fild)
 
