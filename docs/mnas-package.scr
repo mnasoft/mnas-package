@@ -43,7 +43,7 @@
 @end(section)
 @begin(section)
  @title(Обобщенные функции)
- @cl:with-package[name="MNAS-PACKAGE"](
+ @cl:with-package[name="MNAS-PACKAGE/OBJ"](
   @cl:doc(generic obj-name)
   @cl:doc(generic obj-name-string)
   @cl:doc(generic obj-package)
@@ -51,7 +51,7 @@
 @end(section)
 @begin(section)
  @title(Методы)
- @cl:with-package[name="MNAS-PACKAGE"](
+ @cl:with-package[name="MNAS-PACKAGE/OBJ"](
   @cl:doc(method obj-name (package package))
   @cl:doc(method obj-name (class class))
   @cl:doc(method obj-name (method method))
@@ -79,9 +79,9 @@
  @begin(section)
   @title(Методы)
   @cl:with-package[name="MNAS-PACKAGE/EXAMPLE"](
-   @cl:doc(method m-foo :around (x <a>) (y <b>) z)
-   @cl:doc(method m-foo :before (x <a>) (y <b>) z)
-   @cl:doc(method m-foo :after (x <a>) (y <b>) z)
+   @cl:doc(method m-foo (x <a>) (y <b>) z :around)
+   @cl:doc(method m-foo before (x <a>) (y <b>) z)
+   @cl:doc(method m-foo (x <a>) (y <b>) z :after)
    @cl:doc(method m-foo (x <a>) (y <b>) z)
    @cl:doc(method m-foo :around (x <a>) (y <b>) (z <c>))
    @cl:doc(method m-foo :before (x <a>) (y <b>) (z <c>))

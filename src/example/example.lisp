@@ -4,16 +4,27 @@
 
 (in-package :mnas-package/example)
 
+(defparameter *a* '(0 1 2 3 4 5 6)
+  "Documentation for function *a* ==================================================================")
+
+(defparameter *b* '(0 1 2 3 4 5 6)
+  "Documentation for function *b*")
+
 (defun f-foo ()
-    "Documentation for function f-foo ================================================================================"  
-    t)
+  "Documentation for function f-foo ================================================================"
+  t)
+
+(defun (setf f-foo) (val lst n)
+  "Documentation for function (setf f-foo) =========================================================" 
+  (setf (nth n lst) (* val val))
+  lst)
 
 (defun f-bar ()
-    "Documentation for function f-bar ================================================================================"
-    (f-foo))
+  "Documentation for function f-bar ================================================================"
+  (f-foo))
 
 (defun f-baz ()
-    "Documentation for function f-baz ================================================================================"
+  "Documentation for function f-baz ================================================================"
     (f-bar))
 
 (defun fs-foo ()
@@ -30,7 +41,7 @@
 
 (defclass <a> () ()
     (:documentation
-     "Documentation for class <a> ================================================================================"))
+     "Documentation for class <a> =================================================================="))
 
 (defclass <b> (<a>) ()
     (:documentation
@@ -123,3 +134,6 @@
 (defmethod ms-foo :around ((x <a>) (y <b>) z)
     "Documentation for defmethod ms-foo :before (x <a>) (y <b>) z"
     t)  
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

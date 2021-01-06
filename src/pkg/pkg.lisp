@@ -6,11 +6,13 @@
   (:export package-methods
            package-generics
            package-functions
+           package-setf-functions
            package-classes
            package-variables
            )
   (:export filter-variables
            filter-functions
+           filter-setf-functions
            package-symbols-by-category
            who-calls-lst
            func-to-string
@@ -220,6 +222,8 @@
    (mapcar #'who-calls
 	   func-lst)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun filter-variables (symbols)
 "@b(Описание:) функция filter-variables возвращает список символов, 
 являющихся сопряженными со значениями.
@@ -251,6 +255,26 @@
      #'(lambda (el) (when (fboundp el) (push el rez)))
      symbols)
     rez))
+
+(defun filter-setf-functions (symbols)
+  "@b(Описание:) функция filter-functions возвращает список символов,
+являющихся сопряженными с setf-функциями.
+
+ @b(Переменые:)
+@begin(list) 
+@item(symbols - список символов пакета.)
+@end(list)
+"
+  (let ((rez nil))
+    (mapc
+     #'(lambda (symbol)
+         (let ((setf-name `(setf ,symbol)))
+           (when (not (null (ignore-errors (fdefinition setf-name))))
+             (push symbol rez))))
+     symbols)
+    rez))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (export 'package-variables )
 
@@ -313,6 +337,36 @@
 	   :external external
 	   :internal internal
 	   :inherited inherited)))
+    rez))
+
+(defun package-setf-functions (package-name &key (external t) (internal nil) (inherited nil) )
+  "@b(Описание:) функция @b(package-functions) возвращает список функций пакета @b(package-name).
+
+ @b(Переменые:)
+@begin(list)
+@item(package-name - пакет;) 
+@item(external - если равно @b(t) функция возвращает экспортируемые фукции пакета;)
+@item(internal - если равно @b(t) функция возвращает внутренние фукции пакета;)
+@item(internal - если равно @b(t) импортированные функции пакета.)
+@end(list)
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (package-functions :mnas-package)
+  => (#<FUNCTION MAKE-CLASS-GRAPH> #<FUNCTION GENERIC-FUNCTIONS> 
+      ...
+      #<FUNCTION FUNCTIONS> #<FUNCTION MAKE-SYSTEM-GRAPH>)
+@end(code)
+"
+  (let ((rez nil))
+    (map 'nil
+         #'(lambda (el) (push (alexandria:ensure-function `(setf ,el)) rez))
+         (filter-setf-functions
+          (package-symbols-by-category
+           package-name
+           :external  external
+           :internal  internal
+           :inherited inherited)))
     rez))
 
 (defun package-classes (package-name
@@ -400,3 +454,8 @@
   (apply #'append
          (loop :for generic :in (package-generics package-name :external external :internal internal :inherited inherited)
         :collect (sb-mop:generic-function-methods generic))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+

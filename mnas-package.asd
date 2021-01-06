@@ -4,12 +4,13 @@
   :description "Describe mnas-package here"
   :author "Nick Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
-  :version "0.0.8"
+  :version "0.0.9"
   :serial nil
   :depends-on ("mnas-package/obj"
                "mnas-package/pkg"
                "mnas-package/make"
                "mnas-package/view"
+               "mnas-package/example"
                "mnas-string") ;;  "mnas-graph" "codex" "trivial-documentation"
   :components
   ((:file "package")
@@ -17,9 +18,9 @@
     :serial nil
     :components
     ((:file "mnas-package")
-     (:file "codex" :depends-on ("mnas-package"))
+     ;; (:file "codex" :depends-on ("mnas-package"))
      ;; (:file "cl-user-import-symbols" :depends-on ("mnas-package"))
-     (:file "codex-method")
+     ;; (:file "codex-method")
      ;; (:file "demos" :depends-on ("mnas-package"))     
      ))))
 
@@ -78,7 +79,7 @@
   :depends-on ("mnas-package" "mnas-package/example" "fiveam")
   :perform (test-op (o s)
 		    (uiop:symbol-call :math-tests :test-math))
-  :components ((:module "tests"
+  :components ((:module "src/tests"
 			:serial t
 			:components ((:file "package")
 				     (:file "main")

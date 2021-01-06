@@ -93,10 +93,22 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defmethod insert-codex-doc (symbol &key (stream t) (min-doc-length 80))
+  (when (and (eq (mpkg/obj:obj-package symbol) *package*)
+             (< min-doc-length (length (documentation symbol t))))
+    (format stream "~%  @cl:doc(variable ~s)"
+            (mpkg/obj:obj-name symbol))))
+
 (defmethod insert-codex-doc ((function function) &key (stream t) (min-doc-length 80))
   (when (and (eq (mpkg/obj:obj-package function) *package*)
              (< min-doc-length (length (documentation function t))))
-    (format stream "~%  @cl:doc(function ~s)" (mpkg/obj:obj-name function))))
+    (let ((name (nth-value 2 (function-lambda-expression function))))
+      (cond ((symbolp name)
+             (format stream "~%  @cl:doc(function ~s)"
+                     (mpkg/obj:obj-name function)))
+            ((listp   name)
+             (format stream "~%  @cl:doc(setf-function ~s)"
+                     (mpkg/obj:obj-name function)))))))
 
 (defmethod insert-codex-doc ((generic standard-generic-function) &key (stream t) (min-doc-length 80))
   (when (and (eq (mpkg/obj:obj-package generic) *package*)
@@ -335,6 +347,47 @@
 (make-codex-section-functions :mnas-package)
 |#
 
+(defun make-codex-section-setf-functions (package-name
+                                          &key
+                                            (stream t)
+                                            (external t)
+                                            (internal nil)
+                                            (inherited nil)
+                                            (sort t)
+                                            (min-doc-length 80)
+                                          &aux (package (find-package package-name)))
+  "@b(Описание:) функция @b(make-codex-section-setf-functions) выводит в поток stream
+секцию с документацией в формате codex, содержащую setf-функции из пакета package-name.
+
+ @b(Переменые:)
+@begin(list)
+@item(package-name - пакет с функциями для вывода в поток.)
+@item(stream       - поток, в который выводятся даннные о функциях.)
+@item(external     - если не nil - в поток выводятся информация о эксполртируемых функциях.)
+@item(internal     - если не nil - в поток выводятся информация о внутренних функциях.)
+@item(inherited    - если не nil - в поток выводятся информация о заимствованных функциях.)
+@item(sort         - если не nil - функции сортируются в алфавитном порядке.)
+@end(list)
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (make-codex-section-setf-functions :mnas-package/example :external t :internal t :sort t) 
+@end(code)
+"  
+  (declare ((or package string symbol) package-name))
+  (let ((pkg-old *package*)
+        (print-case *print-case*))
+    (setf *package* package *print-case* :downcase)
+    (let ((setf-funcs (mpkg/pkg:package-setf-functions package :external external :internal internal :inherited inherited)))
+      (format stream "@begin(section)~% @title(Setf Функции)~% @cl:with-package[name=~S]("
+	      (mpkg/obj:obj-name package))
+      (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
+           (if sort
+               (sort setf-funcs #'string< :key #'(lambda (elem) (mpkg/obj:obj-name elem)))
+               setf-funcs))
+      (format stream ")~%@end(section)~%"))
+    (setf *package* pkg-old *print-case* print-case)))
+
 (defun make-codex-section-generics (package-name
                                     &key
                                       (stream t)
@@ -471,14 +524,15 @@ scr-файл системы документирования codex. Этот р�
  @b(Пример использования:)
 @begin[lang=lisp](code)
  (require :temperature-fild)
- (make-codex-documentation :mnas-package) 
+ (make-codex-documentation :mnas-package :internal t) 
  (make-codex-documentation :mtf/splot)
  (make-codex-documentation :mtf/t-fild)
 @end(code)
 "
   (make-codex-section-package   package :stream stream)
-  (make-codex-section-variables package :stream stream :external external :internal internal :inherited inherited :sort sort)
+;; (make-codex-section-variables package :stream stream :external external :internal internal :inherited inherited :sort sort)
   (make-codex-section-functions package :stream stream :external external :internal internal :inherited inherited :sort sort)
+  (make-codex-section-setf-functions package :stream stream :external external :internal internal :inherited inherited :sort sort)
   (make-codex-section-generics  package :stream stream :external external :internal internal :inherited inherited :sort sort)
   (make-codex-section-methods   package :stream stream :external external :internal internal :inherited inherited :sort sort)
   (make-codex-section-classes   package :stream stream :external external :internal internal :inherited inherited :sort sort))
@@ -561,3 +615,5 @@ scr-файл системы документирования codex. Этот р�
 	(setf class (pop l-not-obr))
 	(push class rez-classes)
 	(bar class)))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

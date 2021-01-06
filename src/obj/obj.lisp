@@ -43,7 +43,7 @@
 
 (defmethod obj-name ((symbol symbol))
   "@b(Описание:) метод @b(obj-name) возвращает символ,
-представляющий имя функции."
+представляющий имя символа."
   symbol)
 
 (defmethod obj-name ((function function))
@@ -54,7 +54,9 @@
 @begin[lang=lisp](code)
  (obj-name (second (package-functions :mnas-package)))
 @end(code)"
-  (nth-value 2 (function-lambda-expression function)))
+  (let ((name (nth-value 2 (function-lambda-expression function))))
+    (cond ((symbolp name) name)
+          ((listp   name) (second name)))))
 
 (defmethod obj-name ((generic standard-generic-function))
   "@b(Описание:) метод @b(obj-name) возвращает символ,
