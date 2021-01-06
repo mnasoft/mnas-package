@@ -1,6 +1,12 @@
 ;;;; ./src/example/example.lisp
 
-(defpackage #:mnas-package/example (:use #:cl))
+(defpackage #:mnas-package/example
+  (:use #:cl)
+  (:export *a*
+           baz
+           baz-short
+           <c>
+           ))
 
 (in-package :mnas-package/example)
 
@@ -8,132 +14,149 @@
   "Documentation for function *a* ==================================================================")
 
 (defparameter *b* '(0 1 2 3 4 5 6)
-  "Documentation for function *b*")
+  "Documentation for function *b* ==================================================================")
 
-(defun f-foo ()
-  "Documentation for function f-foo ================================================================"
+(defparameter *c* '(0 1 2 3 4 5 6)
+  "Documentation for function *c*")
+
+(defun foo ()
+  "Documentation for function foo =================================================================="
   t)
 
-(defun (setf f-foo) (val lst n)
-  "Documentation for function (setf f-foo) =========================================================" 
+(defun (setf foo) (val lst n)
+  "Documentation for function (setf foo) ===========================================================" 
   (setf (nth n lst) (* val val))
   lst)
 
-(defun f-bar ()
-  "Documentation for function f-bar ================================================================"
-  (f-foo))
+(defun bar ()
+  "Documentation for function bar =================================================================="
+  (foo))
 
-(defun f-baz ()
-  "Documentation for function f-baz ================================================================"
-    (f-bar))
+(defun baz ()
+  "Documentation for function baz =================================================================="
+  (bar))
 
-(defun fs-foo ()
-    "Documentation for function fs-foo"  
-    t)
+(defun foo-short ()
+  "Documentation for function foo-short"  
+  t)
 
-(defun fs-bar ()
-    "Documentation for function fs-bar"
-    (f-foo))
+(defun bar-short ()
+  "Documentation for function bar-short"
+  (foo))
 
-(defun fs-baz ()
-    "Documentation for function fs-baz"
-    (fs-bar))
+(defun baz-short ()
+  "Documentation for function baz-short"
+  (bar-short))
 
 (defclass <a> () ()
-    (:documentation
-     "Documentation for class <a> =================================================================="))
+  (:documentation
+   "Documentation for class <a> ===================================================================="))
 
 (defclass <b> (<a>) ()
-    (:documentation
-     "Documentation for class <b> ================================================================================"))
+  (:documentation
+   "Documentation for class <b> ===================================================================="))
 
 (defclass <c> (<b>) ()
-    (:documentation
-     "Documentation for class <c> ================================================================================"))
+  (:documentation
+   "Documentation for class <c> ===================================================================="))
 
-(defclass <a-s> () ()
-    (:documentation
-     "Documentation for class <a-s>"))
+(defclass <a-short> () ()
+  (:documentation
+   "Documentation for class <a-short>"))
 
-(defclass <b-s> (<a>) ()
-    (:documentation
-     "Documentation for class <b-s>"))
+(defclass <b-short> (<a-short>) ()
+  (:documentation
+   "Documentation for class <b-s>"))
 
-(defclass <c-s> (<b>) ()
-    (:documentation
-     "Documentation for class <c-s>"))
+(defclass <c-short> (<b-short>) ()
+  (:documentation
+   "Documentation for class <c-s>"))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defgeneric m-foo (x y z)
-    (:documentation
-     "Documentation for defgeneric m-foo ================================================================================"))
+  (:documentation
+   "Documentation for defgeneric m-foo ============================================================="))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defmethod m-foo ((x <a>) (y <b>) (z <c>))
-    "Documentation for defmethod m-foo (x <a>) (y <b>) (z <c>)  =================================================="
-    t)
+  "Documentation for defmethod m-foo (x <a>) (y <b>) (z <c>)  ======================================"
+  t)
 
 (defmethod m-foo :after ((x <a>) (y <b>) (z <c>))
-    "Documentation for defmethod m-foo :after (x <a>) (y <b>) (z <c>) =================================================="
-    t)
+  "Documentation for defmethod m-foo :after (x <a>) (y <b>) (z <c>) ================================"
+  t)
 
 (defmethod m-foo :before ((x <a>) (y <b>) (z <c>))
-    "Documentation for defmethod m-foo :before (x <a>) (y <b>) (z <c>) =================================================="
-    t)
+  "Documentation for defmethod m-foo :before (x <a>) (y <b>) (z <c>) ==============================="
+  t)
 
 (defmethod m-foo :around ((x <a>) (y <b>) (z <c>))
-    "Documentation for defmethod m-foo :before (x <a>) (y <b>) (z <c>) =================================================="
-    t)
+  "Documentation for defmethod m-foo :before (x <a>) (y <b>) (z <c>) ==============================="
+  t)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defmethod m-foo ((x <a>) (y <b>) z)
-    "Documentation for defmethod m-foo (x <a>) (y <b>) (z <c>) =================================================="
-    t)
+  "Documentation for defmethod m-foo (x <a>) (y <b>) (z <c>) ======================================="
+  t)
 
 (defmethod m-foo :after ((x <a>) (y <b>) z)
-    "Documentation for defmethod m-foo :after (x <a>) (y <b>) (z <c>) =================================================="
-    t)
+  "Documentation for defmethod m-foo :after (x <a>) (y <b>) (z <c>) ================================"
+  t)
 
 (defmethod m-foo :before ((x <a>) (y <b>) z)
-    "Documentation for defmethod m-foo :before (x <a>) (y <b>) (z <c>) =================================================="
-    t)
+  "Documentation for defmethod m-foo :before (x <a>) (y <b>) (z <c>) ================================"
+  t)
 
 (defmethod m-foo :around ((x <a>) (y <b>) z)
-    "Documentation for defmethod m-foo :before (x <a>) (y <b>) (z <c>) =================================================="
-    t)
+  "Documentation for defmethod m-foo :before (x <a>) (y <b>) (z <c>) ================================"
+  t)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defgeneric ms-foo (x y z)
-    (:documentation
-     "Documentation for defgeneric ms-foo"))
+(defgeneric m-foo-short (x y z)
+  (:documentation
+   "Documentation for defgeneric m-foo-short"))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defmethod ms-foo ((x <a>) (y <b>) (z <c>))
-    "Documentation for defmethod ms-foo (x <a>) (y <b>) (z <c>)"
-    t)
+(defmethod m-foo-short ((x <a>) (y <b>) (z <c>))
+  "Documentation for defmethod m-foo-short (x <a>) (y <b>) (z <c>)"
+  t)
 
-(defmethod ms-foo :after ((x <a>) (y <b>) (z <c>))
-    "Documentation for defmethod ms-foo :after (x <a>) (y <b>) (z <c>)"
-    t)
+(defmethod m-foo-short :after ((x <a>) (y <b>) (z <c>))
+  "Documentation for defmethod m-foo-short :after (x <a>) (y <b>) (z <c>)"
+  t)
 
-(defmethod ms-foo :before ((x <a>) (y <b>) (z <c>))
-    "Documentation for defmethod ms-foo :before (x <a>) (y <b>) (z <c>)"
-    t)
+(defmethod m-foo-short :before ((x <a>) (y <b>) (z <c>))
+  "Documentation for defmethod m-foo-short :before (x <a>) (y <b>) (z <c>)"
+  t)
 
-(defmethod ms-foo :around ((x <a>) (y <b>) (z <c>))
-    "Documentation for defmethod ms-foo :before (x <a>) (y <b>) (z <c>)"
-    t)
+(defmethod m-foo-short :around ((x <a>) (y <b>) (z <c>))
+  "Documentation for defmethod m-foo-short :before (x <a>) (y <b>) (z <c>)"
+  t)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defmethod ms-foo ((x <a>) (y <b>) z)
-    "Documentation for defmethod ms-foo (x <a>) (y <b>) z"
-    t)
 
-(defmethod ms-foo :after ((x <a>) (y <b>) z)
-    "Documentation for defmethod ms-foo :after (x <a>) (y <b>) <c>"
-    t)
+(defmethod m-foo-short ((x <a>) (y <b>) z)
+  "Documentation for defmethod m-foo-short (x <a>) (y <b>) z"
+  t)
 
-(defmethod ms-foo :before ((x <a>) (y <b>) z)
-    "Documentation for defmethod ms-foo :before (x <a>) (y <b>) <c>"
-    t)
+(defmethod m-foo-short :after ((x <a>) (y <b>) z)
+  "Documentation for defmethod m-foo-short :after (x <a>) (y <b>) <c>"
+  t)
 
-(defmethod ms-foo :around ((x <a>) (y <b>) z)
-    "Documentation for defmethod ms-foo :before (x <a>) (y <b>) z"
-    t)  
+(defmethod m-foo-short :before ((x <a>) (y <b>) z)
+  "Documentation for defmethod m-foo-short :before (x <a>) (y <b>) <c>"
+  t)
+
+(defmethod m-foo-short :around ((x <a>) (y <b>) z)
+  "Documentation for defmethod m-foo-short :before (x <a>) (y <b>) z"
+  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+

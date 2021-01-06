@@ -17,12 +17,7 @@
    (:module "src" :depends-on ("package")
     :serial nil
     :components
-    ((:file "mnas-package")
-     ;; (:file "codex" :depends-on ("mnas-package"))
-     ;; (:file "cl-user-import-symbols" :depends-on ("mnas-package"))
-     ;; (:file "codex-method")
-     ;; (:file "demos" :depends-on ("mnas-package"))     
-     ))))
+    ((:file "mnas-package")))))
 
 (defsystem "mnas-package/obj"
   :description "Содержит некоторые функции и обобщенные функции,
@@ -78,7 +73,7 @@
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :depends-on ("mnas-package" "mnas-package/example" "fiveam")
   :perform (test-op (o s)
-		    (uiop:symbol-call :math-tests :test-math))
+		    (uiop:symbol-call :run-tests :mnas-package/tests))
   :components ((:module "src/tests"
 			:serial t
 			:components ((:file "package")

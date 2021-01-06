@@ -93,9 +93,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod insert-codex-doc (symbol &key (stream t) (min-doc-length 80))
+(defmethod insert-codex-doc ((symbol symbol) &key (stream t) (min-doc-length 80))
   (when (and (eq (mpkg/obj:obj-package symbol) *package*)
-             (< min-doc-length (length (documentation symbol t))))
+             (< min-doc-length (length (documentation symbol 'variable))))
     (format stream "~%  @cl:doc(variable ~s)"
             (mpkg/obj:obj-name symbol))))
 
@@ -164,14 +164,14 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun make-codex-section-classes (package-name
-                                     &key
-                                       (stream t)
-                                       (external t)
-                                       (internal nil)
-                                       (inherited nil)
-                                       (sort t)
-                                       (min-doc-length 80)
-                                     &aux (package (find-package package-name)))
+                                   &key
+                                     (stream t)
+                                     (external t)
+                                     (internal nil)
+                                     (inherited nil)
+                                     (sort t)
+                                     (min-doc-length 80)
+                                   &aux (package (find-package package-name)))
   "@b(Описание:) функция @b(make-codex-section-classes) выводит в поток @b(stream)
 секцию с документацией в формате codex, содержащую классы из пакета @b(package-name).
 
@@ -192,14 +192,18 @@
  @end(code)
 "  
   (declare ((or package string symbol) package-name))
-  (let ((classes (mpkg/pkg:package-classes package :external external :internal internal :inherited inherited)))
-    (format stream "@begin(section)~% @title(Классы)~% @cl:with-package[name=~S]("
-	    (mpkg/obj:obj-name package))
-    (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
-	 (if sort
-	     (sort classes #'string< :key #'(lambda (elem) (string-downcase (mpkg/obj:obj-name elem))))
-	     classes))
-    (format stream ")~%@end(section)~%")))
+  (let ((pkg-old *package*) (print-case *print-case*))
+    (setf *package* package *print-case* :downcase)
+    (let ((classes (mpkg/pkg:package-classes package :external external :internal internal :inherited inherited)))
+      (format stream "@begin(section)~% @title(Классы)~% @cl:with-package[name=~S]("
+	      (mpkg/obj:obj-name package))
+      (map nil #'(lambda (el)
+                   (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
+	   (if sort
+	       (sort classes #'string< :key #'(lambda (elem) (string-downcase (mpkg/obj:obj-name elem))))
+	       classes))
+      (format stream ")~%@end(section)~%"))
+    (setf *package* pkg-old *print-case* print-case)))
 
 (defun make-codex-section-variables (package-name
                                      &key
@@ -530,7 +534,7 @@ scr-файл системы документирования codex. Этот р�
 @end(code)
 "
   (make-codex-section-package   package :stream stream)
-;; (make-codex-section-variables package :stream stream :external external :internal internal :inherited inherited :sort sort)
+  (make-codex-section-variables package :stream stream :external external :internal internal :inherited inherited :sort sort)
   (make-codex-section-functions package :stream stream :external external :internal internal :inherited inherited :sort sort)
   (make-codex-section-setf-functions package :stream stream :external external :internal internal :inherited inherited :sort sort)
   (make-codex-section-generics  package :stream stream :external external :internal internal :inherited inherited :sort sort)
