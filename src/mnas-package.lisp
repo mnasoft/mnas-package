@@ -1,4 +1,58 @@
-;;;; mnas-package.lisp
+;;;; ./src/mnas-package.lisp
+
+(defpackage #:mnas-package
+  (:use #:cl ) ;;;; #:mnas-package/make-graph
+  (:nicknames "MPKG")
+  (:intern insert-codex-doc)
+  (:export class-undirect-subclasses)
+  (:export make-codex-documentation)
+  (:intern make-codex-section-package ;;; Информация о пакете  пока не реализована
+           make-codex-section-system ;;; Информация о системе пока не реализована
+           make-codex-section-variables 
+           make-codex-section-functions
+           make-codex-section-generics
+           make-codex-section-methods
+           make-codex-section-classes)
+  (:export make-codex-graphs)
+  (:export make-doc-generics
+           make-doc-methods)
+  (:documentation
+   " Система @b(mnas-package) предназначена для подготовки документации,
+извлекаемой из asdf-систем.
+
+@begin(section) @title(Мотивация)
+
+ Система @b(Codex) является достаточно удобной для выполнения документирования
+систем написанных с использованием @b(Common Lisp). Он позволяет получить на
+выходе документацию приемлемого вида.
+
+ К недостатку сустемы @b(Codex) можно отнести то, что формирование шаблона
+документации не выполняется автоматически. Указание на включение разделов
+документации, относящихся к отдельным сущностям к которым можно отнести:
+@begin(list) @item(системы;) @item(пакеты;) @item(классы;) @item(функции,
+setf-функции;) @item(обобщенные функции, методы, setf-методы;) @item(макросы;)
+@item(и т.д., и т.п.)  @end(list) приходится формировать вручную.
+
+ Этот проект пытается устранить данный недостаток сустемы @b(Codex) за счет
+определения функций и методов позволяющих:
+@begin(list)
+ @item(формировать код, предназначенный для передачи в систему @b(Codex);)
+ @item(формировать представление отдельных частей системы в виде графов.)
+@end(list)
+
+@end(section)
+
+
+ Извлеченная информация представляется в виде графов.
+
+ Система позволяет построить следующие графы:
+@begin(list)
+ @item(зависимостей систем @image[src=./system-graph-mnas-package.gv.png]())
+ @item(вызовов функций     @image[src=./call-graph-mnas-package.gv.png]())
+ @item(использования символов функциями @image[src=./symbol-graph-mnas-package.gv.png]())
+ @item(наследования классов  @image[src=./class-graph-mnas-package.gv.png]())
+@end(list)"
+   ))
 
 (in-package #:mnas-package)
 

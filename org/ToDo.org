@@ -14,6 +14,12 @@
 
 * [14/22] Задачи
 1. [ ] Тестирование добавить тесты.
+   - [ ] mnas-package
+   - [ ] mnas-package/obj
+   - [ ] mnas-package/pkg
+   - [ ] mnas-package/make
+   - [ ] mnas-package/view
+   - [ ] mnas-package/example
 2. [-] Добавить функции поиска и вывода документации для нодов следующих типов:
    - [X] "function"      - 'docparser:function-node;
    - [X] "setf-function" - 'docparser:function-node;
