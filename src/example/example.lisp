@@ -98,37 +98,37 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod m-foo ((x <a>) (y <b>) (z <c>))
-  "Documentation for defmethod m-foo (x <a>) (y <b>) (z <c>)  ======================================"
+  "Documentation for defmethod m-foo (x <a>) (y <b>) (z <c>)  01 ==================================="
   t)
 
 (defmethod m-foo :after ((x <a>) (y <b>) (z <c>))
-  "Documentation for defmethod m-foo :after (x <a>) (y <b>) (z <c>) ================================"
+  "Documentation for defmethod m-foo :after (x <a>) (y <b>) (z <c>) 02 ============================="
   t)
 
 (defmethod m-foo :before ((x <a>) (y <b>) (z <c>))
-  "Documentation for defmethod m-foo :before (x <a>) (y <b>) (z <c>) ==============================="
+  "Documentation for defmethod m-foo :before (x <a>) (y <b>) (z <c>) 03 ============================"
   t)
 
 (defmethod m-foo :around ((x <a>) (y <b>) (z <c>))
-  "Documentation for defmethod m-foo :before (x <a>) (y <b>) (z <c>) ==============================="
+  "Documentation for defmethod m-foo :before (x <a>) (y <b>) (z <c>) 04 ============================"
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod m-foo ((x <a>) (y <b>) z)
-  "Documentation for defmethod m-foo (x <a>) (y <b>) (z <c>) ======================================="
+  "Documentation for defmethod m-foo (x <a>) (y <b>) (z <c>) 05 ===================================="
   t)
 
 (defmethod m-foo :after ((x <a>) (y <b>) z)
-  "Documentation for defmethod m-foo :after (x <a>) (y <b>) (z <c>) ================================"
+  "Documentation for defmethod m-foo :after (x <a>) (y <b>) (z <c>) 06 ============================="
   t)
 
 (defmethod m-foo :before ((x <a>) (y <b>) z)
-  "Documentation for defmethod m-foo :before (x <a>) (y <b>) (z <c>) ================================"
+  "Documentation for defmethod m-foo :before (x <a>) (y <b>) (z <c>) 07 ============================"
   t)
 
 (defmethod m-foo :around ((x <a>) (y <b>) z)
-  "Documentation for defmethod m-foo :before (x <a>) (y <b>) (z <c>) ================================"
+  "Documentation for defmethod m-foo :before (x <a>) (y <b>) (z <c>) 08 ============================"
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -138,37 +138,37 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod m-foo-short ((x <a>) (y <b>) (z <c>))
-  "Documentation for defmethod m-foo-short (x <a>) (y <b>) (z <c>)"
+  "Documentation for defmethod m-foo-short (x <a>) (y <b>) (z <c>) 01"
   t)
 
 (defmethod m-foo-short :after ((x <a>) (y <b>) (z <c>))
-  "Documentation for defmethod m-foo-short :after (x <a>) (y <b>) (z <c>)"
+  "Documentation for defmethod m-foo-short :after (x <a>) (y <b>) (z <c>) 02"
   t)
 
 (defmethod m-foo-short :before ((x <a>) (y <b>) (z <c>))
-  "Documentation for defmethod m-foo-short :before (x <a>) (y <b>) (z <c>)"
+  "Documentation for defmethod m-foo-short :before (x <a>) (y <b>) (z <c>) 03"
   t)
 
 (defmethod m-foo-short :around ((x <a>) (y <b>) (z <c>))
-  "Documentation for defmethod m-foo-short :before (x <a>) (y <b>) (z <c>)"
+  "Documentation for defmethod m-foo-short :before (x <a>) (y <b>) (z <c>) 04"
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod m-foo-short ((x <a>) (y <b>) z)
-  "Documentation for defmethod m-foo-short (x <a>) (y <b>) z"
+  "Documentation for defmethod m-foo-short (x <a>) (y <b>) z 05"
   t)
 
 (defmethod m-foo-short :after ((x <a>) (y <b>) z)
-  "Documentation for defmethod m-foo-short :after (x <a>) (y <b>) <c>"
+  "Documentation for defmethod m-foo-short :after (x <a>) (y <b>) <c> 06"
   t)
 
 (defmethod m-foo-short :before ((x <a>) (y <b>) z)
-  "Documentation for defmethod m-foo-short :before (x <a>) (y <b>) <c>"
+  "Documentation for defmethod m-foo-short :before (x <a>) (y <b>) <c> 07"
   t)
 
 (defmethod m-foo-short :around ((x <a>) (y <b>) z)
-  "Documentation for defmethod m-foo-short :before (x <a>) (y <b>) z"
+  "Documentation for defmethod m-foo-short :before (x <a>) (y <b>) z 08"
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

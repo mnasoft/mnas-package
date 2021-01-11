@@ -456,11 +456,11 @@ var. Возвращает список, каждым элементом кото
      #<STANDARD-METHOD MNAS-PACKAGE/EXAMPLE::M-FOO-SHORT (MNAS-PACKAGE/EXAMPLE::<A> MNAS-PACKAGE/EXAMPLE::<B> MNAS-PACKAGE/EXAMPLE:<C>) {1001C6CAC3}>)
 @end(code)
 "
-  (apply #'append
-         (loop :for generic :in (package-generics package-name :external external :internal internal :inherited inherited)
-        :collect (sb-mop:generic-function-methods generic))))
+ (apply #'append 
+        (mapcar #'sb-mop:generic-function-methods
+                (package-generics package-name
+                                  :external  external
+                                  :internal  internal
+                                  :inherited inherited))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-

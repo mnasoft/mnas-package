@@ -35,7 +35,7 @@
 setf-функции;) @item(обобщенные функции, методы, setf-методы;) @item(макросы;)
 @item(и т.д., и т.п.)  @end(list) приходится формировать вручную.
 
- Этот проект пытается устранить данный недостаток сустемы @b(Codex) за счет
+ Этот проект пытается устранить данный недостаток системы @b(Codex) за счет
 определения функций и методов позволяющих:
 @begin(list)
  @item(формировать код, предназначенный для передачи в систему @b(Codex);)
@@ -142,15 +142,6 @@ setf-функции;) @item(обобщенные функции, методы, s
                             :end2 (length prefix)))
           collect gf))
 
-#|
-(require :temperature-fild/t-fild)
-(find-all-generics (find-class 'mtf/t-fild:<t-fild>) "SPLOT")
-(sb-mop:generic-function-name
- (first                                  
-  (mnas-package::find-all-generics (find-class 'mtf/t-fild:<t-fild>) "SPLOT")))
-|#
-;;;;;;;;;;;;;;;;;;;;
-
 (defun find-all-methods (class prefix)
   "(pprint (find-all-methods (find-class 'mtf:<sector>) \"SEC\"))"
   (loop :for method :in (sb-mop:specializer-direct-methods class)
@@ -171,54 +162,59 @@ setf-функции;) @item(обобщенные функции, методы, s
   (:documentation "@b(Описание:) обобщенная функция @b(make-codex-doc)
 выводит в поток @b(stream) код для вставки документации, относящейся к 
 объекту @b(obj). Документация объекта выводится в поток только если
-ее длина превышает @b(min-doc-length).
-"))
+ее длина превышает @b(min-doc-length). 
+
+ Возвращает: 
+@begin(list)
+ @item(@b(t) - если документация была выведена в поток;)
+ @item(@b(nil) - если документация не была выведена в поток.)
+@end(list)"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod insert-codex-doc ((symbol symbol) &key (stream t) (min-doc-length 80) (pkg *package*))
-  (when (and (eq (mpkg/obj:obj-package symbol) pkg)
-             (< min-doc-length (length (documentation symbol 'variable))))
-    (format stream "~%  @cl:doc(variable ~s)"
-            (mpkg/obj:obj-name symbol))))
+(defmethod insert-codex-doc ((symbol symbol)
+                             &key (stream t) (min-doc-length 80))
+  " @b(Пример использования:) 
+@begin[lang=lisp](code)
+ (mapcar #'insert-codex-doc (mpkg/pkg:package-variables :mnas-package/example :internal t))
+@end(code)
+"
+  (when (< min-doc-length (length (documentation symbol 'variable)))
+    (format stream "~%  @cl:doc(variable ~s)" (mpkg/obj:obj-name symbol))
+    t))
 
-(defmethod insert-codex-doc ((function function) &key (stream t) (min-doc-length 80) (pkg *package*))
-  (when (and (eq (mpkg/obj:obj-package function) pkg)
-             (< min-doc-length (length (documentation function t))))
+(defmethod insert-codex-doc ((function function)
+                             &key (stream t) (min-doc-length 80))
+  (when (< min-doc-length (length (documentation function t)))
     (let ((name (nth-value 2 (function-lambda-expression function))))
       (cond ((symbolp name)
              (format stream "~%  @cl:doc(function ~s)"
-                     (mpkg/obj:obj-name function)))
+                     (mpkg/obj:obj-name function))
+             t)
             ((and (listp name) (eq 'macro-function (first name)))
              (format stream "~%  @cl:doc(macro ~s)"
-                     (mpkg/obj:obj-name function)))
+                     (mpkg/obj:obj-name function))
+             t)
             ((and (listp name) (eq 'setf (first name)))
              (format stream "~%  @cl:doc(setf-function ~s)"
-                     (mpkg/obj:obj-name function)))))))
+                     (mpkg/obj:obj-name function))
+             t)))))
 
 (defmethod insert-codex-doc ((generic standard-generic-function)
-                             &key (stream t) (min-doc-length 80) (pkg *package*))
-  (when (and (eq (mpkg/obj:obj-package generic) pkg)
-             (< min-doc-length (length (documentation generic t))))
-    (format stream "~&  @cl:doc(generic ~s)" (mpkg/obj:obj-name generic))))
+                             &key (stream t) (min-doc-length 80))
+  (when (< min-doc-length (length (documentation generic t)))
+    (format stream "~&  @cl:doc(generic ~s)" (mpkg/obj:obj-name generic))
+    t))
 
-#|
-(insert-codex-doc (first (find-all-generics (find-class 'standard-generic-function) "")))
-|#
+(defmethod insert-codex-doc ((class class) &key (stream t) (min-doc-length 80))
+  (when (< min-doc-length (length (documentation class t)))
+    (format stream "~&  @cl:doc(class ~s)" (mpkg/obj:obj-name class))
+    t))
 
-(defmethod insert-codex-doc ((class class) &key (stream t) (min-doc-length 80) (pkg *package*))
-  (when (and (eq (mpkg/obj:obj-package class) pkg)
-             (< min-doc-length (length (documentation class t))))
-    (format stream "~&  @cl:doc(class ~s)" (mpkg/obj:obj-name class))))
-
-#|
-(mpkg::insert-codex-doc (find-class 'dxf::acad-line))
-|#
-
-(defmethod insert-codex-doc ((method method) &key (stream t) (min-doc-length 80) (pkg *package*))
+(defmethod insert-codex-doc ((method method) &key (stream t) (min-doc-length 80))
   "(insert-codex-doc (find-package :mpkg))"
-  (when (and (eq (mpkg/obj:obj-package method) pkg)
-             (< min-doc-length (length (documentation method t))))
+  ;; (break ": ~S" method)
+  (when (< min-doc-length (length (documentation method t)))
     (block method-name
       (format stream "~&  @cl:doc(method ~s" (mpkg/obj:obj-name method))
       (let ((mqs (sb-mop:method-qualifiers method)))
@@ -240,13 +236,18 @@ setf-функции;) @item(обобщенные функции, методы, s
                #'(lambda (el) (format stream "~a" (format nil " ~s" el)))
                (nthcdr (length msp) mll)))
         (block method-end
-          (format stream ")"))))))
+          (format stream ")"))))
+    t))
 
-(defmethod insert-codex-doc ((package package) &key (stream t) (min-doc-length 80) (pkg package))
-  "(insert-codex-doc (find-package :mpkg))"
-  (when (and (eq (mpkg/obj:obj-package package) pkg)
-             (< min-doc-length (length (documentation package t))))
-    (format stream "~a" (documentation package t))))
+(defmethod insert-codex-doc ((package package)
+                             &key (stream t) (min-doc-length 80))
+  " @b(Пример использования:)
+@begin[lang=lisp](code)
+ (insert-codex-doc (find-package :mpkg))
+@end(code) "
+  (when (< min-doc-length (length (documentation package t)))
+    (format stream "~a" (documentation package t))
+    t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -256,7 +257,7 @@ setf-функции;) @item(обобщенные функции, методы, s
                                      (external t)
                                      (internal nil)
                                      (inherited nil)
-                                     (sort t)
+                                     (sort nil)
                                      (min-doc-length 80)
                                    &aux (package (find-package package-name)))
   "@b(Описание:) функция @b(make-codex-section-classes) выводит в поток @b(stream)
@@ -275,7 +276,7 @@ setf-функции;) @item(обобщенные функции, методы, s
       (format stream "@begin(section)~% @title(Классы)~% @cl:with-package[name=~S]("
 	      (mpkg/obj:obj-name package))
       (map nil #'(lambda (el)
-                   (insert-codex-doc el :stream stream :min-doc-length min-doc-length :pkg package))
+                   (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
 	   (if sort
 	       (sort classes #'string< :key #'(lambda (elem) (string-downcase (mpkg/obj:obj-name elem))))
 	       classes))
@@ -288,21 +289,11 @@ setf-функции;) @item(обобщенные функции, методы, s
                                        (external t)
                                        (internal nil)
                                        (inherited nil)
-                                       (sort t)
+                                       (sort nil)
                                        (min-doc-length 80)
                                      &aux (package (find-package package-name)))
   "@b(Описание:) функция @b(make-codex-section-classes) выводит в поток @b(stream)
 секцию с документацией в формате codex, содержащую переменные из пакета @b(package-name).
-
- @b(Переменые:)
-@begin(list)
-@item(package-name - пакет с функциями для вывода в поток.)
-@item(stream       - поток, в который выводятся даннные о функциях.)
-@item(external     - если не nil - в поток выводятся информация о эксполртируемых функциях.)
-@item(internal     - если не nil - в поток выводятся информация о внутренних функциях.)
-@item(inherited    - если не nil - в поток выводятся информация о заимствованных функциях.)
-@item(sort         - если не nil - функции сортируются в алфавитном порядке.)
-@end(list)
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
@@ -316,7 +307,7 @@ setf-функции;) @item(обобщенные функции, методы, s
     (let ((variables (mpkg/pkg:package-variables package :external external :internal internal :inherited inherited)))
       (format stream "@begin(section)~% @title(Переменные)~% @cl:with-package[name=~S]("
 	      (mpkg/obj:obj-name package))
-      (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length :pkg package))
+      (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
 	   (if sort
 	       (sort variables #'string< :key #'(lambda (elem) (string-downcase (mpkg/obj:obj-name elem))))
 	       variables))
@@ -331,7 +322,7 @@ setf-функции;) @item(обобщенные функции, методы, s
                                      (external  t)
                                      (internal  nil)
                                      (inherited nil)
-                                     (sort t)
+                                     (sort nil)
                                      (min-doc-length 80)
                                    &aux (package (find-package package-name)))
   "@b(Описание:) функция @b(make-codex-section-methods) выводит в поток @b(stream)
@@ -350,7 +341,7 @@ setf-функции;) @item(обобщенные функции, методы, s
               (mpkg/obj:obj-name package))
       (map nil
 	   #'(lambda (el)
-               (insert-codex-doc el :stream stream :min-doc-length min-doc-length :pkg package))
+               (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
 	   (if sort
 	       (sort methods #'string<
                      :key #'(lambda (elem)
@@ -375,7 +366,7 @@ setf-функции;) @item(обобщенные функции, методы, s
                                        (external t)
                                        (internal nil)
                                        (inherited nil)
-                                       (sort t)
+                                       (sort nil)
                                        (min-doc-length 80)
                                      &aux (package (find-package package-name)))
   "@b(Описание:) функция make-codex-section-functions выводит в поток stream
@@ -392,7 +383,7 @@ setf-функции;) @item(обобщенные функции, методы, s
     (let ((funcs (mpkg/pkg:package-functions package :external external :internal internal :inherited inherited)))
       (format stream "@begin(section)~% @title(Функции)~% @cl:with-package[name=~S]("
 	      (mpkg/obj:obj-name package))
-      (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length :pkg package))
+      (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
 	   (if sort
 	       (sort funcs #'string< :key #'(lambda (elem) (string-downcase (slynk-backend:function-name elem))))
 	       funcs))
@@ -405,21 +396,11 @@ setf-функции;) @item(обобщенные функции, методы, s
                                        (external t)
                                        (internal nil)
                                        (inherited nil)
-                                       (sort t)
+                                       (sort nil)
                                        (min-doc-length 80)
                                      &aux (package (find-package package-name)))
   "@b(Описание:) функция make-codex-section-functions выводит в поток stream
 секцию с документацией в формате codex, содержащую функции из пакета package-name.
-
- @b(Переменые:)
-@begin(list)
-@item(package-name - пакет с функциями для вывода в поток.)
-@item(stream       - поток, в который выводятся даннные о функциях.)
-@item(external     - если не nil - в поток выводятся информация о эксполртируемых функциях.)
-@item(internal     - если не nil - в поток выводятся информация о внутренних функциях.)
-@item(inherited    - если не nil - в поток выводятся информация о заимствованных функциях.)
-@item(sort         - если не nil - функции сортируются в алфавитном порядке.)
-@end(list)
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
@@ -433,7 +414,7 @@ setf-функции;) @item(обобщенные функции, методы, s
     (let ((macroses (mpkg/pkg:package-macroses package :external external :internal internal :inherited inherited)))
       (format stream "@begin(section)~% @title(Макросы)~% @cl:with-package[name=~S]("
 	      (mpkg/obj:obj-name package))
-      (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length :pkg package))
+      (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
 	   (if sort
 	       (sort macroses #'string< :key #'(lambda (elem) (string-downcase (mpkg/obj:obj-name elem))))
 	       macroses))
@@ -446,21 +427,11 @@ setf-функции;) @item(обобщенные функции, методы, s
                                             (external t)
                                             (internal nil)
                                             (inherited nil)
-                                            (sort t)
+                                            (sort nil)
                                             (min-doc-length 80)
                                           &aux (package (find-package package-name)))
   "@b(Описание:) функция @b(make-codex-section-setf-functions) выводит в поток stream
 секцию с документацией в формате codex, содержащую setf-функции из пакета package-name.
-
- @b(Переменые:)
-@begin(list)
-@item(package-name - пакет с функциями для вывода в поток.)
-@item(stream       - поток, в который выводятся даннные о функциях.)
-@item(external     - если не nil - в поток выводятся информация о эксполртируемых функциях.)
-@item(internal     - если не nil - в поток выводятся информация о внутренних функциях.)
-@item(inherited    - если не nil - в поток выводятся информация о заимствованных функциях.)
-@item(sort         - если не nil - функции сортируются в алфавитном порядке.)
-@end(list)
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
@@ -473,7 +444,7 @@ setf-функции;) @item(обобщенные функции, методы, s
     (let ((setf-funcs (mpkg/pkg:package-setf-functions package :external external :internal internal :inherited inherited)))
       (format stream "@begin(section)~% @title(Setf Функции)~% @cl:with-package[name=~S]("
 	      (mpkg/obj:obj-name package))
-      (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length :pkg package))
+      (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
            (if sort
                (sort setf-funcs #'string< :key #'(lambda (elem) (mpkg/obj:obj-name elem)))
                setf-funcs))
@@ -486,7 +457,7 @@ setf-функции;) @item(обобщенные функции, методы, s
                                       (external t)
                                       (internal nil)
                                       (inherited nil)
-                                      (sort t)
+                                      (sort nil)
                                       (min-doc-length 80)
                                     &aux (package (find-package package-name)))
   "@b(Описание:) функция @b(make-codex-section-generics) выводит в поток stream
@@ -503,24 +474,12 @@ setf-функции;) @item(обобщенные функции, методы, s
     (let ((g-funcs (mpkg/pkg:package-generics package :external external :internal internal :inherited inherited)))
       (format stream "@begin(section)~% @title(Обобщенные функции)~% @cl:with-package[name=~S]("
               (mpkg/obj:obj-name package))
-      (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length :pkg package))
+      (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
 	   (if sort
                (sort g-funcs #'string< :key #'(lambda (elem) (string-downcase (mpkg/obj:obj-name elem))))
 	       g-funcs))
       (format stream ")~%@end(section)~%"))
     (setf *print-case* print-case)))
-
-#|
-;;;;; Примет использования
-(require :math)
-(make-codex-section-generics :math/obj :sort t) 
-|#
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;
-;;;;
-
-(export '(make-doc-generics))
 
 (defun make-doc-generics (package class prefix &key (stream t) (min-doc-length 80))
   "@b(Описание:) функция @b(make-doc-methods) выводит в поток
@@ -564,26 +523,14 @@ scr-файл системы документирования codex. Этот р�
     (format stream ")~%")
     (setf *print-case* print-case)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-#|
-(require :temperature-fild)
-(with-open-file (os "~/123.scr" :direction :output :if-exists :supersede)
-  (make-doc-methods (find-package :mtf/plot)  (find-class 'mtf::<t-fild>) "PLOT" :stream os)
-  (make-doc-methods (find-package :mtf/splot) (find-class 'mtf::<t-fild>) "SPLOT" :stream os))
-|#
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(export '(make-codex-documentation))
-
 (defun make-codex-documentation (package-name
                                  &key
                                    (stream t)
                                    (external t)
                                    (internal nil)
                                    (inherited nil)
-                                   (sort t)
+                                   (sort nil)
+                                   (min-doc-length 80)
                                  &aux (package (find-package package-name)))
   "@b(Описание:) функция @b(make-codex-documentation) выводит в поток @b(stream)
 секции с документацией в формате codex, содержащие:
@@ -606,7 +553,9 @@ scr-файл системы документирования codex. Этот р�
   (make-codex-section-package package :stream stream)
   (map nil
        #'(lambda (func)
-           (funcall func package :stream stream :external external :internal internal :inherited inherited :sort sort))
+           (funcall func package :stream stream :external external :internal internal
+                                 :inherited inherited :sort sort
+                                 :min-doc-length min-doc-length))
        (list #'make-codex-section-variables
              #'make-codex-section-functions 
              #'make-codex-section-macroses  
@@ -667,8 +616,6 @@ scr-файл системы документирования codex. Этот р�
 |#
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(export '(class-undirect-subclasses))
 
 (defun class-undirect-subclasses (class-01)
 "@b(Описание:) функция @b(class-undirect-subclasses)
