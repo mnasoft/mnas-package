@@ -12,104 +12,105 @@
 #+EXCLUDE_TAGS: noexport
 #+CREATOR: Emacs 26.3 (Org mode 9.1.9)
 
-* [18/27] Задачи
-1. [ ] Исключить сортировку функций, обобщенных функций, методов как
-   параметр по умолчанию. Видимо лучше будет сортировать
-   результирующие строки документации.
-2. [-] Добавить функции поиска и вывода документации для нодов
-   следующих типов:
-   - [X] "function"      - 'docparser:function-node;
-   - [X] "setf-function" - 'docparser:function-node;
-   - [X] "macro"         - 'docparser:macro-node;
-   - [X] "generic"       - 'docparser:generic-function-node;
-   - [ ] "setf-generic"  - 'docparser:generic-function-node;
-   - [X] "method"        - 'docparser:method-node;
-   - [ ] "setf-method"   - 'docparser:method-node;
-   - [X] "variable"      - 'docparser:variable-node;
-   - [ ] "struct"        - 'docparser:struct-node;
-   - [X] "class"         - 'docparser:class-node;
-   - [ ] "condition"     - 'docparser:condition-node;
-   - [ ] "type"          - 'docparser:type-node;
-   - [ ] "cfunction"     - 'docparser:cffi-function;
-   - [ ] "ctype"         - 'docparser:cffi-type;
-   - [ ] "cstruct"       - 'docparser:cffi-struct;
-   - [ ] "cunion"        - 'docparser:cffi-union;
-   - [ ] "cenum"         - 'docparser:cffi-enum;
-   - [ ] "cbitfield"     - 'docparser:cffi-bitfield.
-3. [X] Исключить из методов insert-doc ключевой параметр - pkg. При
-   этом вероятно придется добавить фунцию фильтрации символов, функций
-   и т.д. и т.п. на принадлежность определенному пакету.
-4. [X] Добавить в методы insert-doc ключевой параметр - pkg. Вероятно
-   это позволит устранить ошибку исчезновения при третьем выводе выводе
-   информации относящейся к методам. - Не помогло.
-5. [ ] Откорректировать метод вывода для методов добавить вывод
-   квалификаторов (но методы с квалификаторами не выводить).
-6. [ ] Определить функцию package-class-slot-graph (package class),
-   которая строила бы граф слотов класса.
-7. [ ] Тестирование добавить тесты.
-   - [ ] mnas-package
-   - [ ] mnas-package/obj
-   - [ ] mnas-package/pkg
-   - [ ] mnas-package/make
-   - [ ] mnas-package/view
-8. [ ] Откорректировать функцию отображения графа вызовов так, чтобы:
-   - [ ] имена функций для текущего пакета отображались без имени
-     пакета;
-   - [ ] имена функций для нетекущего пакета отображались с префиксом
-     пакета;
-   - [ ] при построении графа вызовов целесообразно хранить не строки
-     с именами функций, а функции и обобщенные функции.
-9. [ ] Определить функцию для нахождения подсистем базовой системы.
-10. [ ] Добавить в функцию make-codex-documentation информацию
-    извлекаемую из системы;
-11. [ ] Определить функцию для поиска родительских классов;
-12. [ ] Переопределить функцию class-undirect-subclasses, так чтобы
-    она возвращала граф дочерних классов;
-13. [X] Добавить функцию filter-macroses
-14. [X] Добавить функцию package-macroses
-15. [X] Добавить в функцию make-codex-documentation информацию
-    извлекаемую из пакета;:
-16. [X] Тестирование добавить систему tests;
-17. [X] Устранение ошибок при вызове функции make-codex-section-variables.
-18. [X] Определить правильный набор экспортируемых функций.
-19. [X] Разделить mnas-package на подсистемы:
-    - [X] core -> obj;
-    - [X] pkg;
-    - [X] make-graph -> make;
-    - [X] view;
-20. [X] Определить методы:
-    - [X] obj-name
-    - [X] obj-name-string
-    - [X] obj-package
-    - [X] obj-package-string.
-21. [X] Справиться с предупреждениями при компиляции.
-22. [X] Определить функцию make-symbol-graph для создания графа
-    использования функциями внешних-символов пакета. По шаблону:
-    функция -> внешний-символ
-23. [X] Определить функцию package-symbol-graph (make-symbol-graph),
-    которая-бы строила граф использования во всех функциях пакета
-    глобальных параметров.
-24. [X] Определить функцию package-system-graph (make-system-graph),
-    которая-бы формировала граф зависимостей систем asdf.
-25. [X] Выполнить переименование функций
-    - [X] package-call-graph -> view-call-graph;
-    - [X] package-system-graph -> view-system-graph;
-    - [X] package-symbol-graph -> view-symbol-graph;
-    - [X] package-class-graph -> view-class-graph;
-    - [X] выполнить переименования в файлах Developers-memo.org;
-26. [X] Переименовать make-codex-documentation -> make-codex-graphs
-27. [X] Переписать функции, которые генерируют вывод для системы Codex
-    с использованием переменной *\*print-case\** равной *:downcase*,
-    так чтобы после их выполнения системная переменная принимала
-    значение, установленное перед входом в функцию.
-28. [X] Исключить неиспользуемые функции.
-    - [X] smbl-name-downcase
-    - [X] smbl-name
-    - [X] smbl-separator-bak
-    - [X] smbl-package-bak
-    - [X] smbl-split
-    - [X] smbl-package
-    - [X] smbl-separator
+* [19/28] Задачи
++ [ ] Создать набор тестов.
+  - [ ] mnas-package/obj  - obj;
+  - [ ] mnas-package/pkg  - pkg;
+  - [ ] mnas-package/make - make;
+  - [ ] mnas-package/view - view;
+  - [ ] mnas-package -      main.
++ [ ] Переписать сортировку в виде сортирования результирующих строк
+  документации.
++ [-] Добавить функции поиска и вывода документации для нодов
+  следующих типов:
+  - [X] "function"      - 'docparser:function-node;
+  - [X] "setf-function" - 'docparser:function-node;
+  - [X] "macro"         - 'docparser:macro-node;
+  - [X] "generic"       - 'docparser:generic-function-node;
+  - [ ] "setf-generic"  - 'docparser:generic-function-node;
+  - [X] "method"        - 'docparser:method-node;
+  - [ ] "setf-method"   - 'docparser:method-node;
+  - [X] "variable"      - 'docparser:variable-node;
+  - [ ] "struct"        - 'docparser:struct-node;
+  - [X] "class"         - 'docparser:class-node;
+  - [ ] "condition"     - 'docparser:condition-node;
+  - [ ] "type"          - 'docparser:type-node;
+  - [ ] "cfunction"     - 'docparser:cffi-function;
+  - [ ] "ctype"         - 'docparser:cffi-type;
+  - [ ] "cstruct"       - 'docparser:cffi-struct;
+  - [ ] "cunion"        - 'docparser:cffi-union;
+  - [ ] "cenum"         - 'docparser:cffi-enum;
+  - [ ] "cbitfield"     - 'docparser:cffi-bitfield.
++ [ ] Откорректировать метод вывода для методов добавить вывод
+  квалификаторов (но методы с квалификаторами не выводить).
++ [ ] Определить функцию package-class-slot-graph (package class),
+  которая строила бы граф слотов класса.
++ [X] Исключить сортировку функций, обобщенных функций, методов как
+  параметр по умолчанию. 
++ [X] Исключить из методов insert-doc ключевой параметр - pkg. При
+  этом вероятно придется добавить фунцию фильтрации символов, функций
+  и т.д. и т.п. на принадлежность определенному пакету.
++ [X] Добавить в методы insert-doc ключевой параметр - pkg. Вероятно
+  это позволит устранить ошибку исчезновения при третьем выводе выводе
+  информации относящейся к методам. - Не помогло.
++ [ ] Откорректировать функцию отображения графа вызовов так, чтобы:
+  - [ ] имена функций для текущего пакета отображались без имени
+    пакета;
+  - [ ] имена функций для нетекущего пакета отображались с префиксом
+    пакета;
+  - [ ] при построении графа вызовов целесообразно хранить не строки
+    с именами функций, а функции и обобщенные функции.
++ [ ] Определить функцию для нахождения подсистем базовой системы.
++ [ ] Добавить в функцию make-codex-documentation информацию
+  извлекаемую из системы;
++ [ ] Определить функцию для поиска родительских классов;
++ [ ] Переопределить функцию class-undirect-subclasses, так чтобы
+  она возвращала граф дочерних классов;
++ [X] Добавить функцию filter-macroses
++ [X] Добавить функцию package-macroses
++ [X] Добавить в функцию make-codex-documentation информацию
+  извлекаемую из пакета;:
++ [X] Тестирование добавить систему tests;
++ [X] Устранение ошибок при вызове функции make-codex-section-variables.
++ [X] Определить правильный набор экспортируемых функций.
++ [X] Разделить mnas-package на подсистемы:
+  - [X] core -> obj;
+  - [X] pkg;
+  - [X] make-graph -> make;
+  - [X] view;
++ [X] Определить методы:
+  - [X] obj-name
+  - [X] obj-name-string
+  - [X] obj-package
+  - [X] obj-package-string.
++ [X] Справиться с предупреждениями при компиляции.
++ [X] Определить функцию make-symbol-graph для создания графа
+  использования функциями внешних-символов пакета. По шаблону:
+  функция -> внешний-символ
++ [X] Определить функцию package-symbol-graph (make-symbol-graph),
+  которая-бы строила граф использования во всех функциях пакета
+  глобальных параметров.
++ [X] Определить функцию package-system-graph (make-system-graph),
+  которая-бы формировала граф зависимостей систем asdf.
++ [X] Выполнить переименование функций
+  - [X] package-call-graph -> view-call-graph;
+  - [X] package-system-graph -> view-system-graph;
+  - [X] package-symbol-graph -> view-symbol-graph;
+  - [X] package-class-graph -> view-class-graph;
+  - [X] выполнить переименования в файлах Developers-memo.org;
++ [X] Переименовать make-codex-documentation -> make-codex-graphs
++ [X] Переписать функции, которые генерируют вывод для системы Codex
+  с использованием переменной *\*print-case\** равной *:downcase*,
+  так чтобы после их выполнения системная переменная принимала
+  значение, установленное перед входом в функцию.
++ [X] Исключить неиспользуемые функции.
+  - [X] smbl-name-downcase
+  - [X] smbl-name
+  - [X] smbl-separator-bak
+  - [X] smbl-package-bak
+  - [X] smbl-split
+  - [X] smbl-package
+  - [X] smbl-separator
 
 * [/] Codex
 1. [X] Codex не выводит методы с квалификаторами создать issue для Codex.

@@ -8,17 +8,15 @@
            obj-name
            obj-name-string)
   (:documentation
-   "Система mnas-package предназначена для извлечения информации из asdf-систем.
-
- Извлеченная информация представляется в виде графов.
-
- Система позволяет построить следующие графы:
+   "Пакет :mnas-package/obj определяет обобщенные функции и методы,
+полученные на их основе для получения:
 @begin(list)
- @item(зависимостей систем @image[src=./system-graph-mnas-package.gv.png]())
- @item(вызовов функций     @image[src=./call-graph-mnas-package.gv.png]())
- @item(использования символов функциями @image[src=./symbol-graph-mnas-package.gv.png]())
- @item(наследования классов  @image[src=./class-graph-mnas-package.gv.png]())
-@end(list)"
+ @item(имени (символа), связанного с объектом;)
+ @item(строки, представляующей имя (символ) объекта;) 
+ @item(пакета, в котором определен объект;)
+ @item(строки, представляующей пакет, в котором определен объект.)
+@end(list)
+"
    ))
 
 (in-package #:mnas-package/obj)
@@ -29,7 +27,7 @@
 
 (defgeneric obj-name-string (obj)
   (:documentation "@b(Описание:) обобщенная функция @b(obj-name-string)
-возвращает символ, представляющий имя объекта obj."))
+возвращает строку, представляую имя объекта obj."))
 
 (defgeneric obj-package (obj)
   (:documentation "@b(Описание:) обобщенная функция @b(obj-package)

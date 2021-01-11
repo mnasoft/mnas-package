@@ -75,7 +75,12 @@
 		    (uiop:symbol-call :run-tests :mnas-package/tests))
   :components ((:module "src/tests"
 			:serial t
-			:components ((:file "package")))))
+                :components ((:file "obj")
+                             (:file "pkg")
+                             (:file "make")
+                             (:file "view")
+                             (:file "main")
+                             ))))
 
 (defsystem "mnas-package/example"
   :description "Пример системы для выполнения тестирования пакета mnas-package"
