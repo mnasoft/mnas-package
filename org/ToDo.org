@@ -12,9 +12,9 @@
 #+EXCLUDE_TAGS: noexport
 #+CREATOR: Emacs 26.3 (Org mode 9.1.9)
 
-* [19/28] Задачи
-+ [ ] Создать набор тестов.
-  - [ ] mnas-package/obj  - obj;
+* [19/29] Задачи
++ [-] Создать набор тестов.
+  - [X] mnas-package/obj  - obj;
   - [ ] mnas-package/pkg  - pkg;
   - [ ] mnas-package/make - make;
   - [ ] mnas-package/view - view;
