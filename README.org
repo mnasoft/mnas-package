@@ -1,16 +1,31 @@
-#+OPTIONS: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
-#+OPTIONS: author:t broken-links:nil c:nil creator:nil
-#+OPTIONS: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
-#+OPTIONS: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
-#+OPTIONS: timestamp:t title:t toc:t todo:t |:t
-#+TITLE: README
-#+DATE: <2020-01-04 Сб>
-#+AUTHOR: Nick Matvyeyev
-#+EMAIL: mnasoft@gmail.com>
-#+LANGUAGE: en
-#+SELECT_TAGS: export
-#+EXCLUDE_TAGS: noexport
-#+CREATOR: Emacs 26.3 (Org mode 9.1.9)
+#+options: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+options: author:t broken-links:nil c:nil creator:nil
+#+options: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+options: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+options: timestamp:t title:t toc:t todo:t |:t
+#+title: README
+#+date: <2021-01-07 Чт>
+#+author: Nick Matvyeyev
+#+email: mnasoft@gmail.com>
+#+language: en
+#+select_tags: export
+#+exclude_tags: noexport
+#+creator: Emacs 27.1 (Org mode 9.3)
+#+options: tex:t
+#+odt_styles_file:
+#+description:
+#+keywords:
+#+subtitle:
+#+latex_header:
+#+latex_class: article
+#+latex_class_options:
+#+latex_header:
+#+latex_header_extra:
+#+description:
+#+keywords:
+#+subtitle:
+#+latex_compiler: Lualatex
+#+date: \today
 
 * Description
 
@@ -27,5 +42,3 @@ The system allows you to build the following graphs:
 * License
 
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later
-
-

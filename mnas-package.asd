@@ -13,8 +13,7 @@
                "mnas-package/example"
                "mnas-string") ;;  "mnas-graph" "codex" "trivial-documentation"
   :components
-  ((:file "package")
-   (:module "src" :depends-on ("package")
+  ((:module "src" 
     :serial nil
     :components
     ((:file "mnas-package")))))

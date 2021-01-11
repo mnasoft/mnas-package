@@ -3,17 +3,21 @@
 (defpackage #:mnas-package/pkg
   (:use #:cl )
   (:nicknames "MPKG/PKG")
-  (:export package-methods
+  (:export package-variables
+           package-methods
            package-generics
            package-functions
+           package-macroses
            package-setf-functions
            package-classes
-           package-variables
            )
   (:export filter-variables
            filter-functions
+           filter-macroses
            filter-setf-functions
-           package-symbols-by-category
+           filter-generics
+           )
+  (:export package-symbols-by-category
            who-calls-lst
            func-to-string
            who-references-lst
@@ -28,16 +32,34 @@
            package-symbols-all
            )
   (:documentation
-   "Система mnas-package предназначена для извлечения информации из asdf-систем.
+   " Система @b(mnas-package/pkg) определяет операции извлечения символов по типу
+их (видимости и наследования) и группировки символов по категориям, к которым
+прнадлежат связанные с ними сущности.
 
- Извлеченная информация представляется в виде графов.
-
- Система позволяет построить следующие графы:
+ Основными функциями пакета @b(mnas-package/pkg) являются следующие функции:
 @begin(list)
- @item(зависимостей систем @image[src=./system-graph-mnas-package.gv.png]())
- @item(вызовов функций     @image[src=./call-graph-mnas-package.gv.png]())
- @item(использования символов функциями @image[src=./symbol-graph-mnas-package.gv.png]())
- @item(наследования классов  @image[src=./class-graph-mnas-package.gv.png]())
+ @item(package-variables;)
+ @item(package-methods;)
+ @item(package-generics;)
+ @item(package-functions;)
+ @item(package-macroses;)
+ @item(package-setf-functions;)
+ @item(package-classes;)
+ @item(package-symbols-by-category.)
+
+@end(list)
+
+ Все они имеют схожий набор параметров: 
+ @b(Переменые:)
+@begin(list)
+
+ @item(package-name - имя пакета символы которого извлекаются. Его можно
+указывать в виде нескольких вариантов: 'mnas-package; :mnas-package;
+\"MNAS-PACKAGE\".  В случае указания имени пакета как строки символы должны быть
+в верхнем регистре;)
+ @item(external     - отбирать (t) или не отбирать (nil) внешиние символы;)
+ @item(internal     - отбирать (t) или не отбирать (nil) внутренние символы;)
+ @item(inherited    - отбирать (t) или не отбирать (nil) заимствованные символы.)
 @end(list)"
    ))
 
@@ -61,15 +83,6 @@
   "@b(Описание:) package-symbols-by-category выполнят поиск символов, 
 определенных пакетом @b(package-name).
 
- @b(Переменые:)
-@begin(list)
- @item(package-name - имя пакета. Его можно указывать в виде нескольких вариантов:
-'mnas-package; :mnas-package; \"MNAS-PACKAGE\". 
-В случае указания имени пакета как строки символы должны быть в верхнем регистре;)
- @item(external     - отбирать (t) или не отбирать (nil) внешиние символы;)
- @item(internal     - отбирать (t) или не отбирать (nil) внутренние символы;)
- @item(inherited    - отбирать (t) или не отбирать (nil) заимствованные символы.)
-@end(list)
  @b(Пример использования:)
 @begin[lang=lisp](code)
  (package-symbols-by-category 'mnas-package :internal nil)                 ;; отбор только внешних символов;
@@ -171,18 +184,18 @@
      (first func))))
 
 (defun who-references (var)
-"Выполняет поиск функций, в которых есть ссылка на внешнюю переменную var.
-Возвращает список, каждым элементом которого является список следующего формата:
- (функция переменная).
-Пример использования:
+  " Выполняет поиск функций, в которых есть ссылка на внешнюю переменную
+var. Возвращает список, каждым элементом которого является список следующего
+формата: (функция переменная).
+ 
+ @b(Пример использования:)
+@begin[lang=lisp](code)
  (who-references '*sample-var*) 
  => ((\"who-references\" \"*sample-var*\"))
-"
-  (let
-      (
-       ;;;;(rez (swank/backend:who-references var))
-       (rez (slynk-backend:who-references var))
-       (func-str (func-to-string var)))
+@end(code)"
+  (let ((rez (slynk-backend:who-references var))
+        ;; (rez (swank/backend:who-references var))
+        (func-str (func-to-string var)))
     (mapcar
      #'(lambda (el1)
 	 (list el1 func-str))
@@ -200,12 +213,10 @@
 	   var-lst)))
 
 (defun who-calls (func)
-""
-  (let
-      (
-       ;;;;(rez (swank/backend:who-calls func))
-       (rez (slynk-backend:who-calls func))
-       (func-str (func-to-string func)))
+  ""
+  (let ((rez (slynk-backend:who-calls func))
+        ;;(rez (swank/backend:who-calls func))
+        (func-str (func-to-string func)))
     (mapcar
      #'(lambda (el1)
 	 (list el1 func-str))
@@ -217,16 +228,16 @@
       :test #'equal))))
 
 (defun who-calls-lst (func-lst)
-""
+  ""
   (apply #'append
-   (mapcar #'who-calls
-	   func-lst)))
+         (mapcar #'who-calls
+	         func-lst)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun filter-variables (symbols)
-"@b(Описание:) функция filter-variables возвращает список символов, 
-являющихся сопряженными со значениями.
+  " @b(Описание:) функция filter-variables возвращает список символов, являющихся
+сопряженными со значениями.
 
  @b(Переменые:)
 @begin(list) 
@@ -242,17 +253,33 @@
     rez))
 
 (defun filter-functions (symbols)
-"@b(Описание:) функция filter-functions возвращает список символов,
-являющихся сопряженными с функциями.
+  "@b(Описание:) функция filter-functions возвращает список символов, являющихся
+сопряженными с функциями.
 
- @b(Переменые:)
-@begin(list) 
-@item(symbols - список символов пакета.)
-@end(list)
+ @b(Переменые:) @begin(list) @item(symbols - список символов пакета.)  @end(list)
 "
   (let ((rez nil))
     (mapc
-     #'(lambda (el) (when (fboundp el) (push el rez)))
+     #'(lambda (el)
+         (when (and (fboundp el)
+                    (eq :function
+                        (nth-value
+                         1
+                         (mpkg/obj:obj-name
+                          (symbol-function el)))))
+           (push el rez)))
+     symbols)
+    rez))
+
+(defun filter-macroses (symbols)
+  " @b(Описание:) функция filter-functions возвращает список символов сопряженных
+с макросами.
+
+ @b(Переменые:) @begin(list) @item(symbols - список символов пакета.)
+ @end(list)"
+  (let ((rez nil))
+    (map nil
+     #'(lambda (el) (when (macro-function el) (push el rez)))
      symbols)
     rez))
 
@@ -274,20 +301,32 @@
      symbols)
     rez))
 
+(defun filter-generics (symbols)
+  " @b(Описание:) функция @b(filter-generics) возвращает список
+символов сопряженных с обобщеными функциями.
+
+ @b(Переменые:) @begin(list) @item(symbols - список символов пакета.)  @end(list)
+"
+  (let ((rez nil))
+    (mapc
+     #'(lambda (el)
+         (when (and (fboundp el)
+                    (eq :generic-function
+                        (nth-value
+                         1
+                         (mpkg/obj:obj-name
+                          (symbol-function el)))))
+           (push el rez)))
+     symbols)
+    rez))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (export 'package-variables )
 
 (defun package-variables (package-name &key (external t) (internal nil) (inherited nil))
-  "@b(Описание:) функция @b(package-variables) возвращает список символов пакета @b(package-name).
-
- @b(Переменые:)
-@begin(list)
-@item(package-name - пакет;) 
-@item(external - если равно @b(t) функция возвращает экспортируемые символы пакета;)
-@item(internal - если равно @b(t) функция возвращает внутренние символы пакета;)
-@item(internal - если равно @b(t) импортированные символы пакета.)
-@end(list)
+  " @b(Описание:) функция @b(package-variables) возвращает список символов пакета
+@b(package-name).
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
@@ -310,70 +349,54 @@
 (defun package-functions (package-name &key (external t) (internal nil) (inherited nil) )
   "@b(Описание:) функция @b(package-functions) возвращает список функций пакета @b(package-name).
 
- @b(Переменые:)
-@begin(list)
-@item(package-name - пакет;) 
-@item(external - если равно @b(t) функция возвращает экспортируемые фукции пакета;)
-@item(internal - если равно @b(t) функция возвращает внутренние фукции пакета;)
-@item(internal - если равно @b(t) импортированные функции пакета.)
-@end(list)
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (package-functions :mnas-package/example :internal t)
+ => (#<FUNCTION MNAS-PACKAGE/EXAMPLE:BAZ-SHORT> #<FUNCTION MNAS-PACKAGE/EXAMPLE:BAZ>)
+@end(code)"
+  (mapcar #'symbol-function (filter-functions
+	                     (package-symbols-by-category
+	                      package-name
+	                      :external external
+	                      :internal internal
+	                      :inherited inherited))))
+
+(defun package-macroses (package-name &key (external t) (internal nil) (inherited nil) )
+  "@b(Описание:) функция @b(package-functions) возвращает список макросов пакета @b(package-name).
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
- (package-functions :mnas-package)
-  => (#<FUNCTION MAKE-CLASS-GRAPH> #<FUNCTION GENERIC-FUNCTIONS> 
-      ...
-      #<FUNCTION FUNCTIONS> #<FUNCTION MAKE-SYSTEM-GRAPH>)
+ (package-macroses :mnas-package/example :internal t)
+ => (#<FUNCTION (MACRO-FUNCTION MNAS-PACKAGE/EXAMPLE::MAK-A-SHORT) {52D45ECB}>
+     #<FUNCTION (MACRO-FUNCTION MNAS-PACKAGE/EXAMPLE::MAK-A) {52D454BB}>)
 @end(code)
 "
-  (let ((rez nil))
-    (map nil
-	 #'(lambda (el)
-	     (when (equal 'function (type-of (symbol-function el)))
-	       (push (symbol-function el) rez)))
-	 (filter-functions
-	  (package-symbols-by-category
-	   package-name
-	   :external external
-	   :internal internal
-	   :inherited inherited)))
-    rez))
+  (mapcar #'macro-function
+	  (filter-macroses
+	   (package-symbols-by-category
+	    package-name
+	    :external  external
+	    :internal  internal
+	    :inherited inherited))))
 
 (defun package-setf-functions (package-name &key (external t) (internal nil) (inherited nil) )
-  "@b(Описание:) функция @b(package-functions) возвращает список функций пакета @b(package-name).
+  "@b(Описание:) функция @b(package-functions) возвращает список функций пакета
+@b(package-name).
 
- @b(Переменые:)
-@begin(list)
-@item(package-name - пакет;) 
-@item(external - если равно @b(t) функция возвращает экспортируемые фукции пакета;)
-@item(internal - если равно @b(t) функция возвращает внутренние фукции пакета;)
-@item(internal - если равно @b(t) импортированные функции пакета.)
-@end(list)
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (package-functions :mnas-package)
-  => (#<FUNCTION MAKE-CLASS-GRAPH> #<FUNCTION GENERIC-FUNCTIONS> 
-      ...
-      #<FUNCTION FUNCTIONS> #<FUNCTION MAKE-SYSTEM-GRAPH>)
+ @b(Пример использования:) @begin[lang=lisp](code)
+ (package-setf-functions :mnas-package/example :internal t)
+ => (#<FUNCTION (SETF MNAS-PACKAGE/EXAMPLE::FOO)>)
 @end(code)
 "
-  (let ((rez nil))
-    (map 'nil
-         #'(lambda (el) (push (alexandria:ensure-function `(setf ,el)) rez))
-         (filter-setf-functions
-          (package-symbols-by-category
-           package-name
-           :external  external
-           :internal  internal
-           :inherited inherited)))
-    rez))
+  (mapcar #'(lambda (el) (alexandria:ensure-function `(setf ,el)))
+          (filter-setf-functions
+           (package-symbols-by-category
+            package-name
+            :external  external
+            :internal  internal
+            :inherited inherited))))
 
-(defun package-classes (package-name
-                        &key
-                          (external t)
-                          (internal nil)
-                          (inherited nil)
+(defun package-classes (package-name &key (external t) (internal nil) (inherited nil)
 			&aux
 			  (rez nil)
 			  (class nil)
@@ -382,12 +405,17 @@
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
- (package-classes :mtf/t-fild)
- (package-classes :mtf/sector)
+ (package-classes :mnas-package/example) => (#<STANDARD-CLASS MNAS-PACKAGE/EXAMPLE:<C>>)
+ (package-classes :mnas-package/example :external nil :internal t)
+  => (#<STANDARD-CLASS MNAS-PACKAGE/EXAMPLE::<A>>
+      #<STANDARD-CLASS MNAS-PACKAGE/EXAMPLE::<B>>
+      #<STANDARD-CLASS MNAS-PACKAGE/EXAMPLE::<B-SHORT>>
+      #<STANDARD-CLASS MNAS-PACKAGE/EXAMPLE::<C-SHORT>>
+      #<STANDARD-CLASS MNAS-PACKAGE/EXAMPLE::<A-SHORT>>)
 @end(code)
 "
   (declare ((or package string symbol) package-name))
-  (mapc 
+  (map nil 
    #'(lambda (el)
        (setf class (find-class el nil))
        (when class (push class rez)))
@@ -402,53 +430,30 @@
   "@b(Описание:) функция @b(package-generics) возвращает список обобщенных функций
 пакета @b(package-name).
 
- @b(Переменые:)
-@begin(list)
-@item(package-name - пакет;) 
-@item(external - если равно @b(t) функция возвращает экспортируемые фукции пакета;)
-@item(internal - если равно @b(t) функция возвращает внутренние фукции пакета;)
-@item(internal - если равно @b(t) импортированные функции пакета.)
-@end(list)
-
  @b(Пример использования:)
 @begin[lang=lisp](code)
-  (package-generics :mnas-package :internal t)
-   => (#<STANDARD-GENERIC-FUNCTION MNAS-PACKAGE::->KEY (2)>
-       ...
-       #<STANDARD-GENERIC-FUNCTION MNAS-PACKAGE::DEPENDENCIES-OF (1)>)
+  (package-generics :mnas-package/example :internal t) 
+  => (#<STANDARD-GENERIC-FUNCTION MNAS-PACKAGE/EXAMPLE::M-FOO (8)>
 @end(code)
 "
-  (let ((rez nil))
-    (map nil
-	 #'(lambda (el)
-	     (when (equal 'standard-generic-function (type-of (symbol-function el)))
-	       (push (ensure-generic-function el) rez)))
-	 (filter-functions
-	  (package-symbols-by-category
-	   package-name
-	   :external external
-	   :internal internal
-	   :inherited inherited)))
-    rez))
+  (mapcar #'symbol-function
+          (filter-generics
+	   (package-symbols-by-category
+	    package-name
+	    :external external
+	    :internal internal
+	    :inherited inherited))))
 
 (defun package-methods (package-name &key (external t) (internal nil) (inherited nil))
-  "@b(Описание:) функция @b(package-methods) возвращает список методов
-пакета @b(package-name).
-
- @b(Переменые:)
-@begin(list)
-@item(package-name - пакет;) 
-@item(external - если равно @b(t) функция возвращает экспортируемые фукции пакета;)
-@item(internal - если равно @b(t) функция возвращает внутренние фукции пакета;)
-@item(internal - если равно @b(t) импортированные функции пакета.)
-@end(list)
+  "@b(Описание:) функция @b(package-methods) возвращает список методов пакета
+@b(package-name).
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
-  (package-methods :mnas-package :internal t)
-   => (#<STANDARD-METHOD MNAS-PACKAGE::DEPENDENCY-TREE (SYMBOL) {1007EE7CA3}>
-       ...
-       #<STANDARD-METHOD MNAS-PACKAGE:OBJ-PACKAGE-STRING (T) {1007EE79C3}>)
+  (package-methods :mnas-package/example :internal t)
+    (#<STANDARD-METHOD MNAS-PACKAGE/EXAMPLE::M-FOO :AROUND (MNAS-PACKAGE/EXAMPLE::<A> MNAS-PACKAGE/EXAMPLE::<B> T) {10019B69A3}>
+     ...
+     #<STANDARD-METHOD MNAS-PACKAGE/EXAMPLE::M-FOO-SHORT (MNAS-PACKAGE/EXAMPLE::<A> MNAS-PACKAGE/EXAMPLE::<B> MNAS-PACKAGE/EXAMPLE:<C>) {1001C6CAC3}>)
 @end(code)
 "
   (apply #'append

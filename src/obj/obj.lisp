@@ -44,7 +44,7 @@
 (defmethod obj-name ((symbol symbol))
   "@b(Описание:) метод @b(obj-name) возвращает символ,
 представляющий имя символа."
-  symbol)
+  (values symbol :symbol))
 
 (defmethod obj-name ((function function))
   "@b(Описание:) метод @b(obj-name) возвращает символ,
@@ -55,8 +55,8 @@
  (obj-name (second (package-functions :mnas-package)))
 @end(code)"
   (let ((name (nth-value 2 (function-lambda-expression function))))
-    (cond ((symbolp name) name)
-          ((listp   name) (second name)))))
+    (cond ((symbolp name) (values name :function))
+          ((listp   name) (values (second name) (first name))))))
 
 (defmethod obj-name ((generic standard-generic-function))
   "@b(Описание:) метод @b(obj-name) возвращает символ,
@@ -68,10 +68,10 @@
  (obj-name (first (package-generics :dxf)))
 @end(code)
 "
-  (sb-mop:generic-function-name generic))
+  (values (sb-mop:generic-function-name generic) :generic-function))
 
 (defmethod obj-name ((method method))
-      "@b(Описание:) метод @b(obj-name) возвращает символ,
+  "@b(Описание:) метод @b(obj-name) возвращает символ,
 представляющий имя метода.
 
  @b(Пример использования:)
@@ -79,8 +79,10 @@
  (require :dxf)
  (obj-name (second (sb-mop:generic-function-methods (first (package-generics :dxf)))))
 @end(code)"
-  (sb-mop:generic-function-name
-   (sb-mop:method-generic-function method)))
+  (values
+   (sb-mop:generic-function-name
+    (sb-mop:method-generic-function method))
+   :method))
 
 (defmethod obj-name ((class class))
   "@b(Описание:) метод @b(obj-name) возвращает символ,
@@ -90,7 +92,7 @@
 @begin[lang=lisp](code)
   (obj-name (first (package-classes :dxf :internal t)))
 @end(code)"
-  (class-name class))
+  (values (class-name class) :class))
 
 (defmethod obj-name ((package package))
   "@b(Описание:) метод @b(obj-name) возвращает символ,
@@ -100,7 +102,7 @@
 @begin[lang=lisp](code)
   (obj-name (find-package :dxf))
 @end(code)"
-  (package-name package))
+  (values (package-name package) :package))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

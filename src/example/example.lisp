@@ -28,6 +28,11 @@
   (setf (nth n lst) (* val val))
   lst)
 
+(defun (setf setf-foo) (val lst n)
+  "Documentation for function (setf setf-foo) =====================================================" 
+  (setf (nth n lst) (* val val))
+  lst)
+
 (defun bar ()
   "Documentation for function bar =================================================================="
   (foo))
@@ -47,6 +52,18 @@
 (defun baz-short ()
   "Documentation for function baz-short"
   (bar-short))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmacro mak-a (a b)
+  "Documentation for macro mak-a ==================================================================="
+  `(list ,a ,b))
+
+(defmacro mak-a-short (a b)
+  "Documentation for macro mak-a"
+  `(list ,a ,b))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defclass <a> () ()
   (:documentation
