@@ -1,25 +1,14 @@
-;;;; tests/package.lisp
-
-(defpackage #:mnas-package/tests
-  (:use #:cl #:fiveam)
-  (:export #:run-tests))
+;;;; tests/main.lisp
 
 (in-package :mnas-package/tests)
 
-(defun run-tests () (run! 'all-tests))
-
-(def-suite all-tests
-  :description "Мастер-набор всех тестов проекта mnas-package.")
-
-(in-suite all-tests)
-
-(def-suite mnas-package/tests
+(def-suite main
   :description "Мастер-набор всех тестов проекта mnas-package."
-  :in all-tests)
+  :in all)
 
-(in-suite mnas-package/tests)
+(in-suite main)
 
-(def-test make-codex-section-variables/test ()
+(def-test make-codex-section-variables ()
   (is-true (= 5 (length
                  (mnas-string:split
                   (format nil "~%") 
@@ -45,7 +34,7 @@
                     (mpkg::make-codex-section-variables :mnas-package/example :internal t :stream os :min-doc-length 10)
                     (get-output-stream-string os)))))))
 
-(def-test make-codex-section-functions/test ()
+(def-test make-codex-section-functions ()
   (is-true (= 5 (length
                  (mnas-string:split
                   (format nil "~%") 
@@ -74,7 +63,7 @@
                       :mnas-package/example :internal t :stream os :min-doc-length 10)
                      (get-output-stream-string os)))))))
 
-(def-test make-codex-section-setf-functions/test ()
+(def-test make-codex-section-setf-functions ()
   (is-true (= 4 (length
                  (mnas-string:split
                   (format nil "~%") 
@@ -129,7 +118,7 @@
                      (mpkg::make-codex-section-generics :mnas-package/example :internal t :stream os :min-doc-length 10)
                      (get-output-stream-string os)))))))
 
-(def-test make-codex-section-methods/test ()
+(def-test make-codex-section-methods ()
   (is-true (= 4 (length
                  (mnas-string:split
                   (format nil "~%") 
@@ -155,7 +144,7 @@
                      (mpkg::make-codex-section-methods :mnas-package/example :internal t :stream os :min-doc-length 10)
                      (get-output-stream-string os)))))))
 
-(def-test make-codex-section-classes/test ()
+(def-test make-codex-section-classes ()
   (is-true (= 5 (length
                  (mnas-string:split
                   (format nil "~%") 
@@ -181,7 +170,8 @@
                      (mpkg::make-codex-section-classes :mnas-package/example :internal t :stream os :min-doc-length 10)
                      (get-output-stream-string os)))))))
 
-(def-suite mnas-package/grsph/tests
+#|
+(def-suite mnas-package/graph
   :description "Мастер-набор всех тестов проекта mnas-package."
   :in all-tests)
 
@@ -199,3 +189,4 @@
                 (mnas-package/make:call-graph :mnas-package-tests/functions))))))
 
 (run-tests)
+|#

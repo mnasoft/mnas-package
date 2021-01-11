@@ -74,12 +74,15 @@
   :perform (test-op (o s)
 		    (uiop:symbol-call :run-tests :mnas-package/tests))
   :components ((:module "src/tests"
-			:serial t
-                :components ((:file "obj")
-                             (:file "pkg")
-                             (:file "make")
-                             (:file "view")
-                             (:file "main")
+		:serial nil
+                :components ((:file "package")
+                             (:file "all"  :depends-on ("package"))
+                             (:file "obj"  :depends-on ("all"))
+                             (:file "pkg"  :depends-on ("all"))
+                             (:file "make" :depends-on ("all"))
+                             (:file "view" :depends-on ("all"))
+                             (:file "main" :depends-on ("all"))
+                             (:file "run"  :depends-on ("obj" "pkg" "make" "view" "main"))
                              ))))
 
 (defsystem "mnas-package/example"
