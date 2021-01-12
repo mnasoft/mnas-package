@@ -6,6 +6,8 @@
            baz
            baz-short
            <c>
+           mak-a
+           m-foo
            ))
 
 (in-package :mnas-package/example)

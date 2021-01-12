@@ -214,15 +214,13 @@ Lisp). Он позволяет получить на выходе докумен
 
 (defmethod insert-codex-doc ((method method) &key (stream t) (min-doc-length 80))
   "(insert-codex-doc (find-package :mpkg))"
-  ;; (break ": ~S" method)
   (when (< min-doc-length (length (documentation method t)))
-    (block method-name
-      (format stream "~&  @cl:doc(method ~s" (mpkg/obj:obj-name method))
-      (let ((mqs (sb-mop:method-qualifiers method)))
-        (when (and mqs (listp mqs) (= 1 (length mqs)))
-          (format stream " ~s" (mpkg/obj:obj-name (first mqs)))))
-      (let ((mll (sb-mop:method-lambda-list method))
-            (msp (sb-mop:method-specializers method)))
+    (let ((mqs (sb-mop:method-qualifiers method))
+          (mll (sb-mop:method-lambda-list method))
+          (msp (sb-mop:method-specializers method)))
+      (unless (and mqs (listp mqs) (= 1 (length mqs)))
+        ;; (format stream " ~s" (mpkg/obj:obj-name (first mqs)))
+        (format stream "~&  @cl:doc(method ~s" (mpkg/obj:obj-name method))
         (block method-required-args
           (map 'nil
                #'(lambda (name class)
@@ -237,8 +235,8 @@ Lisp). Он позволяет получить на выходе докумен
                #'(lambda (el) (format stream "~a" (format nil " ~s" el)))
                (nthcdr (length msp) mll)))
         (block method-end
-          (format stream ")"))))
-    t))
+          (format stream ")")))
+      t)))
 
 (defmethod insert-codex-doc ((package package)
                              &key (stream t) (min-doc-length 80))
