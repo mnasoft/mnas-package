@@ -50,7 +50,7 @@
      (list class-01)))
   graph)
 
-(sub-class-graph (find-class 'mnas-package/example::<b>))
+(mnas-graph:view-graph (sub-class-graph (find-class 'mnas-package/example::<b>)))
 (defparameter *g*  (sub-class-graph (find-class 'number)))
 
 (mnas-graph:inlet-nodes *g*)
