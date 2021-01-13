@@ -80,16 +80,16 @@
                          :viewer       viewer))
 
 (defun class-graph (package-name
-                         &key
-                           (external t)
-                           (internal t)
-                           (inherited nil)
-			   (fpath mnas-graph:*output-path*)
-			   (fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
-			   (graphviz-prg :filter-dot)
-			   (out-type "pdf")
-			   (dpi "300")
-			   (viewer mnas-graph:*viewer-path*))
+                    &key
+                      (external t)
+                      (internal t)
+                      (inherited nil)
+		      (fpath mnas-graph:*output-path*)
+		      (fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
+		      (graphviz-prg :filter-dot)
+		      (out-type "pdf")
+		      (dpi "300")
+		      (viewer mnas-graph:*viewer-path*))
   "@b(Описание:) view-class-graph выводит визуальное представление 
 иерархии классов (графа наследования).
 
@@ -102,8 +102,8 @@
   (when (stringp package-name) (require package-name))
   (mnas-graph:view-graph
    (mpkg/make:class-graph package-name :external     external
-                                  :internal     internal
-                                  :inherited    inherited)
+                                       :internal     internal
+                                       :inherited    inherited)
    :fpath        fpath
    :fname        fname
    :graphviz-prg graphviz-prg
