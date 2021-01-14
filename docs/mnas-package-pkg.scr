@@ -1,0 +1,48 @@
+@begin(section) @title(MNAS-PACKAGE/PKG)
+
+ Система @b(mnas-package/pkg) определяет операции извлечения символов по типу
+их (видимости и наследования) и группировки символов по категориям, к которым
+прнадлежат связанные с ними сущности.
+
+ Основными функциями пакета @b(mnas-package/pkg) являются следующие функции:
+@begin(list)
+ @item(package-variables;)
+ @item(package-methods;)
+ @item(package-generics;)
+ @item(package-functions;)
+ @item(package-macroses;)
+ @item(package-setf-functions;)
+ @item(package-classes;)
+ @item(package-symbols-by-category.)
+
+@end(list)
+
+ Все они имеют схожий набор параметров: 
+ @b(Переменые:)
+@begin(list)
+
+ @item(package-name - имя пакета символы которого извлекаются. Его можно
+указывать в виде нескольких вариантов: 'mnas-package; :mnas-package;
+"MNAS-PACKAGE".  В случае указания имени пакета как строки символы должны быть
+в верхнем регистре;)
+ @item(external     - отбирать (t) или не отбирать (nil) внешиние символы;)
+ @item(internal     - отбирать (t) или не отбирать (nil) внутренние символы;)
+ @item(inherited    - отбирать (t) или не отбирать (nil) заимствованные символы.)
+@end(list)@begin(section)
+ @title(Функции)
+ @cl:with-package[name="MNAS-PACKAGE/PKG"](
+  @cl:doc(function package-variables)
+  @cl:doc(function package-functions)
+  @cl:doc(function package-macroses)
+  @cl:doc(function package-generics)
+  @cl:doc(function package-symbols-by-category)
+  @cl:doc(function package-setf-functions)
+  @cl:doc(function package-classes)
+  @cl:doc(function filter-variables)
+  @cl:doc(function filter-generics)
+  @cl:doc(function package-methods)
+  @cl:doc(function filter-functions)
+  @cl:doc(function filter-macroses)
+  @cl:doc(function filter-setf-functions))
+@end(section)
+@end(section)

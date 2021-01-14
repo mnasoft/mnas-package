@@ -1,8 +1,5 @@
 @begin(section) @title(Обзор)
 
-Describe mnas-package here@end(section)
-@begin(section) @title(MNAS-PACKAGE)
-
  Система @b(mnas-package) предназначена для подготовки документации,
 извлекаемой из asdf-систем.
 
@@ -65,14 +62,21 @@ Lisp). Он позволяет получить на выходе докумен
        связанной с сущностью, при которой созается ссылка указаение на
        вставку документации.)
 @end(list)
+@end(section)
+@begin(section)
+ @title(Переменные)
+ @cl:with-package[name="MNAS-PACKAGE"]()
+@end(section)
 @begin(section)
  @title(Функции)
  @cl:with-package[name="MNAS-PACKAGE"](
   @cl:doc(function make-codex-documentation)
-  @cl:doc(function make-doc-generics)
-  @cl:doc(function sub-class-graph)
-  @cl:doc(function make-doc-methods)
   @cl:doc(function make-codex-graphs)
-  @cl:doc(function super-class-graph))
+  @cl:doc(function make-doc-generics)
+  @cl:doc(function make-doc-methods)
+  @cl:doc(function super-class-graph)
+  @cl:doc(function sub-class-graph))
 @end(section)
-@end(section)
+@begin(section)
+ @title(Макросы)
+ @cl:with-package[name="MNAS-PACKAGE"]

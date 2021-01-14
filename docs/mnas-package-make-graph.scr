@@ -1,0 +1,8 @@
+ @begin(section) @title(Графы mnas-package-make)
+  @begin(list)
+   @item(system-graph @image[src=./system-graph-mnas-package-make.gv.png]())
+   @item(call-graph   @image[src=./call-graph-mnas-package-make.gv.png]())
+   @item(symbol-graph @image[src=./symbol-graph-mnas-package-make.gv.png]())
+   @item(class-graph  @image[src=./class-graph-mnas-package-make.gv.png]())
+  @end(list)
+ @end(section)

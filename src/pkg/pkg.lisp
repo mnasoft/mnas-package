@@ -433,7 +433,7 @@ var. Возвращает список, каждым элементом кото
  @b(Пример использования:)
 @begin[lang=lisp](code)
   (package-generics :mnas-package/example :internal t) 
-  => (#<STANDARD-GENERIC-FUNCTION MNAS-PACKAGE/EXAMPLE::M-FOO (8)>
+  => (#<STANDARD-GENERIC-FUNCTION MNAS-PACKAGE/EXAMPLE::M-FOO (8))>
 @end(code)
 "
   (mapcar #'symbol-function

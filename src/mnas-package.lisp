@@ -4,8 +4,9 @@
   (:use #:cl ) ;;;; #:mnas-package/make-graph
   (:nicknames "MPKG")
   (:intern insert-codex-doc)
+  (:export document)
   (:export make-codex-documentation)
-  (:intern section-system ;;; Информация о системе пока не реализована
+  (:intern section-system ;;; Информация о системе пока не реализована (asdf:system-description (asdf:find-system :mnas-package))
            section-package)
   (:intern section-variables 
            section-functions
@@ -281,14 +282,14 @@ Lisp). Он позволяет получить на выходе докумен
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun section-classes (package-name
-                                   &key
-                                     (stream t)
-                                     (external t)
-                                     (internal nil)
-                                     (inherited nil)
-                                     (sort nil)
-                                     (min-doc-length 80)
-                                   &aux (package (find-package package-name)))
+                        &key
+                          (stream t)
+                          (external t)
+                          (internal nil)
+                          (inherited nil)
+                          (sort nil)
+                          (min-doc-length 80)
+                        &aux (package (find-package package-name)))
   "@b(Описание:) функция @b(section-classes) выводит в поток @b(stream)
 секцию с документацией в формате codex, содержащую классы из пакета @b(package-name).
 
@@ -302,14 +303,20 @@ Lisp). Он позволяет получить на выходе докумен
   (with-package package
     (with-downcase
       (let ((classes (mpkg/pkg:package-classes package :external external :internal internal :inherited inherited)))
-        (format stream "@begin(section)~% @title(Классы)~% @cl:with-package[name=~S]("
-	        (mpkg/obj:obj-name package))
-        (map nil #'(lambda (el)
-                     (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
-	     (if sort
-	         (sort classes #'string< :key #'(lambda (elem) (string-downcase (mpkg/obj:obj-name elem))))
-	         classes))
-        (format stream ")~%@end(section)~%")))))
+        (when (some
+               #'(lambda (class)
+                   (when (< min-doc-length (length (documentation class t))) t))
+               classes)
+          (format stream "@begin(section)~% @title(Классы)~% @cl:with-package[name=~S]("
+	          (mpkg/obj:obj-name package))
+          (map nil #'(lambda (el)
+                       (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
+	       (if sort
+	           (sort classes #'string< :key #'(lambda (elem) (string-downcase (mpkg/obj:obj-name elem))))
+	           classes))
+          (format stream ")~%@end(section)~%"))))))
+
+;;(when (some #'(lambda (class) (when (< min-doc-length (length (documentation class t))) t)) (mpkg/pkg:package-classes :mnas-package :external t :internal nil)))
 
 (defun section-variables (package-name
                           &key
@@ -333,13 +340,17 @@ Lisp). Он позволяет получить на выходе докумен
   (with-package package
     (with-downcase
       (let ((variables (mpkg/pkg:package-variables package :external external :internal internal :inherited inherited)))
-        (format stream "@begin(section)~% @title(Переменные)~% @cl:with-package[name=~S]("
-	        (mpkg/obj:obj-name package))
-        (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
-	     (if sort
-	         (sort variables #'string< :key #'(lambda (elem) (string-downcase (mpkg/obj:obj-name elem))))
-	         variables))
-        (format stream ")~%@end(section)~%")))))
+        (when (some
+               #'(lambda (var)
+                   (when (< min-doc-length (length (documentation var 'variable))) t))
+               variables)
+          (format stream "@begin(section)~% @title(Переменные)~% @cl:with-package[name=~S]("
+	          (mpkg/obj:obj-name package))
+          (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
+	       (if sort
+	           (sort variables #'string< :key #'(lambda (elem) (string-downcase (mpkg/obj:obj-name elem))))
+	           variables))
+          (format stream ")~%@end(section)~%"))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -364,17 +375,21 @@ Lisp). Он позволяет получить на выходе докумен
   (with-package package
     (with-downcase
       (let ((methods (mpkg/pkg:package-methods package :external external :internal internal :inherited inherited)))
-        (format stream "@begin(section)~% @title(Методы)~% @cl:with-package[name=~S]("
-                (mpkg/obj:obj-name package))
-        (map nil
-	     #'(lambda (el)
-                 (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
-	     (if sort
-	         (sort methods #'string<
-                       :key #'(lambda (elem)
-                                (string-downcase (mpkg/obj:obj-name elem))))
-	         methods))
-        (format stream ")~%@end(section)~%")))))
+        (when (some
+               #'(lambda (method)
+                   (when (< min-doc-length (length (documentation method t))) t))
+               methods)
+          (format stream "@begin(section)~% @title(Методы)~% @cl:with-package[name=~S]("
+                  (mpkg/obj:obj-name package))
+          (map nil
+	       #'(lambda (el)
+                   (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
+	       (if sort
+	           (sort methods #'string<
+                         :key #'(lambda (elem)
+                                  (string-downcase (mpkg/obj:obj-name elem))))
+	           methods))
+          (format stream ")~%@end(section)~%"))))))
 
 #|
 (let ((print-case *print-case*))
@@ -398,12 +413,34 @@ Lisp). Он позволяет получить на выходе докумен
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun section-package (package-name
-                                   &key (stream t) (min-doc-length 80)
-                                   &aux (package (find-package package-name)))
+                        &key (stream t)
+                          (external t) (internal nil) (inherited nil)
+                          (sort nil) (min-doc-length 80)
+                        &aux (package (find-package package-name)))
   "(section-package :mnas-package)"
-  (format stream "@begin(section) @title(Обзор)~2%")
+  (format stream "@begin(section) @title(~A)~2%"
+          (mnas-package/obj:obj-name package))
   (insert-codex-doc package :stream stream :min-doc-length min-doc-length)
+  (map nil
+       #'(lambda (func)
+           (funcall func package :stream stream :sort sort :min-doc-length min-doc-length
+                                 :external external :internal internal :inherited inherited))
+       (list #'section-variables
+             #'section-functions 
+             #'section-macroses  
+             #'section-setf-functions 
+             #'section-generics  
+             #'section-methods   
+             #'section-classes))
   (format stream "@end(section)~%"))
+
+(defun section-system (system-name
+                       &key (stream t)
+                       &aux (system (asdf:find-system system-name)))
+  (format stream "@begin(section) @title(Обзор)~2%")
+  (format stream (asdf:system-description system))
+  (format stream "@end(section)~%"))
+  
 
 (defun section-functions (package-name
                           &key
@@ -426,13 +463,17 @@ Lisp). Он позволяет получить на выходе докумен
   (with-package package
     (with-downcase
       (let ((funcs (mpkg/pkg:package-functions package :external external :internal internal :inherited inherited)))
-        (format stream "@begin(section)~% @title(Функции)~% @cl:with-package[name=~S]("
-	        (mpkg/obj:obj-name package))
-        (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
-	     (if sort
-	         (sort funcs #'string< :key #'(lambda (elem) (string-downcase (slynk-backend:function-name elem))))
-	         funcs))
-        (format stream ")~%@end(section)~%")))))
+        (when (some
+               #'(lambda (func)
+                   (when (< min-doc-length (length (documentation func t))) t))
+               funcs)
+          (format stream "@begin(section)~% @title(Функции)~% @cl:with-package[name=~S]("
+	          (mpkg/obj:obj-name package))
+          (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
+	       (if sort
+	           (sort funcs #'string< :key #'(lambda (elem) (string-downcase (slynk-backend:function-name elem))))
+	           funcs))
+          (format stream ")~%@end(section)~%"))))))
 
 (defun section-macroses (package-name
                          &key
@@ -456,13 +497,17 @@ Lisp). Он позволяет получить на выходе докумен
   (with-package package
     (with-downcase
       (let ((macroses (mpkg/pkg:package-macroses package :external external :internal internal :inherited inherited)))
-        (format stream "@begin(section)~% @title(Макросы)~% @cl:with-package[name=~S]("
-	        (mpkg/obj:obj-name package))
-        (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
-	     (if sort
-	         (sort macroses #'string< :key #'(lambda (elem) (string-downcase (mpkg/obj:obj-name elem))))
-	         macroses))
-        (format stream ")~%@end(section)~%")))))
+        (when (some
+               #'(lambda (macro)
+                   (when (< min-doc-length (length (documentation macro t))) t))
+               macroses)
+          (format stream "@begin(section)~% @title(Макросы)~% @cl:with-package[name=~S]("
+	          (mpkg/obj:obj-name package))
+          (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
+	       (if sort
+	           (sort macroses #'string< :key #'(lambda (elem) (string-downcase (mpkg/obj:obj-name elem))))
+	           macroses))
+          (format stream ")~%@end(section)~%"))))))
 
 (defun section-setf-functions (package-name
                                &key
@@ -485,13 +530,17 @@ Lisp). Он позволяет получить на выходе докумен
   (with-package package
     (with-downcase
       (let ((setf-funcs (mpkg/pkg:package-setf-functions package :external external :internal internal :inherited inherited)))
-        (format stream "@begin(section)~% @title(Setf Функции)~% @cl:with-package[name=~S]("
-	        (mpkg/obj:obj-name package))
-        (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
-             (if sort
-                 (sort setf-funcs #'string< :key #'(lambda (elem) (mpkg/obj:obj-name elem)))
-                 setf-funcs))
-        (format stream ")~%@end(section)~%")))))
+        (when (some
+               #'(lambda (setf-func)
+                   (when (< min-doc-length (length (documentation setf-func t))) t))
+               setf-funcs)
+          (format stream "@begin(section)~% @title(Setf Функции)~% @cl:with-package[name=~S]("
+	          (mpkg/obj:obj-name package))
+          (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
+               (if sort
+                   (sort setf-funcs #'string< :key #'(lambda (elem) (mpkg/obj:obj-name elem)))
+                   setf-funcs))
+          (format stream ")~%@end(section)~%"))))))
 
 (defun section-generics (package-name
                          &key
@@ -514,13 +563,17 @@ Lisp). Он позволяет получить на выходе докумен
   (with-package package
     (with-downcase
       (let ((g-funcs (mpkg/pkg:package-generics package :external external :internal internal :inherited inherited)))
-        (format stream "@begin(section)~% @title(Обобщенные функции)~% @cl:with-package[name=~S]("
-                (mpkg/obj:obj-name package))
-        (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
-	     (if sort
-                 (sort g-funcs #'string< :key #'(lambda (elem) (string-downcase (mpkg/obj:obj-name elem))))
-	         g-funcs))
-        (format stream ")~%@end(section)~%")))))
+        (when (some
+               #'(lambda (g-func)
+                   (when (< min-doc-length (length (documentation g-func t))) t))
+               g-funcs)
+          (format stream "@begin(section)~% @title(Обобщенные функции)~% @cl:with-package[name=~S]("
+                  (mpkg/obj:obj-name package))
+          (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
+	       (if sort
+                   (sort g-funcs #'string< :key #'(lambda (elem) (string-downcase (mpkg/obj:obj-name elem))))
+	           g-funcs))
+          (format stream ")~%@end(section)~%"))))))
 
 (defun make-doc-generics (package class prefix &key (stream t) (min-doc-length 80))
   "@b(Описание:) функция @b(make-doc-methods) выводит в поток
@@ -563,18 +616,8 @@ scr-файл системы документирования codex. Этот р�
       (format stream ")~%"))))
 
 (defun make-codex-documentation (package-name
-                                 &key (stream (open
-                                               (concatenate
-                                                'string
-                                                (codex-docs-pathname package-name)
-                                                "/"
-                                                (mnas-string:replace-all 
-                                                 (string-downcase
-                                                  (mpkg/obj:obj-name (find-package package-name)))
-                                                 "/" "-")
-                                                ".scr")
-                                               :direction :output
-                                               :if-exists :supersede))
+                                 &key (stream t)
+                                   (system-name nil)
                                    (external t)
                                    (internal nil)
                                    (inherited nil)
@@ -599,19 +642,11 @@ scr-файл системы документирования codex. Этот р�
  (make-codex-documentation :mnas-package/example :internal t)
 @end(code)
 "
-  (section-package package :stream stream)
-  (map nil
-       #'(lambda (func)
-           (funcall func package :stream stream :external external :internal internal
-                                 :inherited inherited :sort sort
-                                 :min-doc-length min-doc-length))
-       (list #'section-variables
-             #'section-functions 
-             #'section-macroses  
-             #'section-setf-functions 
-             #'section-generics  
-             #'section-methods   
-             #'section-classes)))
+  (when system-name (section-system system-name :stream stream))
+  (section-package package :stream stream
+                           :external external :internal internal :inherited inherited
+                           :sort sort
+                           :min-doc-length min-doc-length))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -731,3 +766,28 @@ scr-файл системы документирования codex. Этот р�
          ((null classes-tmp) graph)
       (setf classes-tmp (apply #'append (mapcar  #'(lambda (el) (find-super-classes el)) classes-tmp))))
     graph))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun document (package-name system-name
+                 &key
+                   (external t)
+                   (internal nil)
+                   (inherited nil)
+                   (sort nil)
+                   (min-doc-length 80)
+                   )
+  (with-open-file
+      (stream (concatenate 'string
+                           (codex-docs-pathname package-name)
+                           "/"
+                           (mnas-string:replace-all
+                            (string-downcase (mpkg/obj:obj-name (find-package package-name))) "/" "-")
+                           ".scr")
+              :direction :output
+              :if-exists :supersede)
+    (make-codex-documentation package-name
+                              :system-name system-name
+                              :stream stream
+                              :external external :internal internal :inherited inherited
+                              :sort sort :min-doc-length min-doc-length)))
