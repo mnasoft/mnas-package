@@ -4,7 +4,6 @@
   (:use #:cl ) ;;;; #:mnas-package/make-graph
   (:nicknames "MPKG")
   (:intern insert-codex-doc)
-  (:export class-undirect-subclasses)
   (:export make-codex-documentation)
   (:intern section-system ;;; Информация о системе пока не реализована
            section-package)
@@ -15,6 +14,8 @@
            section-generics
            section-methods
            section-classes)
+  (:export sub-class-graph
+           super-class-graph)
   (:export make-codex-graphs)
   (:export make-doc-generics
            make-doc-methods)
@@ -114,6 +115,21 @@ Lisp). Он позволяет получить на выходе докумен
       (concatenate 'string
 		   (namestring (asdf:system-source-directory system))
 		   "docs")))
+
+(defun codex-build-pathname (system-designator)
+  "@b(Описание:) функция @b(codex-docs-pathname) возвращает строку,
+содержащую расположение каталога ./docs системы @b(system-designator) на диске.
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (codex-build-pathname :mnas-package) 
+ => \"D:/PRG/msys32/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs\"
+@end(code)
+"
+    (let ((system (asdf:find-system system-designator)))
+      (concatenate 'string
+		   (namestring (asdf:system-source-directory system))
+		   "docs/build")))
 
 (defun codex-html-pathname (system-designator)
   "@b(Описание:) функция @b(codex-html-pathname) возвращает строку,
@@ -547,8 +563,18 @@ scr-файл системы документирования codex. Этот р�
       (format stream ")~%"))))
 
 (defun make-codex-documentation (package-name
-                                 &key
-                                   (stream t)
+                                 &key (stream (open
+                                               (concatenate
+                                                'string
+                                                (codex-docs-pathname package-name)
+                                                "/"
+                                                (mnas-string:replace-all 
+                                                 (string-downcase
+                                                  (mpkg/obj:obj-name (find-package package-name)))
+                                                 "/" "-")
+                                                ".scr")
+                                               :direction :output
+                                               :if-exists :supersede))
                                    (external t)
                                    (internal nil)
                                    (inherited nil)
@@ -640,28 +666,68 @@ scr-файл системы документирования codex. Этот р�
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun class-undirect-subclasses (class-01)
-"@b(Описание:) функция @b(class-undirect-subclasses)
- выполняет поиск всех подклассов класса class-01 и 
- возвращает список всех найденных классов.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun sub-class-graph (class &aux (graph (make-instance 'mnas-graph:<graph>)))
+  " @b(Описание:) метод @b(sub-class-graph) возвращает граф,
+содержащий иерархию подклассов класса @b(class).
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
- (progn
-  (require :dxf)
-  (class-undirect-subclasses (find-class 'dxf::object))
-  (class-undirect-subclasses (find-class 'number)))
+ (mnas-graph:view-graph (sub-class-graph (find-class 'mnas-package/example::<a>)))
+ (mnas-graph:view-graph (sub-class-graph (find-class 'list)))
 @end(code)
 "
-  (let ((rez-classes nil)
-	(l-not-obr (list class-01)))
-    (flet
-	((bar (class)
-	   (setf l-not-obr (append l-not-obr (sb-mop:class-direct-subclasses class)))))
-      (do ((class nil))
-	  ((null l-not-obr) rez-classes)
-	(setf class (pop l-not-obr))
-	(push class rez-classes)
-	(bar class)))))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  (flet ((find-sub-classes (class)
+           (let ((from-node (mnas-graph:find-node graph (string (class-name class)))))
+             (when from-node
+	       (mapc
+	        #'(lambda (el)
+		    (mnas-graph:insert-to
+		     (make-instance
+		      'mnas-graph:<edge>
+		      :from from-node
+		      :to   (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name el))))
+		     graph))
+	        (sb-mop:class-direct-subclasses class)))))
+         )
+    (mnas-graph:insert-to
+     (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name class)))
+     graph)
+    (do* ((classes-tmp (list class)))
+         ((null classes-tmp) graph)
+      (setf classes-tmp (apply #'append (mapcar  #'(lambda (el) (find-sub-classes el)) classes-tmp))))
+    graph))
+
+(defun super-class-graph (class &aux (graph (make-instance 'mnas-graph:<graph>)))
+  " @b(Описание:) метод @b(sub-class-graph) возвращает граф,
+содержащий иерархию предков для класса @b(class).
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (mnas-graph:view-graph (super-class-graph (find-class 'mnas-package/example:<c>)))
+ (mnas-graph:view-graph (super-class-graph (find-class 'list)))
+@end(code)
+"
+  (flet ((find-super-classes (class)
+           (let ((to-node (mnas-graph:find-node graph (string (class-name class)))))
+             (when to-node
+	       (mapc
+	        #'(lambda (el)
+		    (mnas-graph:insert-to
+		     (make-instance
+		      'mnas-graph:<edge>
+		      :from (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name el)))
+		      :to   to-node)
+		     graph))
+	        (sb-mop:class-direct-superclasses class)))))
+         )
+    (mnas-graph:insert-to
+     (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name class)))
+     graph)
+    (do* ((classes-tmp (list class)))
+         ((null classes-tmp) graph)
+      (setf classes-tmp (apply #'append (mapcar  #'(lambda (el) (find-super-classes el)) classes-tmp))))
+    graph))

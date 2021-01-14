@@ -1,16 +1,68 @@
 @begin(section) @title(Обзор)
 
-Система mnas-package предназначена для извлечения информации из asdf-систем.
+ Система @b(mnas-package) предназначена для подготовки документации,
+извлекаемой из asdf-систем.
 
-Извлеченная информация представляется в виде графов.
+@begin(section) @title(Мотивация)
 
-Система позволяет построить следующие графы:
+ Система @b(Codex) является достаточно удобной для выполнения
+документирования систем написанных с использованием @b(Common
+Lisp). Он позволяет получить на выходе документацию приемлемого вида.
+
+ К недостатку сустемы @b(Codex) можно отнести то, что формирование
+шаблона документации не выполняется автоматически. Указание на
+включение разделов документации, относящихся к отдельным сущностям к
+которым можно отнести: @begin(list) @item(системы;) @item(пакеты;)
+@item(классы;) @item(функции, setf-функции;) @item(обобщенные функции,
+методы, setf-методы;) @item(макросы;) @item(и т.д., и т.п.)
+@end(list) приходится формировать вручную.
+
+ Этот проект пытается устранить данный недостаток системы @b(Codex) за
+счет определения функций и методов позволяющих: @begin(list)
+@item(формировать код, предназначенный для передачи в систему
+@b(Codex);) @item(формировать представление отдельных частей системы в
+виде графов.)  @end(list)
+
+@end(section)
+
+ Основными функциями в системе являются:
 @begin(list)
- @item(зависимостей систем @image[src=./system-graph-mnas-package.gv.png]())
- @item(вызовов функций     @image[src=./call-graph-mnas-package.gv.png]())
- @item(использования символов функциями @image[src=./symbol-graph-mnas-package.gv.png]())
- @item(наследования классов  @image[src=./class-graph-mnas-package.gv.png]())
-@end(list)@end(section)
+ @item(make-codex-documentation;)
+ @item(make-codex-graphs;)
+@end(list)
+
+ Перечисленные ниже функции имеют схожий набор аргументов:
+@begin(list)
+ @item(make-codex-documentation;)
+ @item(section-system;)
+ @item(section-package;) 
+ @item(section-variables;)
+ @item(section-functions;) 
+ @item(section-macroses;) 
+ @item(section-setf-functions;)
+ @item(section-generics;) 
+ @item(section-methods;) 
+ @item(section-classes.)
+@end(list)
+
+  @b(Аргументы:)
+@begin(list)
+ @item(package-name - пакет из которого извлекаются
+       сущности (глобальными переменными, функциями, и т.д. и т.п.);)
+ @item(stream - поток, в который выводятся информация о сущностях;)
+ @item(external - если не nil - в поток выводятся информация о
+       экспортируемых сущностях;)
+ @item(internal - если не nil - в поток выводятся информация о
+       внутренних сущностях;)
+ @item(inherited - если не nil - в поток выводятся информация о
+       заимствованных сущностях;)
+ @item(sort - если не nil - сущности сортируются в алфавитном
+ порядке;)
+ @item(min-doc-length - минимальная длина строки документации,
+       связанной с сущностью, при которой созается ссылка указаение на
+       вставку документации.)
+@end(list)
+@end(section)
 @begin(section)
  @title(Переменные)
  @cl:with-package[name="MNAS-PACKAGE"]()
@@ -18,73 +70,13 @@
 @begin(section)
  @title(Функции)
  @cl:with-package[name="MNAS-PACKAGE"](
-  @cl:doc(function class-undirect-subclasses)
-  @cl:doc(function make-call-graph)
-  @cl:doc(function make-class-graph)
   @cl:doc(function make-codex-documentation)
   @cl:doc(function make-codex-graphs)
-  @cl:doc(function make-codex-section-classes)
-  @cl:doc(function make-codex-section-functions)
-  @cl:doc(function make-codex-section-generics)
-  @cl:doc(function make-codex-section-variables)
   @cl:doc(function make-doc-generics)
   @cl:doc(function make-doc-methods)
-  @cl:doc(function make-symbol-graph)
-  @cl:doc(function make-system-graph)
-  @cl:doc(function package-classes)
-  @cl:doc(function package-functions)
-  @cl:doc(function package-generics)
-  @cl:doc(function package-methods)
-  @cl:doc(function package-variables)
-  @cl:doc(function view-call-graph)
-  @cl:doc(function view-class-graph)
-  @cl:doc(function view-symbol-graph)
-  @cl:doc(function view-system-graph))
+  @cl:doc(function super-class-graph)
+  @cl:doc(function sub-class-graph))
 @end(section)
 @begin(section)
- @title(Обобщенные функции)
- @cl:with-package[name="MNAS-PACKAGE/OBJ"](
-  @cl:doc(generic obj-name)
-  @cl:doc(generic obj-name-string)
-  @cl:doc(generic obj-package)
-  @cl:doc(generic obj-package-string))
-@end(section)
-@begin(section)
- @title(Методы)
- @cl:with-package[name="MNAS-PACKAGE/OBJ"](
-  @cl:doc(method obj-name (package package))
-  @cl:doc(method obj-name (class class))
-  @cl:doc(method obj-name (method method))
-  @cl:doc(method obj-name (generic standard-generic-function))
-  @cl:doc(method obj-name (function function))
-  @cl:doc(method obj-name-string obj)
-  @cl:doc(method obj-package (package package))
-  @cl:doc(method obj-package (class class))
-  @cl:doc(method obj-package (method method))
-  @cl:doc(method obj-package (generic standard-generic-function))
-  @cl:doc(method obj-package (function function))
-  @cl:doc(method obj-package (package package))
-  @cl:doc(method obj-package (class class))
-  @cl:doc(method obj-package (method method))
-  @cl:doc(method obj-package (generic standard-generic-function))
-  @cl:doc(method obj-package (function function))
-  @cl:doc(method obj-package-string obj)
-  @cl:doc(method obj-package-string obj))
-@end(section)
-@begin(section)
- @title(Классы)
- @cl:with-package[name="MNAS-PACKAGE"]()
-@end(section)
-
- @begin(section)
-  @title(Методы)
-  @cl:with-package[name="MNAS-PACKAGE/EXAMPLE"](
-   @cl:doc(method m-foo (x <a>) (y <b>) z :around)
-   @cl:doc(method m-foo before (x <a>) (y <b>) z)
-   @cl:doc(method m-foo (x <a>) (y <b>) z :after)
-   @cl:doc(method m-foo (x <a>) (y <b>) z)
-   @cl:doc(method m-foo :around (x <a>) (y <b>) (z <c>))
-   @cl:doc(method m-foo :before (x <a>) (y <b>) (z <c>))
-   @cl:doc(method m-foo :after (x <a>) (y <b>) (z <c>))
-   @cl:doc(method m-foo (x <a>) (y <b>) (z <c>)))
- @end(section)
+ @title(Макросы)
+ @cl:with-package[name="MNAS-PACKAGE"]
