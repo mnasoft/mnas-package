@@ -6,7 +6,9 @@
   (:export system-graph
            symbol-graph
            class-graph
-           call-graph)
+           call-graph
+           class-slot-graph
+           )
   (:documentation
    "Система mnas-package предназначена для извлечения информации из asdf-систем.
 
@@ -132,6 +134,25 @@
   (when (stringp package-name) (require system-name))
   (mnas-graph:view-graph
    (mpkg/make:call-graph package-name)
+   :fpath        fpath
+   :fname        fname
+   :graphviz-prg graphviz-prg
+   :out-type     out-type
+   :dpi          dpi
+   :viewer       viewer))
+
+(defun class-slot-graph (class
+                         &key
+			   (fpath mnas-graph:*output-path*)
+			   (fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
+			   (graphviz-prg :filter-dot)
+			   (out-type "pdf")
+			   (dpi "300")
+			   (viewer mnas-graph:*viewer-path*))
+  "@b(Описание:) функция @b(class-slot-graph) - ...
+"
+  (mnas-graph:view-graph
+   (mpkg/make:class-slot-graph class)
    :fpath        fpath
    :fname        fname
    :graphviz-prg graphviz-prg

@@ -6,7 +6,8 @@
   (:export system-graph
            symbol-graph
            class-graph
-           call-graph)
+           call-graph
+           class-slot-graph)
   (:documentation
    "Система mnas-package предназначена для извлечения информации из asdf-систем.
 
@@ -118,3 +119,69 @@
       (mpkg/pkg:who-calls-lst pkg-functions)
       :nodes (mapcar #'(lambda (el) (mpkg/pkg:func-to-string el)) pkg-functions)))
     (t (error "~S does not designate a package" package-name))))
+
+(defun class-graph (package-name
+                         &key
+                           (external t)
+                           (internal nil)
+                           (inherited nil)
+			 &aux
+			   (package (find-package package-name))
+			   (graph (make-instance 'mnas-graph:<graph>)))
+  "@b(Описание:) make-class-graph создает граф наследования классов.
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (make-class-graph :mnas-package )
+@end(code)
+"
+  (declare ((or package string symbol) package-name))
+  (flet ((find-subclasses (class)
+	   (mapcar
+	    #'(lambda (el)
+		(mnas-graph:insert-to
+		 (make-instance
+		  'mnas-graph:<edge>
+		  :from (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name class)))
+		  :to   (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name el))))
+		 graph))
+	    (sb-mop:class-direct-subclasses class))
+	   graph))
+    (mapc
+     #'(lambda (el)
+  	 (mnas-graph:insert-to
+	  (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name el)))
+	  graph)
+	 (find-subclasses el))
+     (mpkg/pkg:package-classes package :external  external :internal  internal :inherited inherited)))
+  graph)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun class-slot-graph (class
+                         ;; &key (external t) (internal nil) (inherited nil)
+		         &aux
+		           ;;(class (find-class class-name))
+		           (graph (make-instance 'mnas-graph:<graph>)))
+  "@b(Описание:) class-slot-graph создает граф слотов класса с именем @b(class-name).
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (require :temperature-fild)
+ (mnas-graph:view-graph (class-slot-graph (find-class 'temperature-fild/sector:<sector>)))
+@end(code)
+"
+  ;;(declare ((or class symbol) class-name))
+  (let ((cl-node (make-instance 'mnas-graph:<node> :owner graph :name (string (mnas-package/obj:obj-name class)))))
+    (mnas-graph:insert-to cl-node graph)
+    (mapc
+     #'(lambda (el)
+         (mnas-graph:insert-to
+	  (make-instance
+	   'mnas-graph:<edge>
+	   :from cl-node
+	   :to   (make-instance 'mnas-graph:<node> :owner graph :name (string (mnas-package/obj:obj-name el))))
+	  graph)
+         )
+     (sb-mop:class-slots class))
+    graph))

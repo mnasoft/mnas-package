@@ -102,6 +102,11 @@
 @end(code)"
   (values (package-name package) :package))
 
+(defmethod obj-name ((slot-definition sb-mop:slot-definition))
+  "@b(Описание:) метод @b(obj-name) возвращает символ,
+представляющий имя определеия слота."
+  (sb-mop:slot-definition-name slot-definition))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod obj-name-string (obj)
@@ -179,6 +184,14 @@
   (obj-package (find-package :dxf))
 @end(code)"
   package)
+
+
+(defmethod obj-package ((slot-definition sb-mop:slot-definition))
+      "@b(Описание:) метод @b(obj-package) возвращает символ,
+представляющий имя определение слота.
+"
+  (symbol-package (obj-name slot-definition)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -1,8 +1,4 @@
  @begin(section) @title(Графы mnas-package-obj)
   @begin(list)
-   @item(system-graph @image[src=./system-graph-mnas-package-obj.gv.png]())
-   @item(call-graph   @image[src=./call-graph-mnas-package-obj.gv.png]())
-   @item(symbol-graph @image[src=./symbol-graph-mnas-package-obj.gv.png]())
-   @item(class-graph  @image[src=./class-graph-mnas-package-obj.gv.png]())
   @end(list)
  @end(section)

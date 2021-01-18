@@ -27,7 +27,7 @@
 @begin(section) @title(Мотивация)
 
  Система @b(Codex) является достаточно удобной для выполнения
-документирования систем написанных с использованием @b(Common
+документирования систем, написанных с использованием @b(Common
 Lisp). Он позволяет получить на выходе документацию приемлемого вида.
 
  К недостатку сустемы @b(Codex) можно отнести то, что формирование
@@ -671,33 +671,35 @@ scr-файл системы документирования codex. Этот р�
 	 (fpath (codex-html-pathname sys))
 	 (pkg-name (mnas-string:replace-all
 		    (string-downcase (package-name (find-package pkg)))
-		    "/" "-")))
-    (mpkg/view:call-graph   pkg :out-type "png" :viewer nil :fpath fpath
-			   :fname (concatenate 'string "call-graph"  "-" pkg-name))
-    (mpkg/view:system-graph sys :out-type "png" :viewer nil :fpath fpath
-			   :fname (concatenate 'string "system-graph" "-" pkg-name))
-    (mpkg/view:class-graph  pkg
-                       :external external
-                       :internal internal
-                       :inherited inherited
-                       :out-type "png" :viewer nil :fpath fpath
-		       :fname (concatenate 'string "class-graph" "-" pkg-name))
-    (mpkg/view:symbol-graph pkg :out-type "png" :viewer nil :fpath fpath
-			   :fname (concatenate 'string "symbol-graph" "-" pkg-name))
+		    "/" "-"))
+         (call-graph (mpkg/view:call-graph pkg :out-type "png" :viewer nil :fpath fpath
+                                               :fname (concatenate 'string "call-graph"  "-" pkg-name)))
+         (system-graph (mpkg/view:system-graph sys :out-type "png" :viewer nil :fpath fpath
+                                                   :fname (concatenate 'string "system-graph" "-" pkg-name)))
+         (class-graph (mpkg/view:class-graph  pkg
+                                              :external external :internal internal :inherited inherited
+                                              :out-type "png" :viewer nil :fpath fpath
+		                              :fname (concatenate 'string "class-graph" "-" pkg-name)))
+         (symbol-graph (mpkg/view:symbol-graph pkg :out-type "png" :viewer nil :fpath fpath
+			                           :fname (concatenate 'string "symbol-graph" "-" pkg-name))))
     (with-open-file (os (concatenate 'string (codex-docs-pathname sys) "/" pkg-name "-graph.scr")
 			:if-exists :supersede :direction :output)
-      (format os " @begin(section) @title(Графы ~A)
-  @begin(list)
-   @item(system-graph @image[src=./system-graph-~A.gv.png]())
-   @item(call-graph   @image[src=./call-graph-~A.gv.png]())
-   @item(symbol-graph @image[src=./symbol-graph-~A.gv.png]())
-   @item(class-graph  @image[src=./class-graph-~A.gv.png]())
-  @end(list)
- @end(section)" pkg-name pkg-name pkg-name pkg-name pkg-name))))
+      (format os " @begin(section) @title(Графы ~A)~%" pkg-name)
+      (format os "  @begin(list)~%")
+      (when (< 0 (mnas-graph:<graph>-nodes-count system-graph))
+        (format os "   @item(system-graph @image[src=./system-graph-~A.gv.png]())~%" pkg-name))
+      (when (< 0 (mnas-graph:<graph>-nodes-count call-graph))
+        (format os "   @item(call-graph   @image[src=./call-graph-~A.gv.png]())~%" pkg-name))
+      (when (< 0 (mnas-graph:<graph>-nodes-count symbol-graph))
+        (format os "   @item(symbol-graph @image[src=./symbol-graph-~A.gv.png]())~%" pkg-name))
+      (when (< 0 (mnas-graph:<graph>-nodes-count class-graph))
+        (format os "   @item(class-graph  @image[src=./class-graph-~A.gv.png]())~%" pkg-name))
+      (format os "  @end(list)~% @end(section)"))))
 
 #|
-(make-codex-graphs :mnas-package :mnas-package)
+(make-codex-graphs :mnas-package :mnas-package) ;
 |#
+(< 0 (mnas-graph:<graph>-nodes-count (mpkg/view:symbol-graph (find-package :mnas-package))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
