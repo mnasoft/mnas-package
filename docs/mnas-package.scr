@@ -1,10 +1,7 @@
 @begin(section) @title(Обзор)
 
-Describe mnas-package here@end(section)
-@begin(section) @title(MNAS-PACKAGE)
-
- Система @b(mnas-package) предназначена для подготовки документации,
-извлекаемой из asdf-систем.
+ Система @b(mnas-package) предназначена для подготовки
+документации, извлекаемой из asdf-систем.
 
 @begin(section) @title(Мотивация)
 
@@ -21,21 +18,28 @@ Lisp). Он позволяет получить на выходе докумен
 @end(list) приходится формировать вручную.
 
  Этот проект пытается устранить данный недостаток системы @b(Codex) за
-счет определения функций и методов позволяющих: @begin(list)
+счет определения функций и методов позволяющих: 
+@begin(list)
 @item(формировать код, предназначенный для передачи в систему
-@b(Codex);) @item(формировать представление отдельных частей системы в
-виде графов.)  @end(list)
-
+ @b(Codex);)
+@item(формировать представление отдельных частей системы в виде
+ графов.)
+@end(list)
 @end(section)
+@end(section)
+@begin(section) @title(MNAS-PACKAGE)
+
+ Пакет @b(mnas-package) является основным в системе @b(mnas-package) и являются 
 
  Основными функциями в системе являются:
 @begin(list)
- @item(make-codex-documentation;)
+ @item(document;)
  @item(make-codex-graphs;)
 @end(list)
 
  Перечисленные ниже функции имеют схожий набор аргументов:
 @begin(list)
+ @item(document;)
  @item(make-codex-documentation;)
  @item(section-system;)
  @item(section-package;) 
@@ -69,10 +73,10 @@ Lisp). Он позволяет получить на выходе докумен
  @title(Функции)
  @cl:with-package[name="MNAS-PACKAGE"](
   @cl:doc(function make-codex-documentation)
-  @cl:doc(function make-doc-generics)
-  @cl:doc(function sub-class-graph)
-  @cl:doc(function make-doc-methods)
   @cl:doc(function make-codex-graphs)
-  @cl:doc(function super-class-graph))
+  @cl:doc(function make-doc-generics)
+  @cl:doc(function make-doc-methods)
+  @cl:doc(function super-class-graph)
+  @cl:doc(function sub-class-graph))
 @end(section)
 @end(section)

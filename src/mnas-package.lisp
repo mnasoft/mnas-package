@@ -5,8 +5,8 @@
   (:nicknames "MPKG")
   (:intern insert-codex-doc)
   (:export document)
-  (:export make-codex-documentation)
-  (:intern section-system ;;; Информация о системе пока не реализована (asdf:system-description (asdf:find-system :mnas-package))
+  (:intern make-codex-documentation
+           section-system 
            section-package)
   (:intern section-variables 
            section-functions
@@ -21,39 +21,17 @@
   (:export make-doc-generics
            make-doc-methods)
   (:documentation
-   " Система @b(mnas-package) предназначена для подготовки документации,
-извлекаемой из asdf-систем.
-
-@begin(section) @title(Мотивация)
-
- Система @b(Codex) является достаточно удобной для выполнения
-документирования систем, написанных с использованием @b(Common
-Lisp). Он позволяет получить на выходе документацию приемлемого вида.
-
- К недостатку сустемы @b(Codex) можно отнести то, что формирование
-шаблона документации не выполняется автоматически. Указание на
-включение разделов документации, относящихся к отдельным сущностям к
-которым можно отнести: @begin(list) @item(системы;) @item(пакеты;)
-@item(классы;) @item(функции, setf-функции;) @item(обобщенные функции,
-методы, setf-методы;) @item(макросы;) @item(и т.д., и т.п.)
-@end(list) приходится формировать вручную.
-
- Этот проект пытается устранить данный недостаток системы @b(Codex) за
-счет определения функций и методов позволяющих: @begin(list)
-@item(формировать код, предназначенный для передачи в систему
-@b(Codex);) @item(формировать представление отдельных частей системы в
-виде графов.)  @end(list)
-
-@end(section)
+   " Пакет @b(mnas-package) является основным в системе @b(mnas-package) и являются 
 
  Основными функциями в системе являются:
 @begin(list)
- @item(make-codex-documentation;)
+ @item(document;)
  @item(make-codex-graphs;)
 @end(list)
 
  Перечисленные ниже функции имеют схожий набор аргументов:
 @begin(list)
+ @item(document;)
  @item(make-codex-documentation;)
  @item(section-system;)
  @item(section-package;) 
@@ -684,27 +662,28 @@ scr-файл системы документирования codex. Этот р�
 			                           :fname (concatenate 'string "symbol-graph" "-" pkg-name))))
     (with-open-file (os (concatenate 'string (codex-docs-pathname sys) "/" pkg-name "-graph.scr")
 			:if-exists :supersede :direction :output)
-      (format os " @begin(section) @title(Графы ~A)~%" pkg-name)
-      (format os "  @begin(list)~%")
-      (when (< 0 (mnas-graph:<graph>-nodes-count system-graph))
-        (format os "   @item(system-graph @image[src=./system-graph-~A.gv.png]())~%" pkg-name))
-      (when (< 0 (mnas-graph:<graph>-nodes-count call-graph))
-        (format os "   @item(call-graph   @image[src=./call-graph-~A.gv.png]())~%" pkg-name))
-      (when (< 0 (mnas-graph:<graph>-nodes-count symbol-graph))
-        (format os "   @item(symbol-graph @image[src=./symbol-graph-~A.gv.png]())~%" pkg-name))
-      (when (< 0 (mnas-graph:<graph>-nodes-count class-graph))
-        (format os "   @item(class-graph  @image[src=./class-graph-~A.gv.png]())~%" pkg-name))
-      (format os "  @end(list)~% @end(section)"))))
+      (format os " ")
+      (when (< 0 (+ (mnas-graph:<graph>-nodes-count system-graph)
+                    (mnas-graph:<graph>-nodes-count call-graph  )
+                    (mnas-graph:<graph>-nodes-count symbol-graph)
+                    (mnas-graph:<graph>-nodes-count class-graph )))
+        (format os " @begin(section) @title(Графы ~A)~%" pkg-name)
+        (format os "  @begin(list)~%")
+        (when (< 0 (mnas-graph:<graph>-nodes-count system-graph))
+          (format os "   @item(system-graph @image[src=./system-graph-~A.gv.png]())~%" pkg-name))
+        (when (< 0 (mnas-graph:<graph>-nodes-count call-graph))
+          (format os "   @item(call-graph   @image[src=./call-graph-~A.gv.png]())~%" pkg-name))
+        (when (< 0 (mnas-graph:<graph>-nodes-count symbol-graph))
+          (format os "   @item(symbol-graph @image[src=./symbol-graph-~A.gv.png]())~%" pkg-name))
+        (when (< 0 (mnas-graph:<graph>-nodes-count class-graph))
+          (format os "   @item(class-graph  @image[src=./class-graph-~A.gv.png]())~%" pkg-name))
+        (format os "  @end(list)~% @end(section)")))))
 
 #|
 (make-codex-graphs :mnas-package :mnas-package) ;
-|#
 (< 0 (mnas-graph:<graph>-nodes-count (mpkg/view:symbol-graph (find-package :mnas-package))))
+|#
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun sub-class-graph (class &aux (graph (make-instance 'mnas-graph:<graph>)))

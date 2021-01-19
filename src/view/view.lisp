@@ -8,20 +8,35 @@
            class-graph
            call-graph
            class-slot-graph
+           generic-graph
            )
-  (:documentation
-   "Система mnas-package предназначена для извлечения информации из asdf-систем.
+  (:documentation " Пакет @b(mnas-package/view) предназначен для
+ визуализации (сохранения в файле) графов, которые можно получить с
+ использованием пакета @b(mnas-package/make):
 
- Извлеченная информация представляется в виде графов.
-
- Система позволяет построить следующие графы:
+ Примеры графов:
 @begin(list)
- @item(зависимостей систем @image[src=./system-graph-mnas-package.gv.png]())
- @item(вызовов функций     @image[src=./call-graph-mnas-package.gv.png]())
- @item(использования символов функциями @image[src=./symbol-graph-mnas-package.gv.png]())
- @item(наследования классов  @image[src=./class-graph-mnas-package.gv.png]())
-@end(list)"
-   ))
+ @item(system-graph - зависимостей систем
+
+ @image[src=./system-graph-mnas-package.gv.png]())
+ @item(call-graph       - вызовов функций
+
+ @image[src=./call-graph-mnas-package.gv.png]())
+ @item(symbol-graph     - использования символов функциями;
+
+ @image[src=./symbol-graph-mnas-package.gv.png]())
+
+ @item(class-graph      - наследования классов
+
+ @image[src=./class-graph-mnas-package.gv.png]()
+)
+ @item(class-slot-graph - слотов класса
+
+)
+ @item(generic-graph    - типов основных параметров обобщенных функций
+
+)
+@end(list)"))
 
 (in-package :mnas-package/view)
 
@@ -159,3 +174,24 @@
    :out-type     out-type
    :dpi          dpi
    :viewer       viewer))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun generic-graph (generic
+                      &key
+			(fpath mnas-graph:*output-path*)
+			(fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
+			(graphviz-prg :filter-dot)
+			(out-type "pdf")
+			(dpi "300")
+			(viewer mnas-graph:*viewer-path*))
+  (mnas-graph:view-graph
+   (mpkg/make:generic-graph class)
+   :fpath        fpath
+   :fname        fname
+   :graphviz-prg graphviz-prg
+   :out-type     out-type
+   :dpi          dpi
+   :viewer       viewer)
+  )
+

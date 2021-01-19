@@ -7,20 +7,29 @@
            symbol-graph
            class-graph
            call-graph
-           class-slot-graph)
+           )
+  (:export class-slot-graph
+           generic-graph
+           )
   (:documentation
-   "Система mnas-package предназначена для извлечения информации из asdf-систем.
-
- Извлеченная информация представляется в виде графов.
-
- Система позволяет построить следующие графы:
+   "Пакет @b(mnas-package/make) предназначен для создания графов следующих типов:
 @begin(list)
- @item(зависимостей систем @image[src=./system-graph-mnas-package.gv.png]())
- @item(вызовов функций     @image[src=./call-graph-mnas-package.gv.png]())
- @item(использования символов функциями @image[src=./symbol-graph-mnas-package.gv.png]())
- @item(наследования классов  @image[src=./class-graph-mnas-package.gv.png]())
-@end(list)"
-   ))
+ @item(system-graph     - зависимостей систем;)
+ @item(call-graph       - вызовов функций;)
+ @item(symbol-graph     - использования символов функциями;)
+ @item(class-graph      - наследования классов;)
+ @item(class-slot-graph - слотов класса;)
+ @item(generic-graph    - типов основных параметров обобщенных функций.)
+@end(list)
+
+ @image[src=./system-graph-mnas-package.gv.png]()
+
+ @image[src=./call-graph-mnas-package.gv.png]()
+ 
+ @image[src=./symbol-graph-mnas-package.gv.png]()
+ 
+ @image[src=./class-graph-mnas-package.gv.png]()
+"))
 
 (in-package :mnas-package/make)
 
@@ -120,48 +129,8 @@
       :nodes (mapcar #'(lambda (el) (mpkg/pkg:func-to-string el)) pkg-functions)))
     (t (error "~S does not designate a package" package-name))))
 
-(defun class-graph (package-name
-                         &key
-                           (external t)
-                           (internal nil)
-                           (inherited nil)
-			 &aux
-			   (package (find-package package-name))
-			   (graph (make-instance 'mnas-graph:<graph>)))
-  "@b(Описание:) make-class-graph создает граф наследования классов.
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (make-class-graph :mnas-package )
-@end(code)
-"
-  (declare ((or package string symbol) package-name))
-  (flet ((find-subclasses (class)
-	   (mapcar
-	    #'(lambda (el)
-		(mnas-graph:insert-to
-		 (make-instance
-		  'mnas-graph:<edge>
-		  :from (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name class)))
-		  :to   (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name el))))
-		 graph))
-	    (sb-mop:class-direct-subclasses class))
-	   graph))
-    (mapc
-     #'(lambda (el)
-  	 (mnas-graph:insert-to
-	  (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name el)))
-	  graph)
-	 (find-subclasses el))
-     (mpkg/pkg:package-classes package :external  external :internal  internal :inherited inherited)))
-  graph)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defun class-slot-graph (class
-                         ;; &key (external t) (internal nil) (inherited nil)
 		         &aux
-		           ;;(class (find-class class-name))
 		           (graph (make-instance 'mnas-graph:<graph>)))
   "@b(Описание:) class-slot-graph создает граф слотов класса с именем @b(class-name).
 
@@ -185,3 +154,11 @@
          )
      (sb-mop:class-slots class))
     graph))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun generic-graph (generic
+                      &aux
+		        (graph (make-instance 'mnas-graph:<graph>)))
+  generic
+  graph)

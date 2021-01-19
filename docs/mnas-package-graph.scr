@@ -1,4 +1,4 @@
- @begin(section) @title(Графы mnas-package)
+  @begin(section) @title(Графы mnas-package)
   @begin(list)
    @item(system-graph @image[src=./system-graph-mnas-package.gv.png]())
    @item(call-graph   @image[src=./call-graph-mnas-package.gv.png]())

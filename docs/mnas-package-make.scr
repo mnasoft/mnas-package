@@ -1,21 +1,29 @@
 @begin(section) @title(MNAS-PACKAGE/MAKE)
 
-Система mnas-package предназначена для извлечения информации из asdf-систем.
-
- Извлеченная информация представляется в виде графов.
-
- Система позволяет построить следующие графы:
+Пакет @b(mnas-package/make) предназначен для создания графов следующих типов:
 @begin(list)
- @item(зависимостей систем @image[src=./system-graph-mnas-package.gv.png]())
- @item(вызовов функций     @image[src=./call-graph-mnas-package.gv.png]())
- @item(использования символов функциями @image[src=./symbol-graph-mnas-package.gv.png]())
- @item(наследования классов  @image[src=./class-graph-mnas-package.gv.png]())
-@end(list)@begin(section)
+ @item(system-graph     - зависимостей систем;)
+ @item(call-graph       - вызовов функций;)
+ @item(symbol-graph     - использования символов функциями;)
+ @item(class-graph      - наследования классов;)
+ @item(class-slot-graph - слотов класса;)
+ @item(generic-graph    - типов основных параметров обобщенных функций.)
+@end(list)
+
+ @image[src=./system-graph-mnas-package.gv.png]()
+
+ @image[src=./call-graph-mnas-package.gv.png]()
+ 
+ @image[src=./symbol-graph-mnas-package.gv.png]()
+ 
+ @image[src=./class-graph-mnas-package.gv.png]()
+@begin(section)
  @title(Функции)
  @cl:with-package[name="MNAS-PACKAGE/MAKE"](
-  @cl:doc(function class-graph)
+  @cl:doc(function class-slot-graph)
   @cl:doc(function call-graph)
   @cl:doc(function system-graph)
+  @cl:doc(function class-graph)
   @cl:doc(function symbol-graph))
 @end(section)
 @end(section)
