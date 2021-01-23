@@ -34,6 +34,7 @@ Lisp). Он позволяет получить на выходе докумен
   :serial nil
   :depends-on ("mnas-package/obj"
                "mnas-package/pkg"
+               "mnas-package/sys"
                "mnas-package/make"
                "mnas-package/view"
                "mnas-package/example"
@@ -67,6 +68,17 @@ Lisp). Он позволяет получить на выходе докумен
   :components ((:module "src/pkg"
 		:serial nil
                 :components ((:file "pkg")))))
+
+(defsystem "mnas-package/sys"
+  :description "Содержит некоторые функции для извлечения иформации о системах, поределенных с помощью @b(asdf)"
+  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
+  :serial t
+  :in-order-to ((test-op (test-op "math/obj/tests")))
+  :depends-on ("alexandria")
+  :components ((:module "src/sys"
+		:serial nil
+                :components ((:file "sys")))))
 
 (defsystem "mnas-package/make"
   :description "Содержит некоторые функции и обобщенные функции,
