@@ -42,12 +42,12 @@
 
 (defun system-graph (system
 			     &key
-			       (fpath mnas-graph:*output-path*)
-			       (fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
+			       (fpath mnas-graph/view:*output-path*)
+			       (fname  (format nil "graph-~6,'0D" (incf mnas-graph/view:*graph-count*)))
 			       (graphviz-prg :filter-dot)
 			       (out-type "pdf")
 			       (dpi "300")
-			       (viewer mnas-graph:*viewer-path*))
+			       (viewer mnas-graph/view:*viewer-path*))
 "@b(Описание:) system-graph визуализирует граф систем, от которых зависит
 система @b(system).
 
@@ -56,7 +56,7 @@
  (mnas-package/view:system-graph :mnas-package :out-type \"png\" :viewer nil)
 @end(code)
 "
-  (mnas-graph:view-graph
+  (mnas-graph/view:view-graph
    (mpkg/make:system-graph system)
    :fpath        fpath
    :fname        fname
@@ -71,12 +71,12 @@
 
 (defun symbol-graph (package-name
 			  &key
-			    (fpath mnas-graph:*output-path*)
-			    (fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
+			    (fpath mnas-graph/view:*output-path*)
+			    (fname  (format nil "graph-~6,'0D" (incf mnas-graph/view:*graph-count*)))
 			    (graphviz-prg :filter-dot)
 			    (out-type "pdf")
 			    (dpi "300")
-			    (viewer mnas-graph:*viewer-path*))
+			    (viewer mnas-graph/view:*viewer-path*))
   "@b(Описание:) view-symbol-graph отображает граф зависимостей глобальных символов.
 
  Позволяет ответить на вопрос: в какой функции используется тот или иной глобальный символ. 
@@ -88,7 +88,7 @@
 "
   (when (symbolp package-name) (require package-name))
   (when (stringp package-name) (require package-name))
-  (mnas-graph:view-graph (mpkg/make:symbol-graph package-name)
+  (mnas-graph/view:view-graph (mpkg/make:symbol-graph package-name)
 			 :fpath        fpath
                          :fname        fname
                          :graphviz-prg graphviz-prg
@@ -101,12 +101,12 @@
                       (external t)
                       (internal t)
                       (inherited nil)
-		      (fpath mnas-graph:*output-path*)
-		      (fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
+		      (fpath mnas-graph/view:*output-path*)
+		      (fname  (format nil "graph-~6,'0D" (incf mnas-graph/view:*graph-count*)))
 		      (graphviz-prg :filter-dot)
 		      (out-type "pdf")
 		      (dpi "300")
-		      (viewer mnas-graph:*viewer-path*))
+		      (viewer mnas-graph/view:*viewer-path*))
   "@b(Описание:) view-class-graph выводит визуальное представление 
 иерархии классов (графа наследования).
 
@@ -117,7 +117,7 @@
 "
   (when (symbolp package-name) (require package-name))
   (when (stringp package-name) (require package-name))
-  (mnas-graph:view-graph
+  (mnas-graph/view:view-graph
    (mpkg/make:class-graph package-name :external     external
                                        :internal     internal
                                        :inherited    inherited)
@@ -130,12 +130,12 @@
 
 (defun call-graph (package-name
 			   &key
-			     (fpath mnas-graph:*output-path*)
-			     (fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
+			     (fpath mnas-graph/view:*output-path*)
+			     (fname  (format nil "graph-~6,'0D" (incf mnas-graph/view:*graph-count*)))
 			     (graphviz-prg :filter-dot)
 			     (out-type "pdf")
 			     (dpi "300")
-			     (viewer mnas-graph:*viewer-path*)
+			     (viewer mnas-graph/view:*viewer-path*)
 			     (system-name package-name))
 " @b(Описание:) функция @b(view-call-graph) выполняет визуализацию графа вызовов 
 пакета @b(package-name).
@@ -147,7 +147,7 @@
 "
   (when (symbolp package-name) (require system-name))
   (when (stringp package-name) (require system-name))
-  (mnas-graph:view-graph
+  (mnas-graph/view:view-graph
    (mpkg/make:call-graph package-name)
    :fpath        fpath
    :fname        fname
@@ -158,15 +158,15 @@
 
 (defun class-slot-graph (class
                          &key
-			   (fpath mnas-graph:*output-path*)
-			   (fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
+			   (fpath mnas-graph/view:*output-path*)
+			   (fname  (format nil "graph-~6,'0D" (incf mnas-graph/view:*graph-count*)))
 			   (graphviz-prg :filter-dot)
 			   (out-type "pdf")
 			   (dpi "300")
-			   (viewer mnas-graph:*viewer-path*))
+			   (viewer mnas-graph/view:*viewer-path*))
   "@b(Описание:) функция @b(class-slot-graph) - ...
 "
-  (mnas-graph:view-graph
+  (mnas-graph/view:view-graph
    (mpkg/make:class-slot-graph class)
    :fpath        fpath
    :fname        fname
@@ -179,14 +179,14 @@
 
 (defun generic-graph (generic
                       &key
-			(fpath mnas-graph:*output-path*)
-			(fname  (format nil "graph-~6,'0D" (incf mnas-graph::*graph-count*)))
+			(fpath mnas-graph/view:*output-path*)
+			(fname  (format nil "graph-~6,'0D" (incf mnas-graph/view:*graph-count*)))
 			(graphviz-prg :filter-dot)
 			(out-type "pdf")
 			(dpi "300")
-			(viewer mnas-graph:*viewer-path*))
-  (mnas-graph:view-graph
-   (mpkg/make:generic-graph class)
+			(viewer mnas-graph/view:*viewer-path*))
+  (mnas-graph/view:view-graph
+   (mpkg/make:generic-graph generic)
    :fpath        fpath
    :fname        fname
    :graphviz-prg graphviz-prg

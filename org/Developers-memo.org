@@ -52,5 +52,3 @@
 	rsync -Pazh --delete ../docs/build/$CDIR/html/ $CPL/$CDIR
      fi
 #+END_SRC
-
-

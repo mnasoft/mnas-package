@@ -160,5 +160,6 @@
 (defun generic-graph (generic
                       &aux
 		        (graph (make-instance 'mnas-graph:<graph>)))
+  "Выполнить определение пока это заглушка."
   generic
   graph)

@@ -32,6 +32,7 @@ Lisp). Он позволяет получить на выходе докумен
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :version "0.1.3"
   :serial nil
+  :in-order-to ((test-op (test-op "mnas-package/tests")))
   :depends-on ("mnas-package/obj"
                "mnas-package/pkg"
                "mnas-package/sys"
@@ -99,7 +100,7 @@ Lisp). Он позволяет получить на выходе докумен
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :serial t
   :in-order-to ((test-op (test-op "math/obj/tests")))
-  :depends-on ("mnas-package/make")
+  :depends-on ("mnas-package/make" "mnas-graph/view")
   :components ((:module "src/view"
 		:serial nil
                 :components ((:file "view")))))
@@ -110,7 +111,7 @@ Lisp). Он позволяет получить на выходе докумен
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :depends-on ("mnas-package" "mnas-package/example" "fiveam")
   :perform (test-op (o s)
-		    (uiop:symbol-call :run-tests :mnas-package/tests))
+		    (uiop:symbol-call :mnas-package/tests :run-tests))
   :components ((:module "src/tests"
 		:serial nil
                 :components ((:file "package")
