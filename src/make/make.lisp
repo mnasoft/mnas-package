@@ -163,3 +163,16 @@
   "Выполнить определение пока это заглушка."
   generic
   graph)
+
+#|
+(require :mnas-package/example)
+
+(mpkg/obj:obj-name
+ (first 
+  (sb-mop:method-specializers
+   (first 
+    (sb-mop:generic-function-methods #'mnas-package/example:m-foo)))))
+
+;;(sb-mop:method-lambda-list)
+
+|#
