@@ -159,6 +159,7 @@
 
 (defun generic-graph (generic
                       &aux
+                        (package *package*)
 		        (graph (make-instance 'mnas-graph:<graph>)))
   "Выполнить определение пока это заглушка."
   generic
