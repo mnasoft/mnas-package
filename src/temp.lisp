@@ -25,3 +25,19 @@
 	(setf class (pop l-not-obr))
 	(push class rez-classes)
 	(bar class)))))
+
+(sb-mop:reader-method-class (find-class 'mnas-icem:<tin>)
+                            (sb-mop:class-direct-slots   (find-class 'mnas-icem:<tin>)))
+
+
+(first
+ (sb-mop:slot-definition-readers
+  (elt 
+   (sb-mop:class-direct-slots (find-class 'mnas-icem:<tin>))
+   1)))
+
+(first
+ (sb-mop:slot-definition-writers
+  (elt 
+   (sb-mop:class-direct-slots (find-class 'mnas-icem:<tin>))
+   1)))

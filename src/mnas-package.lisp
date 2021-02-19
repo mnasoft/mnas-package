@@ -21,7 +21,7 @@
   (:export make-doc-generics
            make-doc-methods)
   (:documentation
-   " Пакет @b(mnas-package) является основным в системе @b(mnas-package) и являются 
+   " Пакет @b(mnas-package) является основным в системе @b(mnas-package).
 
  Основными функциями в системе являются:
 @begin(list)
