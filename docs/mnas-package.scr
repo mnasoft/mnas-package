@@ -6,15 +6,21 @@
 @begin(section) @title(Мотивация)
 
  Система @b(Codex) является достаточно удобной для выполнения
-документирования систем, написанных с использованием @b(Common
-Lisp). Он позволяет получить на выходе документацию приемлемого вида.
+ документирования систем, написанных с использованием @b(Common
+ Lisp). Она позволяет получить на выходе документацию приемлемого
+ вида.
 
  К недостатку сустемы @b(Codex) можно отнести то, что формирование
-шаблона документации не выполняется автоматически. Указание на
-включение разделов документации, относящихся к отдельным сущностям к
-которым можно отнести: @begin(list) @item(системы;) @item(пакеты;)
-@item(классы;) @item(функции, setf-функции;) @item(обобщенные функции,
-методы, setf-методы;) @item(макросы;) @item(и т.д., и т.п.)
+ шаблона документации не выполняется автоматически. Указание на
+ включение разделов документации, относящихся к отдельным сущностям к
+ которым можно отнести: 
+@begin(list) 
+@item(системы;) 
+@item(пакеты;)
+@item(классы;) 
+@item(функции, setf-функции;) 
+@item(обобщенные функции,методы, setf-методы;) 
+@item(макросы;) @item(и т.д., и т.п.)
 @end(list) приходится формировать вручную.
 
  Этот проект пытается устранить данный недостаток системы @b(Codex) за
@@ -29,7 +35,7 @@ Lisp). Он позволяет получить на выходе докумен
 @end(section)
 @begin(section) @title(MNAS-PACKAGE)
 
- Пакет @b(mnas-package) является основным в системе @b(mnas-package) и являются 
+@b(Описание:) пакет @b(mnas-package) является основным в системе @b(mnas-package).
 
  Основными функциями в системе являются:
 @begin(list)
@@ -72,10 +78,11 @@ Lisp). Он позволяет получить на выходе докумен
 @begin(section)
  @title(Функции)
  @cl:with-package[name="MNAS-PACKAGE"](
-  @cl:doc(function make-doc-generics)
-  @cl:doc(function sub-class-graph)
-  @cl:doc(function make-doc-methods)
+  @cl:doc(function document)
   @cl:doc(function make-codex-graphs)
-  @cl:doc(function super-class-graph))
+  @cl:doc(function make-doc-generics)
+  @cl:doc(function make-doc-methods)
+  @cl:doc(function super-class-graph)
+  @cl:doc(function sub-class-graph))
 @end(section)
 @end(section)

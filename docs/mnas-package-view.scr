@@ -31,7 +31,7 @@
  @cl:with-package[name="MNAS-PACKAGE/VIEW"](
   @cl:doc(function call-graph)
   @cl:doc(function system-graph)
-  @cl:doc(function symbol-graph)
-  @cl:doc(function class-graph))
+  @cl:doc(function class-graph)
+  @cl:doc(function symbol-graph))
 @end(section)
 @end(section)

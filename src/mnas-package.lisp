@@ -21,7 +21,7 @@
   (:export make-doc-generics
            make-doc-methods)
   (:documentation
-   " Пакет @b(mnas-package) является основным в системе @b(mnas-package).
+   "@b(Описание:) пакет @b(mnas-package) является основным в системе @b(mnas-package).
 
  Основными функциями в системе являются:
 @begin(list)
@@ -758,6 +758,17 @@ scr-файл системы документирования codex. Этот р�
                    (sort nil)
                    (min-doc-length 80)
                    )
+  " @b(Описание:) функция @b(document) формирует scr-файл (сценарий
+  системы codex), содержащий документацию о пакете @b(package-name) и
+  системы системы @b(system-name). Если имя системы равно @b(nil),
+  извлечение связанной с ней документации не выполняется.
+
+  @b(Пример использования:)
+@begin[lang=lisp](code)
+ (mnas-package:document :mnas-package :mnas-package) => path_to_mnas-package_system/docs/mnas-package.scr
+ (mnas-package:document :mnas-package/view nil) => path_to_mnas-package_system/docs/mnas-package-view.scr
+@end(code)
+"  
   (with-open-file
       (stream (concatenate 'string
                            (codex-docs-pathname package-name)
