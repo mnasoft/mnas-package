@@ -13,30 +13,7 @@
   (:documentation " Пакет @b(mnas-package/view) предназначен для
  визуализации (сохранения в файле) графов, которые можно получить с
  использованием пакета @b(mnas-package/make):
-
- Примеры графов:
-@begin(list)
- @item(system-graph - зависимостей систем
-
- @image[src=./system-graph-mnas-package.gv.png]())
- @item(call-graph       - вызовов функций
-
- @image[src=./call-graph-mnas-package.gv.png]())
- @item(symbol-graph     - использования символов функциями;
-
- @image[src=./symbol-graph-mnas-package.gv.png]())
-
- @item(class-graph      - наследования классов
-
- @image[src=./class-graph-mnas-package.gv.png]()
-)
- @item(class-slot-graph - слотов класса
-
-)
- @item(generic-graph    - типов основных параметров обобщенных функций
-
-)
-@end(list)"))
+"))
 
 (in-package :mnas-package/view)
 

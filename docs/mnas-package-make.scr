@@ -9,21 +9,13 @@
  @item(class-slot-graph - слотов класса;)
  @item(generic-graph    - типов основных параметров обобщенных функций.)
 @end(list)
-
- @image[src=./system-graph-mnas-package.gv.png]()
-
- @image[src=./call-graph-mnas-package.gv.png]()
- 
- @image[src=./symbol-graph-mnas-package.gv.png]()
- 
- @image[src=./class-graph-mnas-package.gv.png]()
 @begin(section)
  @title(Функции)
  @cl:with-package[name="MNAS-PACKAGE/MAKE"](
-  @cl:doc(function class-slot-graph)
   @cl:doc(function call-graph)
   @cl:doc(function system-graph)
-  @cl:doc(function class-graph)
-  @cl:doc(function symbol-graph))
+  @cl:doc(function class-slot-graph)
+  @cl:doc(function symbol-graph)
+  @cl:doc(function class-graph))
 @end(section)
 @end(section)

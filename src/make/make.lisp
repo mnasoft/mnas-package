@@ -21,14 +21,6 @@
  @item(class-slot-graph - слотов класса;)
  @item(generic-graph    - типов основных параметров обобщенных функций.)
 @end(list)
-
- @image[src=./system-graph-mnas-package.gv.png]()
-
- @image[src=./call-graph-mnas-package.gv.png]()
- 
- @image[src=./symbol-graph-mnas-package.gv.png]()
- 
- @image[src=./class-graph-mnas-package.gv.png]()
 "))
 
 (in-package :mnas-package/make)
