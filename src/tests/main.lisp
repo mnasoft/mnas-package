@@ -64,7 +64,7 @@
                      (get-output-stream-string os)))))))
 
 (def-test section-setf-functions ()
-  (is-true (= 4 (length
+  (is-true (= 0 (length
                  (mnas-string:split
                   (format nil "~%") 
                   (let ((os (make-string-output-stream )))
@@ -77,7 +77,7 @@
                      (mpkg::section-setf-functions
                       :mnas-package/example :internal t :stream os)
                      (get-output-stream-string os))))))
-  (is-true (= 4 (length
+  (is-true (= 0 (length
                  (mnas-string:split
                   (format nil "~%") 
                   (let ((os (make-string-output-stream )))

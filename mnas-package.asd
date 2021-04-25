@@ -71,7 +71,10 @@
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :serial t
   :in-order-to ((test-op (test-op "math/obj/tests")))
-  :depends-on ("alexandria")
+  :depends-on ("alexandria"
+               "slynk"
+               "mnas-package/obj"
+               )
   :components ((:module "src/pkg"
 		:serial nil
                 :components ((:file "pkg")))))
