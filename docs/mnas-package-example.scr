@@ -1,0 +1,48 @@
+@begin(section) @title(MNAS-PACKAGE/EXAMPLE)
+
+Documentation example for package @b(mnas-package/example)
+================================================================================@begin(section)
+ @title(Переменные)
+ @cl:with-package[name="MNAS-PACKAGE/EXAMPLE"](
+  @cl:doc(variable *b-exp*)
+  @cl:doc(variable *a-exp*))
+@end(section)
+@begin(section)
+ @title(Макросы)
+ @cl:with-package[name="MNAS-PACKAGE/EXAMPLE"](
+  @cl:doc(macro mak-a))
+@end(section)
+@begin(section)
+ @title(Функции)
+ @cl:with-package[name="MNAS-PACKAGE/EXAMPLE"](
+  @cl:doc(function bar)
+  @cl:doc(function foo)
+  @cl:doc(function baz))
+@end(section)
+@begin(section)
+ @title(Обобщенные функции)
+ @cl:with-package[name="MNAS-PACKAGE/EXAMPLE"](
+  @cl:doc(generic m-foo))
+@end(section)
+@begin(section)
+ @title(Setf Функции)
+ @cl:with-package[name="MNAS-PACKAGE/EXAMPLE"](
+  @cl:doc(setf-function foo))
+@end(section)
+@begin(section)
+ @title(Обобщенные setf-функции)
+ @cl:with-package[name="MNAS-PACKAGE/EXAMPLE"](
+  @cl:doc(setf-generic m-foo))
+@end(section)
+@begin(section)
+ @title(Методы)
+ @cl:with-package[name="MNAS-PACKAGE/EXAMPLE"](
+  @cl:doc(method m-foo (x <a>) (y <b>) z)
+  @cl:doc(method m-foo (x <a>) (y <b>) (z <c>)))
+@end(section)
+@begin(section)
+ @title(Классы)
+ @cl:with-package[name="MNAS-PACKAGE/EXAMPLE"](
+  @cl:doc(class <c>))
+@end(section)
+@end(section)
