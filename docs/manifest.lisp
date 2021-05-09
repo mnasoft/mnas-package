@@ -22,6 +22,8 @@
 
                         "mnas-package-obj.scr"
                         "mnas-package-obj-graph.scr"
+
+                        "mnas-package-example.scr"
                         ))))
 
 

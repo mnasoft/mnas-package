@@ -8,14 +8,16 @@
            package-generics
            package-functions
            package-macroses
-           package-setf-functions
            package-classes
+           package-setf-functions ;;;;
+           package-setf-generics  ;;;;
            )
   (:export filter-variables
            filter-functions
            filter-macroses
-           filter-setf-functions
+           filter-setf-functions ;;;;
            filter-generics
+           filter-setf-generics ;;;;
            )
   (:export package-symbols-by-category
            who-calls-lst
@@ -296,7 +298,9 @@ var. Возвращает список, каждым элементом кото
     (mapc
      #'(lambda (symbol)
          (let ((setf-name `(setf ,symbol)))
-           (when (not (null (ignore-errors (fdefinition setf-name))))
+           (when (and (not (null (ignore-errors (fdefinition setf-name))))
+                      (or (eq (type-of (alexandria:ensure-function setf-name)) 'function)
+                          (eq (type-of (alexandria:ensure-function setf-name)) 'compiled-function)))
              (push symbol rez))))
      symbols)
     rez))
@@ -320,9 +324,26 @@ var. Возвращает список, каждым элементом кото
      symbols)
     rez))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun filter-setf-generics (symbols)
+  "@b(Описание:) функция @b(filter-setf-generics) возвращает список символов,
+являющихся сопряженными с обобщенными setf-функциями.
 
-(export 'package-variables )
+ @b(Переменые:)
+@begin(list) 
+@item(symbols - список символов пакета.)
+@end(list)
+"
+  (let ((rez nil))
+    (mapc
+     #'(lambda (symbol)
+         (let ((setf-name `(setf ,symbol)))
+           (when (and (not (null (ignore-errors (fdefinition setf-name))))
+                      (or (eq (type-of (alexandria:ensure-function setf-name)) 'standard-generic-function)))
+             (push symbol rez))))
+     symbols)
+    rez))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun package-variables (package-name &key (external t) (internal nil) (inherited nil))
   " @b(Описание:) функция @b(package-variables) возвращает список символов пакета
@@ -343,8 +364,6 @@ var. Возвращает список, каждым элементом кото
 #|
 (package-variables :mnas-package :inherited t)
 |#
-
-(export 'package-functions )
 
 (defun package-functions (package-name &key (external t) (internal nil) (inherited nil) )
   "@b(Описание:) функция @b(package-functions) возвращает список функций пакета @b(package-name).
@@ -443,6 +462,23 @@ var. Возвращает список, каждым элементом кото
 	    :external external
 	    :internal internal
 	    :inherited inherited))))
+
+(defun package-setf-generics (package-name &key (external t) (internal nil) (inherited nil) )
+  "@b(Описание:) функция @b(package-functions) возвращает список функций пакета
+@b(package-name).
+
+ @b(Пример использования:) @begin[lang=lisp](code)
+ (package-setf-functions :mnas-package/example :internal t)
+ => (#<FUNCTION (SETF MNAS-PACKAGE/EXAMPLE::FOO)>)
+@end(code)
+"
+  (mapcar #'(lambda (el) (alexandria:ensure-function `(setf ,el)))
+          (filter-setf-generics
+           (package-symbols-by-category
+            package-name
+            :external  external
+            :internal  internal
+            :inherited inherited))))
 
 (defun package-methods (package-name &key (external t) (internal nil) (inherited nil))
   "@b(Описание:) функция @b(package-methods) возвращает список методов пакета

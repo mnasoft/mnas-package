@@ -13,6 +13,7 @@
            section-macroses
            section-setf-functions
            section-generics
+           section-setf-generics
            section-methods
            section-classes)
   (:export sub-class-graph
@@ -40,6 +41,7 @@
  @item(section-macroses;) 
  @item(section-setf-functions;)
  @item(section-generics;) 
+ @item(section-setf-generics;)
  @item(section-methods;) 
  @item(section-classes.)
 @end(list)
@@ -209,11 +211,23 @@
              (format stream "~%  @cl:doc(setf-function ~s)"
                      (mpkg/obj:obj-name function))
              t)))))
-
+#+ nil
 (defmethod insert-codex-doc ((generic standard-generic-function)
                              &key (stream t) (min-doc-length 80))
   (when (< min-doc-length (length (documentation generic t)))
     (format stream "~&  @cl:doc(generic ~s)" (mpkg/obj:obj-name generic))
+    t))
+
+(defmethod insert-codex-doc ((generic standard-generic-function)
+                             &key (stream t) (min-doc-length 80))
+  (when (< min-doc-length (length (documentation generic t)))
+    (let ((name (mpkg/obj:obj-name generic)))
+      (cond
+        ((and (listp name) (eq 'setf (first name)))
+#+ nil   (break "0001: ~S" name)
+         (format stream "~&  @cl:doc(setf-generic ~s)" (second name)))
+        (t
+         (format stream "~&  @cl:doc(generic ~s)" name))))
     t))
 
 (defmethod insert-codex-doc ((class class) &key (stream t) (min-doc-length 80))
@@ -404,10 +418,11 @@
            (funcall func package :stream stream :sort sort :min-doc-length min-doc-length
                                  :external external :internal internal :inherited inherited))
        (list #'section-variables
-             #'section-functions 
              #'section-macroses  
+             #'section-functions 
+             #'section-generics
              #'section-setf-functions 
-             #'section-generics  
+             #'section-setf-generics  
              #'section-methods   
              #'section-classes))
   (format stream "@end(section)~%"))
@@ -512,7 +527,7 @@
                #'(lambda (setf-func)
                    (when (< min-doc-length (length (documentation setf-func t))) t))
                setf-funcs)
-          (format stream "@begin(section)~% @title(Setf Функции)~% @cl:with-package[name=~S]("
+          (format stream "@begin(section)~% @title(Setf-функции)~% @cl:with-package[name=~S]("
 	          (mpkg/obj:obj-name package))
           (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
                (if sort
@@ -552,6 +567,42 @@
                    (sort g-funcs #'string< :key #'(lambda (elem) (string-downcase (mpkg/obj:obj-name elem))))
 	           g-funcs))
           (format stream ")~%@end(section)~%"))))))
+
+(defun section-setf-generics (package-name
+                              &key
+                                (stream t)
+                                (external t)
+                                (internal nil)
+                                (inherited nil)
+                                (sort nil)
+                                (min-doc-length 80)
+                              &aux (package (find-package package-name)))
+  "@b(Описание:) функция @b(section-setf-generics) выводит в поток stream
+секцию с документацией в формате codex, содержащую обощенные setf-функции из пакета package-name.
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (section-setf-generics :mnas-package/example :external t :internal t) 
+@end(code)
+"  
+  (declare ((or package string symbol) package-name))
+  (with-package package
+    (with-downcase
+      (let ((setf-funcs (mpkg/pkg:package-setf-generics package :external external :internal internal :inherited inherited)))
+        (when (some
+               #'(lambda (setf-func)
+                   (when (< min-doc-length (length (documentation setf-func t))) t))
+               setf-funcs)
+          (format stream "@begin(section)~% @title(Обобщенные setf-функции)~% @cl:with-package[name=~S]("
+	          (mpkg/obj:obj-name package))
+          (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
+               (if sort
+                   (sort setf-funcs #'string< :key #'(lambda (elem) (mpkg/obj:obj-name elem)))
+                   setf-funcs))
+          (format stream ")~%@end(section)~%"))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 (defun make-doc-generics (package class prefix &key (stream t) (min-doc-length 80))
   "@b(Описание:) функция @b(make-doc-methods) выводит в поток

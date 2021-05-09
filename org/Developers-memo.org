@@ -2,38 +2,42 @@
 * Генерирование документации
 #+name: graphs
 #+BEGIN_SRC lisp
-    (defun make-document ()
-      (loop
-        :for i :in
-        '((:mnas-package      :mnas-package)
-          (:mnas-package/sys  nil)
-          (:mnas-package/view nil)
-          (:mnas-package/make nil)
-          (:mnas-package/pkg  nil)
-          (:mnas-package/obj  nil)
-          )
-        :do (apply #'mnas-package:document i)))
+  (defun make-document ()
+    (loop
+      :for i :in
+      '((:mnas-package      :mnas-package)
+        (:mnas-package/sys  nil)
+        (:mnas-package/view nil)
+        (:mnas-package/make nil)
+        (:mnas-package/pkg  nil)
+        (:mnas-package/obj  nil)
+        (:mnas-package/example nil)
+        )
+      :do (apply #'mnas-package:document i)))
 
-    (defun make-graphs ()
-      (loop
-        :for i :in
-        '(:mnas-package     
-          :mnas-package/sys 
-          :mnas-package/view  
-          :mnas-package/make  
-          :mnas-package/pkg   
-          :mnas-package/obj   
-          )
-        :do (mnas-package:make-codex-graphs i i)))
+  (defun make-graphs ()
+    (loop
+      :for i :in
+      '(:mnas-package     
+        :mnas-package/sys 
+        :mnas-package/view  
+        :mnas-package/make  
+        :mnas-package/pkg   
+        :mnas-package/obj   
+        )
+      :do (mnas-package:make-codex-graphs i i)))
 
-    (defun make-all ()
-          (make-document)
-          (make-graphs)
-          (codex:document :mnas-package)
-          (make-graphs))
+  (defun make-all ()
+        (make-document)
+        (make-graphs)
+        (codex:document :mnas-package)
+        (make-graphs))
 
-        (make-all)
+      (make-all)
 #+END_SRC
+
+#+RESULTS: graphs
+: NIL
 
 * Публикация
 #+name: publish
@@ -44,11 +48,11 @@
     if [[ `hostname` == "mnasoft-00" ]]
     then
 	echo "mnasoft-00"
-  #     sh ~/bin/pi-html
+        sh ~/bin/pi-html
     fi
-    if [[ `hostname` == "N118383" ]]
+    if [[ `hostname` == "N000308" ]]
     then
-	echo "N118383"
+	echo "N000308"
         CPL="//n133619/home/_namatv/public_html/Site/Development/Common-Lisp-Programs"
 	mkdir -p $CPL/$CDIR
 	rsync -Pazh --delete ../docs/build/$CDIR/html/ $CPL/$CDIR
@@ -56,133 +60,269 @@
 #+END_SRC
 
 #+RESULTS: publish
-| sending                               | incremental | file | list       |         |   |         |      |            |         |          |               |
-| ./                                    |             |      |            |         |   |         |      |            |         |          |               |
-| call-graph-mnas-package-make.gv       |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |         338 | 100% | 0.00kB/s   | 0:00:00 |   |     338 | 100% | 0.00kB/s   | 0:00:00 | (xfr#1,  | to-chk=63/65) |
-| call-graph-mnas-package-make.gv.png   |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |      32.77K |  42% | 31.25MB/s  | 0:00:00 |   |  77.23K | 100% | 73.66MB/s  | 0:00:00 | (xfr#2,  | to-chk=62/65) |
-| call-graph-mnas-package-obj.gv        |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |          44 | 100% | 42.97kB/s  | 0:00:00 |   |      44 | 100% | 42.97kB/s  | 0:00:00 | (xfr#3,  | to-chk=61/65) |
-| call-graph-mnas-package-obj.gv.png    |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |         116 | 100% | 113.28kB/s | 0:00:00 |   |     116 | 100% | 113.28kB/s | 0:00:00 | (xfr#4,  | to-chk=60/65) |
-| call-graph-mnas-package-pkg.gv        |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |       2.17K | 100% | 2.07MB/s   | 0:00:00 |   |   2.17K | 100% | 2.07MB/s   | 0:00:00 | (xfr#5,  | to-chk=59/65) |
-| call-graph-mnas-package-pkg.gv.png    |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |      32.77K |   7% | 31.25MB/s  | 0:00:00 |   | 440.31K | 100% | 69.99MB/s  | 0:00:00 | (xfr#6,  | to-chk=58/65) |
-| call-graph-mnas-package-sys.gv        |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |          54 | 100% | 8.79kB/s   | 0:00:00 |   |      54 | 100% | 8.79kB/s   | 0:00:00 | (xfr#7,  | to-chk=57/65) |
-| call-graph-mnas-package-sys.gv.png    |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |       5.47K | 100% | 889.65kB/s | 0:00:00 |   |   5.47K | 100% | 889.65kB/s | 0:00:00 | (xfr#8,  | to-chk=56/65) |
-| call-graph-mnas-package-view.gv       |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |         305 | 100% | 49.64kB/s  | 0:00:00 |   |     305 | 100% | 49.64kB/s  | 0:00:00 | (xfr#9,  | to-chk=55/65) |
-| call-graph-mnas-package-view.gv.png   |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |      32.77K |  36% | 5.21MB/s   | 0:00:00 |   |  90.91K | 100% | 12.38MB/s  | 0:00:00 | (xfr#10, | to-chk=54/65) |
-| call-graph-mnas-package.gv            |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |       1.26K | 100% | 175.50kB/s | 0:00:00 |   |   1.26K | 100% | 175.50kB/s | 0:00:00 | (xfr#11, | to-chk=53/65) |
-| call-graph-mnas-package.gv.png        |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |      32.77K |   8% | 4.46MB/s   | 0:00:00 |   | 368.03K | 100% | 31.91MB/s  | 0:00:00 | (xfr#12, | to-chk=52/65) |
-| class-graph-mnas-package-make.gv      |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |          44 | 100% | 3.91kB/s   | 0:00:00 |   |      44 | 100% | 3.91kB/s   | 0:00:00 | (xfr#13, | to-chk=51/65) |
-| class-graph-mnas-package-make.gv.png  |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |         116 | 100% | 10.30kB/s  | 0:00:00 |   |     116 | 100% | 10.30kB/s  | 0:00:00 | (xfr#14, | to-chk=50/65) |
-| class-graph-mnas-package-obj.gv       |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |          44 | 100% | 3.91kB/s   | 0:00:00 |   |      44 | 100% | 3.91kB/s   | 0:00:00 | (xfr#15, | to-chk=49/65) |
-| class-graph-mnas-package-obj.gv.png   |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |         116 | 100% | 10.30kB/s  | 0:00:00 |   |     116 | 100% | 10.30kB/s  | 0:00:00 | (xfr#16, | to-chk=48/65) |
-| class-graph-mnas-package-pkg.gv       |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |          44 | 100% | 3.91kB/s   | 0:00:00 |   |      44 | 100% | 3.91kB/s   | 0:00:00 | (xfr#17, | to-chk=47/65) |
-| class-graph-mnas-package-pkg.gv.png   |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |         116 | 100% | 10.30kB/s  | 0:00:00 |   |     116 | 100% | 10.30kB/s  | 0:00:00 | (xfr#18, | to-chk=46/65) |
-| class-graph-mnas-package-sys.gv       |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |          44 | 100% | 3.91kB/s   | 0:00:00 |   |      44 | 100% | 3.91kB/s   | 0:00:00 | (xfr#19, | to-chk=45/65) |
-| class-graph-mnas-package-sys.gv.png   |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |         116 | 100% | 10.30kB/s  | 0:00:00 |   |     116 | 100% | 10.30kB/s  | 0:00:00 | (xfr#20, | to-chk=44/65) |
-| class-graph-mnas-package-view.gv      |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |          44 | 100% | 3.91kB/s   | 0:00:00 |   |      44 | 100% | 3.91kB/s   | 0:00:00 | (xfr#21, | to-chk=43/65) |
-| class-graph-mnas-package-view.gv.png  |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |         116 | 100% | 10.30kB/s  | 0:00:00 |   |     116 | 100% | 10.30kB/s  | 0:00:00 | (xfr#22, | to-chk=42/65) |
-| class-graph-mnas-package.gv           |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |          44 | 100% | 3.91kB/s   | 0:00:00 |   |      44 | 100% | 3.91kB/s   | 0:00:00 | (xfr#23, | to-chk=41/65) |
-| class-graph-mnas-package.gv.png       |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |         116 | 100% | 10.30kB/s  | 0:00:00 |   |     116 | 100% | 10.30kB/s  | 0:00:00 | (xfr#24, | to-chk=40/65) |
-| mnas-package-make.html                |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |       7.00K | 100% | 621.09kB/s | 0:00:00 |   |   7.00K | 100% | 621.09kB/s | 0:00:00 | (xfr#25, | to-chk=39/65) |
-| mnas-package-obj.html                 |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |      12.92K | 100% | 1.12MB/s   | 0:00:00 |   |  12.92K | 100% | 1.12MB/s   | 0:00:00 | (xfr#26, | to-chk=38/65) |
-| mnas-package-pkg.html                 |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |      13.92K | 100% | 1.21MB/s   | 0:00:00 |   |  13.92K | 100% | 1.21MB/s   | 0:00:00 | (xfr#27, | to-chk=37/65) |
-| mnas-package-sys.html                 |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |       4.08K | 100% | 362.66kB/s | 0:00:00 |   |   4.08K | 100% | 362.66kB/s | 0:00:00 | (xfr#28, | to-chk=36/65) |
-| mnas-package-view.html                |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |       6.76K | 100% | 599.96kB/s | 0:00:00 |   |   6.76K | 100% | 599.96kB/s | 0:00:00 | (xfr#29, | to-chk=35/65) |
-| mnas-package.html                     |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |       9.79K | 100% | 796.88kB/s | 0:00:00 |   |   9.79K | 100% | 796.88kB/s | 0:00:00 | (xfr#30, | to-chk=34/65) |
-| symbol-graph-mnas-package-make.gv     |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |          44 | 100% | 3.58kB/s   | 0:00:00 |   |      44 | 100% | 3.58kB/s   | 0:00:00 | (xfr#31, | to-chk=33/65) |
-| symbol-graph-mnas-package-make.gv.png |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |         116 | 100% | 9.44kB/s   | 0:00:00 |   |     116 | 100% | 9.44kB/s   | 0:00:00 | (xfr#32, | to-chk=32/65) |
-| symbol-graph-mnas-package-obj.gv      |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |          44 | 100% | 3.58kB/s   | 0:00:00 |   |      44 | 100% | 3.58kB/s   | 0:00:00 | (xfr#33, | to-chk=31/65) |
-| symbol-graph-mnas-package-obj.gv.png  |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |         116 | 100% | 9.44kB/s   | 0:00:00 |   |     116 | 100% | 9.44kB/s   | 0:00:00 | (xfr#34, | to-chk=30/65) |
-| symbol-graph-mnas-package-pkg.gv      |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |          44 | 100% | 3.58kB/s   | 0:00:00 |   |      44 | 100% | 3.58kB/s   | 0:00:00 | (xfr#35, | to-chk=29/65) |
-| symbol-graph-mnas-package-pkg.gv.png  |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |         116 | 100% | 9.44kB/s   | 0:00:00 |   |     116 | 100% | 9.44kB/s   | 0:00:00 | (xfr#36, | to-chk=28/65) |
-| symbol-graph-mnas-package-sys.gv      |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |          44 | 100% | 3.58kB/s   | 0:00:00 |   |      44 | 100% | 3.58kB/s   | 0:00:00 | (xfr#37, | to-chk=27/65) |
-| symbol-graph-mnas-package-sys.gv.png  |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |         116 | 100% | 9.44kB/s   | 0:00:00 |   |     116 | 100% | 9.44kB/s   | 0:00:00 | (xfr#38, | to-chk=26/65) |
-| symbol-graph-mnas-package-view.gv     |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |          44 | 100% | 3.58kB/s   | 0:00:00 |   |      44 | 100% | 3.58kB/s   | 0:00:00 | (xfr#39, | to-chk=25/65) |
-| symbol-graph-mnas-package-view.gv.png |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |         116 | 100% | 9.44kB/s   | 0:00:00 |   |     116 | 100% | 9.44kB/s   | 0:00:00 | (xfr#40, | to-chk=24/65) |
-| symbol-graph-mnas-package.gv          |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |          44 | 100% | 3.58kB/s   | 0:00:00 |   |      44 | 100% | 3.58kB/s   | 0:00:00 | (xfr#41, | to-chk=23/65) |
-| symbol-graph-mnas-package.gv.png      |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |         116 | 100% | 9.44kB/s   | 0:00:00 |   |     116 | 100% | 9.44kB/s   | 0:00:00 | (xfr#42, | to-chk=22/65) |
-| system-graph-mnas-package-make.gv     |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |         728 | 100% | 59.24kB/s  | 0:00:00 |   |     728 | 100% | 59.24kB/s  | 0:00:00 | (xfr#43, | to-chk=21/65) |
-| system-graph-mnas-package-make.gv.png |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |      32.77K |  12% | 2.60MB/s   | 0:00:00 |   | 254.78K | 100% | 11.04MB/s  | 0:00:00 | (xfr#44, | to-chk=20/65) |
-| system-graph-mnas-package-obj.gv      |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |          44 | 100% | 1.95kB/s   | 0:00:00 |   |      44 | 100% | 1.95kB/s   | 0:00:00 | (xfr#45, | to-chk=19/65) |
-| system-graph-mnas-package-obj.gv.png  |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |         116 | 100% | 5.15kB/s   | 0:00:00 |   |     116 | 100% | 5.15kB/s   | 0:00:00 | (xfr#46, | to-chk=18/65) |
-| system-graph-mnas-package-pkg.gv      |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |         111 | 100% | 4.93kB/s   | 0:00:00 |   |     111 | 100% | 4.93kB/s   | 0:00:00 | (xfr#47, | to-chk=17/65) |
-| system-graph-mnas-package-pkg.gv.png  |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |      17.92K | 100% | 795.41kB/s | 0:00:00 |   |  17.92K | 100% | 795.41kB/s | 0:00:00 | (xfr#48, | to-chk=16/65) |
-| system-graph-mnas-package-sys.gv      |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |         111 | 100% | 4.93kB/s   | 0:00:00 |   |     111 | 100% | 4.93kB/s   | 0:00:00 | (xfr#49, | to-chk=15/65) |
-| system-graph-mnas-package-sys.gv.png  |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |      19.67K | 100% | 873.14kB/s | 0:00:00 |   |  19.67K | 100% | 873.14kB/s | 0:00:00 | (xfr#50, | to-chk=14/65) |
-| system-graph-mnas-package-view.gv     |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |         832 | 100% | 36.93kB/s  | 0:00:00 |   |     832 | 100% | 36.93kB/s  | 0:00:00 | (xfr#51, | to-chk=13/65) |
-| system-graph-mnas-package-view.gv.png |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |      32.77K |  12% | 1.42MB/s   | 0:00:00 |   | 252.67K | 100% | 9.64MB/s   | 0:00:00 | (xfr#52, | to-chk=12/65) |
-| system-graph-mnas-package.gv          |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |       1.66K | 100% | 64.80kB/s  | 0:00:00 |   |   1.66K | 100% | 64.80kB/s  | 0:00:00 | (xfr#53, | to-chk=11/65) |
-| system-graph-mnas-package.gv.png      |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |      32.77K |   5% | 1.25MB/s   | 0:00:00 |   | 611.11K | 100% | 18.80MB/s  | 0:00:00 | (xfr#54, | to-chk=10/65) |
-| графы-mnas-package-make.html          |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |       3.76K | 100% | 118.35kB/s | 0:00:00 |   |   3.76K | 100% | 118.35kB/s | 0:00:00 | (xfr#55, | to-chk=9/65)  |
-| графы-mnas-package-pkg.html           |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |       3.77K | 100% | 118.64kB/s | 0:00:00 |   |   3.77K | 100% | 118.64kB/s | 0:00:00 | (xfr#56, | to-chk=8/65)  |
-| графы-mnas-package-sys.html           |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |       3.71K | 100% | 116.97kB/s | 0:00:00 |   |   3.71K | 100% | 116.97kB/s | 0:00:00 | (xfr#57, | to-chk=7/65)  |
-| графы-mnas-package-view.html          |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |       3.74K | 100% | 117.79kB/s | 0:00:00 |   |   3.74K | 100% | 117.79kB/s | 0:00:00 | (xfr#58, | to-chk=6/65)  |
-| графы-mnas-package.html               |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |       3.66K | 100% | 115.42kB/s | 0:00:00 |   |   3.66K | 100% | 115.42kB/s | 0:00:00 | (xfr#59, | to-chk=5/65)  |
-| обзор.html                            |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |       5.25K | 100% | 165.23kB/s | 0:00:00 |   |   5.25K | 100% | 165.23kB/s | 0:00:00 | (xfr#60, | to-chk=4/65)  |
-| static/                               |             |      |            |         |   |         |      |            |         |          |               |
-| static/highlight.css                  |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |       1.57K | 100% | 49.49kB/s  | 0:00:00 |   |   1.57K | 100% | 49.49kB/s  | 0:00:00 | (xfr#61, | to-chk=2/65)  |
-| static/highlight.js                   |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |      22.99K | 100% | 701.57kB/s | 0:00:00 |   |  22.99K | 100% | 701.57kB/s | 0:00:00 | (xfr#62, | to-chk=1/65)  |
-| static/style.css                      |             |      |            |         |   |         |      |            |         |          |               |
-|                                       |       4.32K | 100% | 131.77kB/s | 0:00:00 |   |   4.32K | 100% | 131.77kB/s | 0:00:00 | (xfr#63, | to-chk=0/65)  |
-| mnasoft-00                            |             |      |            |         |   |         |      |            |         |          |               |
+| sending                                            | incremental |  file | list        |         |       |         |           |            |         |          |                 |
+| ./                                                 |             |       |             |         |       |         |           |            |         |          |                 |
+| call-graph-mnas-package-make.gv                    |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         338 |  100% | 0.00kB/s    | 0:00:00 |     |     338 |      100% | 0.00kB/s   | 0:00:00 | (xfr#1,  | to-chk=64/66)   |
+| call-graph-mnas-package-make.gv.png                |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |      32.77K |   42% | 31.25MB/s   | 0:00:00 |     |  77.23K |      100% | 73.66MB/s  | 0:00:00 | (xfr#2,  | to-chk=63/66)   |
+| call-graph-mnas-package-obj.gv                     |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 42.97kB/s   | 0:00:00 |     |      44 |      100% | 42.97kB/s  | 0:00:00 | (xfr#3,  | to-chk=62/66)   |
+| call-graph-mnas-package-obj.gv.png                 |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 113.28kB/s  | 0:00:00 |     |     116 |      100% | 113.28kB/s | 0:00:00 | (xfr#4,  | to-chk=61/66)   |
+| call-graph-mnas-package-pkg.gv                     |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |       2.40K |  100% | 2.29MB/s    | 0:00:00 |     |   2.40K |      100% | 2.29MB/s   | 0:00:00 | (xfr#5,  | to-chk=60/66)   |
+| call-graph-mnas-package-pkg.gv.png                 |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |      32.77K |    5% | 31.25MB/s   | 0:00:00 |     | 555.85K |      100% | 75.73MB/s  | 0:00:00 | (xfr#6,  | to-chk=59/66)   |
+| call-graph-mnas-package-sys.gv                     |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          54 |  100% | 7.53kB/s    | 0:00:00 |     |      54 |      100% | 7.53kB/s   | 0:00:00 | (xfr#7,  | to-chk=58/66)   |
+| call-graph-mnas-package-sys.gv.png                 |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |       5.47K |  100% | 762.56kB/s  | 0:00:00 |     |   5.47K |      100% | 762.56kB/s | 0:00:00 | (xfr#8,  | to-chk=57/66)   |
+| call-graph-mnas-package-view.gv                    |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         305 |  100% | 42.55kB/s   | 0:00:00 |     |     305 |      100% | 42.55kB/s  | 0:00:00 | (xfr#9,  | to-chk=56/66)   |
+| call-graph-mnas-package-view.gv.png                |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |      32.77K |   36% | 4.46MB/s    | 0:00:00 |     |  90.91K |      100% | 9.63MB/s   | 0:00:00 | (xfr#10, | to-chk=55/66)   |
+| call-graph-mnas-package.gv                         |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |       1.33K |  100% | 143.99kB/s  | 0:00:00 |     |   1.33K |      100% | 143.99kB/s | 0:00:00 | (xfr#11, | to-chk=54/66)   |
+| call-graph-mnas-package.gv.png                     |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |      32.77K |   10% | 3.47MB/s    | 0:00:00 |     | 326.95K |      100% | 23.98MB/s  | 0:00:00 | (xfr#12, | to-chk=53/66)   |
+| class-graph-mnas-package-make.gv                   |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 3.31kB/s    | 0:00:00 |     |      44 |      100% | 3.31kB/s   | 0:00:00 | (xfr#13, | to-chk=52/66)   |
+| class-graph-mnas-package-make.gv.png               |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 8.71kB/s    | 0:00:00 |     |     116 |      100% | 8.71kB/s   | 0:00:00 | (xfr#14, | to-chk=51/66)   |
+| class-graph-mnas-package-obj.gv                    |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 3.31kB/s    | 0:00:00 |     |      44 |      100% | 3.31kB/s   | 0:00:00 | (xfr#15, | to-chk=50/66)   |
+| class-graph-mnas-package-obj.gv.png                |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 8.71kB/s    | 0:00:00 |     |     116 |      100% | 8.71kB/s   | 0:00:00 | (xfr#16, | to-chk=49/66)   |
+| class-graph-mnas-package-pkg.gv                    |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 3.31kB/s    | 0:00:00 |     |      44 |      100% | 3.31kB/s   | 0:00:00 | (xfr#17, | to-chk=48/66)   |
+| class-graph-mnas-package-pkg.gv.png                |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 8.71kB/s    | 0:00:00 |     |     116 |      100% | 8.71kB/s   | 0:00:00 | (xfr#18, | to-chk=47/66)   |
+| class-graph-mnas-package-sys.gv                    |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 3.31kB/s    | 0:00:00 |     |      44 |      100% | 3.31kB/s   | 0:00:00 | (xfr#19, | to-chk=46/66)   |
+| class-graph-mnas-package-sys.gv.png                |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 8.71kB/s    | 0:00:00 |     |     116 |      100% | 8.71kB/s   | 0:00:00 | (xfr#20, | to-chk=45/66)   |
+| class-graph-mnas-package-view.gv                   |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 3.31kB/s    | 0:00:00 |     |      44 |      100% | 3.31kB/s   | 0:00:00 | (xfr#21, | to-chk=44/66)   |
+| class-graph-mnas-package-view.gv.png               |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 8.71kB/s    | 0:00:00 |     |     116 |      100% | 8.71kB/s   | 0:00:00 | (xfr#22, | to-chk=43/66)   |
+| class-graph-mnas-package.gv                        |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 3.31kB/s    | 0:00:00 |     |      44 |      100% | 3.31kB/s   | 0:00:00 | (xfr#23, | to-chk=42/66)   |
+| class-graph-mnas-package.gv.png                    |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 8.71kB/s    | 0:00:00 |     |     116 |      100% | 8.71kB/s   | 0:00:00 | (xfr#24, | to-chk=41/66)   |
+| mnas-package-example.html                          |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |      10.25K |  100% | 769.68kB/s  | 0:00:00 |     |  10.25K |      100% | 769.68kB/s | 0:00:00 | (xfr#25, | to-chk=40/66)   |
+| mnas-package-make.html                             |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |       7.95K |  100% | 597.43kB/s  | 0:00:00 |     |   7.95K |      100% | 597.43kB/s | 0:00:00 | (xfr#26, | to-chk=39/66)   |
+| mnas-package-obj.html                              |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |      13.88K |  100% | 968.26kB/s  | 0:00:00 |     |  13.88K |      100% | 968.26kB/s | 0:00:00 | (xfr#27, | to-chk=38/66)   |
+| mnas-package-pkg.html                              |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |      16.05K |  100% | 1.09MB/s    | 0:00:00 |     |  16.05K |      100% | 1.09MB/s   | 0:00:00 | (xfr#28, | to-chk=37/66)   |
+| mnas-package-sys.html                              |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |       5.04K |  100% | 351.70kB/s  | 0:00:00 |     |   5.04K |      100% | 351.70kB/s | 0:00:00 | (xfr#29, | to-chk=36/66)   |
+| mnas-package-view.html                             |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |       7.71K |  100% | 538.16kB/s  | 0:00:00 |     |   7.71K |      100% | 538.16kB/s | 0:00:00 | (xfr#30, | to-chk=35/66)   |
+| mnas-package.html                                  |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |      10.75K |  100% | 749.79kB/s  | 0:00:00 |     |  10.75K |      100% | 749.79kB/s | 0:00:00 | (xfr#31, | to-chk=34/66)   |
+| symbol-graph-mnas-package-make.gv                  |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 3.07kB/s    | 0:00:00 |     |      44 |      100% | 3.07kB/s   | 0:00:00 | (xfr#32, | to-chk=33/66)   |
+| symbol-graph-mnas-package-make.gv.png              |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 8.09kB/s    | 0:00:00 |     |     116 |      100% | 8.09kB/s   | 0:00:00 | (xfr#33, | to-chk=32/66)   |
+| symbol-graph-mnas-package-obj.gv                   |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 3.07kB/s    | 0:00:00 |     |      44 |      100% | 3.07kB/s   | 0:00:00 | (xfr#34, | to-chk=31/66)   |
+| symbol-graph-mnas-package-obj.gv.png               |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 8.09kB/s    | 0:00:00 |     |     116 |      100% | 8.09kB/s   | 0:00:00 | (xfr#35, | to-chk=30/66)   |
+| symbol-graph-mnas-package-pkg.gv                   |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 3.07kB/s    | 0:00:00 |     |      44 |      100% | 3.07kB/s   | 0:00:00 | (xfr#36, | to-chk=29/66)   |
+| symbol-graph-mnas-package-pkg.gv.png               |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 8.09kB/s    | 0:00:00 |     |     116 |      100% | 8.09kB/s   | 0:00:00 | (xfr#37, | to-chk=28/66)   |
+| symbol-graph-mnas-package-sys.gv                   |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 3.07kB/s    | 0:00:00 |     |      44 |      100% | 3.07kB/s   | 0:00:00 | (xfr#38, | to-chk=27/66)   |
+| symbol-graph-mnas-package-sys.gv.png               |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 8.09kB/s    | 0:00:00 |     |     116 |      100% | 8.09kB/s   | 0:00:00 | (xfr#39, | to-chk=26/66)   |
+| symbol-graph-mnas-package-view.gv                  |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 3.07kB/s    | 0:00:00 |     |      44 |      100% | 3.07kB/s   | 0:00:00 | (xfr#40, | to-chk=25/66)   |
+| symbol-graph-mnas-package-view.gv.png              |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 8.09kB/s    | 0:00:00 |     |     116 |      100% | 8.09kB/s   | 0:00:00 | (xfr#41, | to-chk=24/66)   |
+| symbol-graph-mnas-package.gv                       |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 3.07kB/s    | 0:00:00 |     |      44 |      100% | 3.07kB/s   | 0:00:00 | (xfr#42, | to-chk=23/66)   |
+| symbol-graph-mnas-package.gv.png                   |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 8.09kB/s    | 0:00:00 |     |     116 |      100% | 8.09kB/s   | 0:00:00 | (xfr#43, | to-chk=22/66)   |
+| system-graph-mnas-package-make.gv                  |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         826 |  100% | 57.62kB/s   | 0:00:00 |     |     826 |      100% | 57.62kB/s  | 0:00:00 | (xfr#44, | to-chk=21/66)   |
+| system-graph-mnas-package-make.gv.png              |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |      32.77K |   10% | 2.23MB/s    | 0:00:00 |     | 304.89K |      100% | 10.03MB/s  | 0:00:00 | (xfr#45, | to-chk=20/66)   |
+| system-graph-mnas-package-obj.gv                   |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 1.48kB/s    | 0:00:00 |     |      44 |      100% | 1.48kB/s   | 0:00:00 | (xfr#46, | to-chk=19/66)   |
+| system-graph-mnas-package-obj.gv.png               |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 3.91kB/s    | 0:00:00 |     |     116 |      100% | 3.91kB/s   | 0:00:00 | (xfr#47, | to-chk=18/66)   |
+| system-graph-mnas-package-pkg.gv                   |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         209 |  100% | 7.04kB/s    | 0:00:00 |     |     209 |      100% | 7.04kB/s   | 0:00:00 | (xfr#48, | to-chk=17/66)   |
+| system-graph-mnas-package-pkg.gv.png               |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |      32.77K |   70% | 1.08MB/s    | 0:00:00 |     |  46.35K |      100% | 1.52MB/s   | 0:00:00 | (xfr#49, | to-chk=16/66)   |
+| system-graph-mnas-package-sys.gv                   |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         111 |  100% | 3.74kB/s    | 0:00:00 |     |     111 |      100% | 3.74kB/s   | 0:00:00 | (xfr#50, | to-chk=15/66)   |
+| system-graph-mnas-package-sys.gv.png               |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |      19.67K |  100% | 662.38kB/s  | 0:00:00 |     |  19.67K |      100% | 662.38kB/s | 0:00:00 | (xfr#51, | to-chk=14/66)   |
+| system-graph-mnas-package-view.gv                  |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         930 |  100% | 31.32kB/s   | 0:00:00 |     |     930 |      100% | 31.32kB/s  | 0:00:00 | (xfr#52, | to-chk=13/66)   |
+| system-graph-mnas-package-view.gv.png              |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |      32.77K |   10% | 1.08MB/s    | 0:00:00 |     | 304.44K |      100% | 9.07MB/s   | 0:00:00 | (xfr#53, | to-chk=12/66)   |
+| system-graph-mnas-package.gv                       |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |       1.74K |  100% | 53.04kB/s   | 0:00:00 |     |   1.74K |      100% | 53.04kB/s  | 0:00:00 | (xfr#54, | to-chk=11/66)   |
+| system-graph-mnas-package.gv.png                   |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |      32.77K |    5% | 1000.00kB/s | 0:00:00 |     | 550.71K |      100% | 13.47MB/s  | 0:00:00 | (xfr#55, | to-chk=10/66)   |
+| графы-mnas-package-make.html                       |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |       4.71K |  100% | 118.04kB/s  | 0:00:00 |     |   4.71K |      100% | 118.04kB/s | 0:00:00 | (xfr#56, | to-chk=9/66)    |
+| графы-mnas-package-pkg.html                        |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |       4.72K |  100% | 118.26kB/s  | 0:00:00 |     |   4.72K |      100% | 118.26kB/s | 0:00:00 | (xfr#57, | to-chk=8/66)    |
+| графы-mnas-package-sys.html                        |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |       4.67K |  100% | 116.94kB/s  | 0:00:00 |     |   4.67K |      100% | 116.94kB/s | 0:00:00 | (xfr#58, | to-chk=7/66)    |
+| графы-mnas-package-view.html                       |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |       4.70K |  100% | 117.59kB/s  | 0:00:00 |     |   4.70K |      100% | 117.59kB/s | 0:00:00 | (xfr#59, | to-chk=6/66)    |
+| графы-mnas-package.html                            |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |       4.62K |  100% | 115.71kB/s  | 0:00:00 |     |   4.62K |      100% | 115.71kB/s | 0:00:00 | (xfr#60, | to-chk=5/66)    |
+| обзор.html                                         |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |       6.20K |  100% | 155.30kB/s  | 0:00:00 |     |   6.20K |      100% | 155.30kB/s | 0:00:00 | (xfr#61, | to-chk=4/66)    |
+| static/                                            |             |       |             |         |       |         |           |            |         |          |                 |
+| static/highlight.css                               |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |       1.57K |  100% | 39.34kB/s   | 0:00:00 |     |   1.57K |      100% | 39.34kB/s  | 0:00:00 | (xfr#62, | to-chk=2/66)    |
+| static/highlight.js                                |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |      22.99K |  100% | 575.65kB/s  | 0:00:00 |     |  22.99K |      100% | 575.65kB/s | 0:00:00 | (xfr#63, | to-chk=1/66)    |
+| static/style.css                                   |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |       4.32K |  100% | 108.12kB/s  | 0:00:00 |     |   4.32K |      100% | 108.12kB/s | 0:00:00 | (xfr#64, | to-chk=0/66)    |
+| mnasoft-00                                         |             |       |             |         |       |         |           |            |         |          |                 |
+| sending                                            | incremental |  file | list        |         |       |         |           |            |         |          |                 |
+| mnas-package/                                      |             |       |             |         |       |         |           |            |         |          |                 |
+| mnas-package/call-graph-mnas-package-make.gv       |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         338 |  100% | 0.00kB/s    | 0:00:00 |     |     338 |      100% | 0.00kB/s   | 0:00:00 | (xfr#1,  | to-chk=305/624) |
+| mnas-package/call-graph-mnas-package-make.gv.png   |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |    0% | 683.59kB/s  | 0:00:00 |     |  77.23K |      100% | 5.67MB/s   | 0:00:00 | (xfr#2,  | to-chk=304/624) |
+| mnas-package/call-graph-mnas-package-obj.gv        |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 3.31kB/s    | 0:00:00 |     |      44 |      100% | 3.31kB/s   | 0:00:00 | (xfr#3,  | to-chk=303/624) |
+| mnas-package/call-graph-mnas-package-obj.gv.png    |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 8.71kB/s    | 0:00:00 |     |     116 |      100% | 8.71kB/s   | 0:00:00 | (xfr#4,  | to-chk=302/624) |
+| mnas-package/call-graph-mnas-package-pkg.gv        |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |       2.40K |  100% | 180.21kB/s  | 0:00:00 |     |   2.40K |      100% | 180.21kB/s | 0:00:00 | (xfr#5,  | to-chk=301/624) |
+| mnas-package/call-graph-mnas-package-pkg.gv.png    |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |      32.77K |    5% | 1.95MB/s    | 0:00:00 |     | 555.85K |      100% | 8.28MB/s   | 0:00:00 | (xfr#6,  | to-chk=300/624) |
+| mnas-package/call-graph-mnas-package-sys.gv        |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          54 |  100% | 0.82kB/s    | 0:00:00 |     |      54 |      100% | 0.82kB/s   | 0:00:00 | (xfr#7,  | to-chk=299/624) |
+| mnas-package/call-graph-mnas-package-sys.gv.png    |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |   12% | 10.68kB/s   | 0:00:00 |     |   5.47K |      100% | 82.12kB/s  | 0:00:00 | (xfr#8,  | to-chk=298/624) |
+| mnas-package/call-graph-mnas-package-view.gv       |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         305 |  100% | 4.58kB/s    | 0:00:00 |     |     305 |      100% | 4.58kB/s   | 0:00:00 | (xfr#9,  | to-chk=297/624) |
+| mnas-package/call-graph-mnas-package-view.gv.png   |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |    0% | 10.52kB/s   | 0:00:08 |     |  90.91K |      100% | 1.16MB/s   | 0:00:00 | (xfr#10, | to-chk=296/624) |
+| mnas-package/call-graph-mnas-package.gv            |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |       1.33K |  100% | 17.28kB/s   | 0:00:00 |     |   1.33K |      100% | 17.28kB/s  | 0:00:00 | (xfr#11, | to-chk=295/624) |
+| mnas-package/call-graph-mnas-package.gv.png        |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |    0% | 9.11kB/s    | 0:00:35 |     | 326.95K |      100% | 3.00MB/s   | 0:00:00 | (xfr#12, | to-chk=294/624) |
+| mnas-package/class-graph-mnas-package-make.gv      |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 0.41kB/s    | 0:00:00 |     |      44 |      100% | 0.41kB/s   | 0:00:00 | (xfr#13, | to-chk=293/624) |
+| mnas-package/class-graph-mnas-package-make.gv.png  |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 1.09kB/s    | 0:00:00 |     |     116 |      100% | 1.09kB/s   | 0:00:00 | (xfr#14, | to-chk=292/624) |
+| mnas-package/class-graph-mnas-package-obj.gv       |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 0.41kB/s    | 0:00:00 |     |      44 |      100% | 0.41kB/s   | 0:00:00 | (xfr#15, | to-chk=291/624) |
+| mnas-package/class-graph-mnas-package-obj.gv.png   |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 1.09kB/s    | 0:00:00 |     |     116 |      100% | 1.09kB/s   | 0:00:00 | (xfr#16, | to-chk=290/624) |
+| mnas-package/class-graph-mnas-package-pkg.gv       |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 0.41kB/s    | 0:00:00 |     |      44 |      100% | 0.41kB/s   | 0:00:00 | (xfr#17, | to-chk=289/624) |
+| mnas-package/class-graph-mnas-package-pkg.gv.png   |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 1.09kB/s    | 0:00:00 |     |     116 |      100% | 1.09kB/s   | 0:00:00 | (xfr#18, | to-chk=288/624) |
+| mnas-package/class-graph-mnas-package-sys.gv       |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 0.41kB/s    | 0:00:00 |     |      44 |      100% | 0.41kB/s   | 0:00:00 | (xfr#19, | to-chk=287/624) |
+| mnas-package/class-graph-mnas-package-sys.gv.png   |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 1.09kB/s    | 0:00:00 |     |     116 |      100% | 1.09kB/s   | 0:00:00 | (xfr#20, | to-chk=286/624) |
+| mnas-package/class-graph-mnas-package-view.gv      |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 0.41kB/s    | 0:00:00 |     |      44 |      100% | 0.41kB/s   | 0:00:00 | (xfr#21, | to-chk=285/624) |
+| mnas-package/class-graph-mnas-package-view.gv.png  |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 1.09kB/s    | 0:00:00 |     |     116 |      100% | 1.09kB/s   | 0:00:00 | (xfr#22, | to-chk=284/624) |
+| mnas-package/class-graph-mnas-package.gv           |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 0.41kB/s    | 0:00:00 |     |      44 |      100% | 0.41kB/s   | 0:00:00 | (xfr#23, | to-chk=283/624) |
+| mnas-package/class-graph-mnas-package.gv.png       |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 1.09kB/s    | 0:00:00 |     |     116 |      100% | 1.09kB/s   | 0:00:00 | (xfr#24, | to-chk=282/624) |
+| mnas-package/mnas-package-example.html             |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |    6% | 6.57kB/s    | 0:00:01 |     |  10.25K |      100% | 96.21kB/s  | 0:00:00 | (xfr#25, | to-chk=281/624) |
+| mnas-package/mnas-package-make.html                |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |    8% | 6.57kB/s    | 0:00:01 |     |   7.95K |      100% | 73.97kB/s  | 0:00:00 | (xfr#26, | to-chk=280/624) |
+| mnas-package/mnas-package-obj.html                 |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |    5% | 6.51kB/s    | 0:00:02 |     |  13.88K |      100% | 129.10kB/s | 0:00:00 | (xfr#27, | to-chk=279/624) |
+| mnas-package/mnas-package-pkg.html                 |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |    4% | 6.51kB/s    | 0:00:02 |     |  16.05K |      100% | 147.88kB/s | 0:00:00 | (xfr#28, | to-chk=278/624) |
+| mnas-package/mnas-package-sys.html                 |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |   13% | 6.45kB/s    | 0:00:00 |     |   5.04K |      100% | 46.45kB/s  | 0:00:00 | (xfr#29, | to-chk=277/624) |
+| mnas-package/mnas-package-view.html                |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |    9% | 6.45kB/s    | 0:00:01 |     |   7.71K |      100% | 71.08kB/s  | 0:00:00 | (xfr#30, | to-chk=276/624) |
+| mnas-package/mnas-package.html                     |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |    6% | 6.45kB/s    | 0:00:01 |     |  10.75K |      100% | 99.03kB/s  | 0:00:00 | (xfr#31, | to-chk=275/624) |
+| mnas-package/symbol-graph-mnas-package-make.gv     |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 0.41kB/s    | 0:00:00 |     |      44 |      100% | 0.41kB/s   | 0:00:00 | (xfr#32, | to-chk=274/624) |
+| mnas-package/symbol-graph-mnas-package-make.gv.png |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 1.06kB/s    | 0:00:00 |     |     116 |      100% | 1.06kB/s   | 0:00:00 | (xfr#33, | to-chk=273/624) |
+| mnas-package/symbol-graph-mnas-package-obj.gv      |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 0.40kB/s    | 0:00:00 |     |      44 |      100% | 0.40kB/s   | 0:00:00 | (xfr#34, | to-chk=272/624) |
+| mnas-package/symbol-graph-mnas-package-obj.gv.png  |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 1.06kB/s    | 0:00:00 |     |     116 |      100% | 1.06kB/s   | 0:00:00 | (xfr#35, | to-chk=271/624) |
+| mnas-package/symbol-graph-mnas-package-pkg.gv      |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 0.40kB/s    | 0:00:00 |     |      44 |      100% | 0.40kB/s   | 0:00:00 | (xfr#36, | to-chk=270/624) |
+| mnas-package/symbol-graph-mnas-package-pkg.gv.png  |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 1.06kB/s    | 0:00:00 |     |     116 |      100% | 1.06kB/s   | 0:00:00 | (xfr#37, | to-chk=269/624) |
+| mnas-package/symbol-graph-mnas-package-sys.gv      |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 0.40kB/s    | 0:00:00 |     |      44 |      100% | 0.40kB/s   | 0:00:00 | (xfr#38, | to-chk=268/624) |
+| mnas-package/symbol-graph-mnas-package-sys.gv.png  |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 1.06kB/s    | 0:00:00 |     |     116 |      100% | 1.06kB/s   | 0:00:00 | (xfr#39, | to-chk=267/624) |
+| mnas-package/symbol-graph-mnas-package-view.gv     |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 0.40kB/s    | 0:00:00 |     |      44 |      100% | 0.40kB/s   | 0:00:00 | (xfr#40, | to-chk=266/624) |
+| mnas-package/symbol-graph-mnas-package-view.gv.png |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 1.06kB/s    | 0:00:00 |     |     116 |      100% | 1.06kB/s   | 0:00:00 | (xfr#41, | to-chk=265/624) |
+| mnas-package/symbol-graph-mnas-package.gv          |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 0.40kB/s    | 0:00:00 |     |      44 |      100% | 0.40kB/s   | 0:00:00 | (xfr#42, | to-chk=264/624) |
+| mnas-package/symbol-graph-mnas-package.gv.png      |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 1.06kB/s    | 0:00:00 |     |     116 |      100% | 1.06kB/s   | 0:00:00 | (xfr#43, | to-chk=263/624) |
+| mnas-package/system-graph-mnas-package-make.gv     |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |   84% | 6.39kB/s    | 0:00:00 |     |     826 |      100% | 7.54kB/s   | 0:00:00 | (xfr#44, | to-chk=262/624) |
+| mnas-package/system-graph-mnas-package-make.gv.png |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |    0% | 6.39kB/s    | 0:00:47 |     | 304.89K |      100% | 2.25MB/s   | 0:00:00 | (xfr#45, | to-chk=261/624) |
+| mnas-package/system-graph-mnas-package-obj.gv      |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |          44 |  100% | 0.33kB/s    | 0:00:00 |     |      44 |      100% | 0.33kB/s   | 0:00:00 | (xfr#46, | to-chk=260/624) |
+| mnas-package/system-graph-mnas-package-obj.gv.png  |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         116 |  100% | 0.88kB/s    | 0:00:00 |     |     116 |      100% | 0.88kB/s   | 0:00:00 | (xfr#47, | to-chk=259/624) |
+| mnas-package/system-graph-mnas-package-pkg.gv      |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         209 |  100% | 1.58kB/s    | 0:00:00 |     |     209 |      100% | 1.58kB/s   | 0:00:00 | (xfr#48, | to-chk=258/624) |
+| mnas-package/system-graph-mnas-package-pkg.gv.png  |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |    1% | 5.30kB/s    | 0:00:08 |     |  46.35K |      100% | 342.93kB/s | 0:00:00 | (xfr#49, | to-chk=257/624) |
+| mnas-package/system-graph-mnas-package-sys.gv      |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         111 |  100% | 0.82kB/s    | 0:00:00 |     |     111 |      100% | 0.82kB/s   | 0:00:00 | (xfr#50, | to-chk=256/624) |
+| mnas-package/system-graph-mnas-package-sys.gv.png  |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |    3% | 5.18kB/s    | 0:00:03 |     |  19.67K |      100% | 144.43kB/s | 0:00:00 | (xfr#51, | to-chk=255/624) |
+| mnas-package/system-graph-mnas-package-view.gv     |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |   75% | 5.10kB/s    | 0:00:00 |     |     930 |      100% | 6.78kB/s   | 0:00:00 | (xfr#52, | to-chk=254/624) |
+| mnas-package/system-graph-mnas-package-view.gv.png |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |    0% | 5.10kB/s    | 0:00:59 |     | 304.44K |      100% | 1.89MB/s   | 0:00:00 | (xfr#53, | to-chk=253/624) |
+| mnas-package/system-graph-mnas-package.gv          |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |   40% | 4.44kB/s    | 0:00:00 |     |   1.74K |      100% | 11.02kB/s  | 0:00:00 | (xfr#54, | to-chk=252/624) |
+| mnas-package/system-graph-mnas-package.gv.png      |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         736 |    0% | 4.64kB/s    | 0:01:58 |     | 550.71K |      100% | 2.69MB/s   | 0:00:00 | (xfr#55, | to-chk=251/624) |
+| mnas-package/графы-mnas-package-make.html          |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |   14% | 3.51kB/s    | 0:00:01 |     |   4.71K |      100% | 23.61kB/s  | 0:00:00 | (xfr#56, | to-chk=250/624) |
+| mnas-package/графы-mnas-package-pkg.html           |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |   14% | 3.51kB/s    | 0:00:01 |     |   4.72K |      100% | 23.65kB/s  | 0:00:00 | (xfr#57, | to-chk=249/624) |
+| mnas-package/графы-mnas-package-sys.html           |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |   14% | 3.51kB/s    | 0:00:01 |     |   4.67K |      100% | 23.39kB/s  | 0:00:00 | (xfr#58, | to-chk=248/624) |
+| mnas-package/графы-mnas-package-view.html          |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |   14% | 3.51kB/s    | 0:00:01 |     |   4.70K |      100% | 23.52kB/s  | 0:00:00 | (xfr#59, | to-chk=247/624) |
+| mnas-package/графы-mnas-package.html               |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |   15% | 3.51kB/s    | 0:00:01 |     |   4.62K |      100% | 23.14kB/s  | 0:00:00 | (xfr#60, | to-chk=246/624) |
+| mnas-package/обзор.html                            |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |   11% | 3.51kB/s    | 0:00:01 |     |   6.20K |      100% | 30.90kB/s  | 0:00:00 | (xfr#61, | to-chk=245/624) |
+| mnas-package/static/                               |             |       |             |         |       |         |           |            |         |          |                 |
+| mnas-package/static/highlight.css                  |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |   44% | 3.49kB/s    | 0:00:00 |     |   1.57K |      100% | 7.83kB/s   | 0:00:00 | (xfr#62, | to-chk=243/624) |
+| mnas-package/static/highlight.js                   |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |    3% | 3.49kB/s    | 0:00:06 |     |  22.99K |      100% | 113.96kB/s | 0:00:00 | (xfr#63, | to-chk=242/624) |
+| mnas-package/static/style.css                      |             |       |             |         |       |         |           |            |         |          |                 |
+|                                                  |         700 |   16% | 3.47kB/s    | 0:00:01 |     |   4.32K |      100% | 21.41kB/s  | 0:00:00 | (xfr#64, | to-chk=241/624) |
+|                                                    |             |       |             |         |       |         |           |            |         |          |                 |
+| sent                                               |     531.44K | bytes | received    |  21.79K | bytes | 158.06K | bytes/sec |            |         |          |                 |
+| total                                              |        size |    is | 43.82M      | speedup | is    |    79.2 |           |            |         |          |                 |
