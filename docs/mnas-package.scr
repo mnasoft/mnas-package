@@ -54,6 +54,7 @@
  @item(section-macroses;) 
  @item(section-setf-functions;)
  @item(section-generics;) 
+ @item(section-setf-generics;)
  @item(section-methods;) 
  @item(section-classes.)
 @end(list)

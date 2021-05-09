@@ -36,7 +36,7 @@
 "
   :author "Nick Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
-  :version "0.38.45"
+  :version "0.42.47"
   :serial nil
   :in-order-to ((test-op (test-op "mnas-package/tests")))
   :depends-on ("mnas-package/obj"
@@ -59,7 +59,7 @@
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :serial t
   :in-order-to ((test-op (test-op "math/obj/tests")))
-;;  :depends-on ()
+  :depends-on ("closer-mop")
   :components ((:module "src/obj"
 		:serial nil
                 :components ((:file "obj")))))

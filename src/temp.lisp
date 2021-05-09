@@ -19,25 +19,25 @@
 	(l-not-obr (list class-01)))
     (flet
 	((bar (class)
-	   (setf l-not-obr (append l-not-obr (sb-mop:class-direct-subclasses class)))))
+	   (setf l-not-obr (append l-not-obr (closer-mop:class-direct-subclasses class)))))
       (do ((class nil))
 	  ((null l-not-obr) rez-classes)
 	(setf class (pop l-not-obr))
 	(push class rez-classes)
 	(bar class)))))
 
-(sb-mop:reader-method-class (find-class 'mnas-icem:<tin>)
-                            (sb-mop:class-direct-slots   (find-class 'mnas-icem:<tin>)))
+(closer-mop:reader-method-class (find-class 'mnas-icem:<tin>)
+                            (closer-mop:class-direct-slots   (find-class 'mnas-icem:<tin>)))
 
 
 (first
- (sb-mop:slot-definition-readers
+ (closer-mop:slot-definition-readers
   (elt 
-   (sb-mop:class-direct-slots (find-class 'mnas-icem:<tin>))
+   (closer-mop:class-direct-slots (find-class 'mnas-icem:<tin>))
    1)))
 
 (first
- (sb-mop:slot-definition-writers
+ (closer-mop:slot-definition-writers
   (elt 
-   (sb-mop:class-direct-slots (find-class 'mnas-icem:<tin>))
+   (closer-mop:class-direct-slots (find-class 'mnas-icem:<tin>))
    1)))

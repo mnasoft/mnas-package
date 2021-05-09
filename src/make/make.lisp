@@ -90,7 +90,7 @@
 		  :from (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name class)))
 		  :to   (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name el))))
 		 graph))
-	    (sb-mop:class-direct-subclasses class))
+	    (closer-mop:class-direct-subclasses class))
 	   graph))
     (mapc
      #'(lambda (el)
@@ -144,7 +144,7 @@
 	   :to   (make-instance 'mnas-graph:<node> :owner graph :name (string (mnas-package/obj:obj-name el))))
 	  graph)
          )
-     (sb-mop:class-slots class))
+     (closer-mop:class-slots class))
     graph))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -162,10 +162,10 @@
 
 (mpkg/obj:obj-name
  (first 
-  (sb-mop:method-specializers
+  (closer-mop:method-specializers
    (first 
-    (sb-mop:generic-function-methods #'mnas-package/example:m-foo)))))
+    (closer-mop:generic-function-methods #'mnas-package/example:m-foo)))))
 
-;;(sb-mop:method-lambda-list)
+;;(closer-mop:method-lambda-list)
 
 |#

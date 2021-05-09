@@ -9,7 +9,7 @@
 (in-suite main)
 
 (def-test section-variables ()
-  (is-true (= 5 (length
+  (is-true (= 6 (length
                  (mnas-string:split
                   (format nil "~%") 
                   (let ((os (make-string-output-stream )))
@@ -21,7 +21,7 @@
                   (let ((os (make-string-output-stream )))
                     (mpkg::section-variables :mnas-package/example :internal t :stream os)
                     (get-output-stream-string os))))))
-  (is-true (= 5 (length
+  (is-true (= 6 (length
                  (mnas-string:split
                   (format nil "~%") 
                   (let ((os (make-string-output-stream )))
@@ -35,7 +35,7 @@
                     (get-output-stream-string os)))))))
 
 (def-test section-functions ()
-  (is-true (= 5 (length
+  (is-true (= 7 (length
                  (mnas-string:split
                   (format nil "~%") 
                   (let ((os (make-string-output-stream )))
@@ -48,7 +48,7 @@
                      (mpkg::section-functions
                       :mnas-package/example :internal t :stream os)
                      (get-output-stream-string os))))))
-  (is-true (= 6 (length
+  (is-true (= 8 (length
                  (mnas-string:split
                   (format nil "~%") 
                   (let ((os (make-string-output-stream )))
@@ -64,27 +64,27 @@
                      (get-output-stream-string os)))))))
 
 (def-test section-setf-functions ()
-  (is-true (= 0 (length
+  (is-true (= 5 (length
                  (mnas-string:split
                   (format nil "~%") 
                   (let ((os (make-string-output-stream )))
                     (mpkg::section-setf-functions :mnas-package/example :stream os)
                     (get-output-stream-string os))))))
-  (is-true (= 6 (length
+  (is-true (= 5 (length
                   (mnas-string:split
                    (format nil "~%") 
                    (let ((os (make-string-output-stream )))
                      (mpkg::section-setf-functions
                       :mnas-package/example :internal t :stream os)
                      (get-output-stream-string os))))))
-  (is-true (= 0 (length
+  (is-true (= 5 (length
                  (mnas-string:split
                   (format nil "~%") 
                   (let ((os (make-string-output-stream )))
                     (mpkg::section-setf-functions
                      :mnas-package/example :stream os :min-doc-length 10)
                     (get-output-stream-string os))))))
-  (is-true (= 6 (length
+  (is-true (= 5 (length
                   (mnas-string:split
                    (format nil "~%") 
                    (let ((os (make-string-output-stream )))
@@ -191,8 +191,8 @@
                    )
                (append
                 (list
-                 'mnas-package/example:*a*
-                 'mnas-package/example::*b*
+                 'mnas-package/example:*a-exp*
+                 'mnas-package/example:*b-exp*
                  'mnas-package/example::*c*
                  (uiop:ensure-function 'mnas-package/example::foo)
                  (uiop:ensure-function 'mnas-package/example::bar)
@@ -211,15 +211,13 @@
                 (apply #'append 
                        (mapcar
                         #'(lambda (el)
-                            (sb-mop:generic-function-methods
+                            (closer-mop:generic-function-methods
                              (uiop/common-lisp:ensure-generic-function el)))
                         '(mnas-package/example:m-foo mnas-package/example::m-foo-short)))))))
       (get-output-stream-string os))
     "
-  @cl:doc(variable *a*)
-  @cl:doc(variable *a*)
-  @cl:doc(variable *b*)
-  @cl:doc(variable *b*)
+  @cl:doc(variable *a-exp*)
+  @cl:doc(variable *b-exp*)
   @cl:doc(variable *c*)
   @cl:doc(function foo)
   @cl:doc(function foo)

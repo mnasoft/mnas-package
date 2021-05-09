@@ -9,8 +9,9 @@
            package-functions
            package-macroses
            package-classes
-           package-setf-functions ;;;;
-           package-setf-generics  ;;;;
+           package-setf-functions 
+           package-setf-generics  
+           package-setf-methods ;;;;
            )
   (:export filter-variables
            filter-functions
@@ -18,6 +19,8 @@
            filter-setf-functions ;;;;
            filter-generics
            filter-setf-generics ;;;;
+           filter-methods
+           filter-setf-methods  ;;;;
            )
   (:export package-symbols-by-category
            who-calls-lst
@@ -343,6 +346,40 @@ var. Возвращает список, каждым элементом кото
      symbols)
     rez))
 
+(defun filter-methods (methods)
+  "@b(Описание:) функция @b(filter-methods) возвращает список символов,
+являющихся сопряженными с setf-методами.
+
+ @b(Переменые:)
+@begin(list) 
+@item(symbols - список символов пакета.)
+@end(list)
+"
+  (let ((rez nil))
+    (mapc
+     #'(lambda (method)
+         (when (eq 'standard-method (type-of method))
+           (push method rez)))
+     methods)
+    rez))
+
+(defun filter-setf-methods (methods)
+  "@b(Описание:) функция @b(filter-setf-methods) возвращает список символов,
+являющихся сопряженными с setf-методами.
+
+ @b(Переменые:)
+@begin(list) 
+@item(symbols - список символов пакета.)
+@end(list)
+"
+  (let ((rez nil))
+    (mapc
+     #'(lambda (method)
+         (when (eq 'standard-method (type-of method))
+           (push method rez)))
+     methods)
+    rez))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun package-variables (package-name &key (external t) (internal nil) (inherited nil))
@@ -492,11 +529,32 @@ var. Возвращает список, каждым элементом кото
      #<STANDARD-METHOD MNAS-PACKAGE/EXAMPLE::M-FOO-SHORT (MNAS-PACKAGE/EXAMPLE::<A> MNAS-PACKAGE/EXAMPLE::<B> MNAS-PACKAGE/EXAMPLE:<C>) {1001C6CAC3}>)
 @end(code)
 "
- (apply #'append 
-        (mapcar #'sb-mop:generic-function-methods
-                (package-generics package-name
-                                  :external  external
-                                  :internal  internal
-                                  :inherited inherited))))
+  (filter-methods
+   (apply #'append 
+          (mapcar #'closer-mop:generic-function-methods
+                  (package-generics package-name
+                                    :external  external
+                                    :internal  internal
+                                    :inherited inherited)))))
+
+(defun package-setf-methods (package-name &key (external t) (internal nil) (inherited nil))
+  "@b(Описание:) функция @b(package-setf-methods) возвращает список setf-методов пакета
+@b(package-name).
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+  (package-setf-methods :mnas-package/example :internal t)
+    (#<STANDARD-METHOD MNAS-PACKAGE/EXAMPLE::M-FOO :AROUND (MNAS-PACKAGE/EXAMPLE::<A> MNAS-PACKAGE/EXAMPLE::<B> T) {10019B69A3}>
+     ...
+     #<STANDARD-METHOD MNAS-PACKAGE/EXAMPLE::M-FOO-SHORT (MNAS-PACKAGE/EXAMPLE::<A> MNAS-PACKAGE/EXAMPLE::<B> MNAS-PACKAGE/EXAMPLE:<C>) {1001C6CAC3}>)
+@end(code)
+"
+  (filter-setf-methods 
+   (apply #'append 
+          (mapcar #'closer-mop:generic-function-methods
+                  (package-setf-generics package-name
+                                         :external  external
+                                         :internal  internal
+                                         :inherited inherited)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

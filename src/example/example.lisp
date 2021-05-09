@@ -72,13 +72,19 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defclass <a> ()
-  ((a))
+  ((a :accessor <a>-a :initarg a :initform nil))
   (:documentation
    "Documentation example for class <a> ===================================================================="))
 
-(defclass <b> (<a>) ()
+(defmethod print-object ((a <a>) s) (format s "#<a>(a=~S)" (<a>-a a)))
+
+(defclass <b> (<a>)
+  ((b :accessor <b>-b :initarg b :initform nil))
   (:documentation
    "Documentation example for class <b> ===================================================================="))
+
+(defmethod print-object ((b <b>) s) (format s "#<b>(b=~S)" (<b>-b b))
+  (call-next-method))
 
 (defclass <c> (<b>) ()
   (:documentation
@@ -96,10 +102,47 @@
   (:documentation
    "Documentation example for class <c-s>"))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; defgeneric
+
 (defgeneric (setf m-foo) (val obj)
   (:documentation
    "Documentation example for defgeneric @b((setf m-foo))
 ================================================================================"))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; defmethods
+
+(defmethod (setf m-foo) (val (a <a>))
+  "Documentation example for defgeneric @b((setf m-foo) (val (a <a>)))
+================================================================================"
+  (setf (<a>-a a) val)
+  a)
+
+(defmethod (setf m-foo) ((val number) (a <a>))
+    "Documentation example for defgeneric @b((setf m-foo) ((val number) (a <a>)))
+================================================================================"
+  (setf (<a>-a a) (1+ val))
+  a)
+
+(defmethod (setf m-foo) (val (b <b>))
+    "Documentation example for defgeneric @b((setf m-foo) (val (b <b>)))
+================================================================================"
+  (setf (<b>-b b) val)
+  b)
+
+(defmethod (setf m-foo) ((val number) (b <b>))
+    "Documentation example for defgeneric @b((setf m-foo) ((val number) (b <b>)))
+================================================================================"
+  (setf (<b>-b b) (1+ val))
+  b)
+
+#|
+(defparameter *<a>* (make-instance '<a>))
+(defparameter *<b>* (make-instance '<b>))
+
+(setf (m-foo *<b>*) 10.25)
+(setf (m-foo *<a>*) 210.25)
+|#
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

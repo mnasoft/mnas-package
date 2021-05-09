@@ -66,7 +66,7 @@
  (obj-name (first (package-generics :dxf)))
 @end(code)
 "
-  (values (sb-mop:generic-function-name generic) :generic-function))
+  (values (closer-mop:generic-function-name generic) :generic-function))
 
 (defmethod obj-name ((method method))
   "@b(Описание:) метод @b(obj-name) возвращает символ,
@@ -75,11 +75,11 @@
  @b(Пример использования:)
 @begin[lang=lisp](code)
  (require :dxf)
- (obj-name (second (sb-mop:generic-function-methods (first (package-generics :dxf)))))
+ (obj-name (second (closer-mop:generic-function-methods (first (package-generics :dxf)))))
 @end(code)"
   (values
-   (sb-mop:generic-function-name
-    (sb-mop:method-generic-function method))
+   (closer-mop:generic-function-name
+    (closer-mop:method-generic-function method))
    :method))
 
 (defmethod obj-name ((class class))
@@ -102,10 +102,10 @@
 @end(code)"
   (values (package-name package) :package))
 
-(defmethod obj-name ((slot-definition sb-mop:slot-definition))
+(defmethod obj-name ((slot-definition closer-mop:slot-definition))
   "@b(Описание:) метод @b(obj-name) возвращает символ,
 представляющий имя определеия слота."
-  (sb-mop:slot-definition-name slot-definition))
+  (closer-mop:slot-definition-name slot-definition))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -120,7 +120,7 @@
    (obj-name-string (second (package-functions :mnas-package)))
    (obj-name-string (second (package-functions :dxf)))
    (obj-name (first (package-generics :dxf)))
-   (obj-name (second (sb-mop:generic-function-methods (first (package-generics :dxf))))))
+   (obj-name (second (closer-mop:generic-function-methods (first (package-generics :dxf))))))
 @end(code)"
   (format nil "~s" (obj-name obj)))
 
@@ -160,7 +160,7 @@
  @b(Пример использования:)
 @begin[lang=lisp](code)
  (require :dxf)
- (obj-package (second (sb-mop:generic-function-methods (first (package-generics :dxf)))))
+ (obj-package (second (closer-mop:generic-function-methods (first (package-generics :dxf)))))
 @end(code)"
   (symbol-package (obj-name method)))
 
@@ -186,7 +186,7 @@
   package)
 
 
-(defmethod obj-package ((slot-definition sb-mop:slot-definition))
+(defmethod obj-package ((slot-definition closer-mop:slot-definition))
       "@b(Описание:) метод @b(obj-package) возвращает символ,
 представляющий имя определение слота.
 "

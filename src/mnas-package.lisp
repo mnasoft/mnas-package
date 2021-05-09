@@ -15,6 +15,7 @@
            section-generics
            section-setf-generics
            section-methods
+           section-setf-methods
            section-classes)
   (:export sub-class-graph
            super-class-graph)
@@ -142,9 +143,9 @@
  (find-all-generics (find-class 'mtf/t-fild:<t-fild>) \"SPLOT\")
 @end(code)
 "
-  (loop :for method :in (sb-mop:specializer-direct-methods class)
-        :for gf           = (sb-mop:method-generic-function method)
-        :for fname        = (sb-mop:generic-function-name gf)
+  (loop :for method :in (closer-mop:specializer-direct-methods class)
+        :for gf           = (closer-mop:method-generic-function method)
+        :for fname        = (closer-mop:generic-function-name gf)
         :for fname-string = (when (symbolp fname) (symbol-name fname))
         :when (and (stringp fname-string)
                    (>= (length fname-string)
@@ -156,9 +157,9 @@
 
 (defun find-all-methods (class prefix)
   "(pprint (find-all-methods (find-class 'mtf:<sector>) \"SEC\"))"
-  (loop :for method :in (sb-mop:specializer-direct-methods class)
-        :for gf           = (sb-mop:method-generic-function method)
-        :for fname        = (sb-mop:generic-function-name gf)
+  (loop :for method :in (closer-mop:specializer-direct-methods class)
+        :for gf           = (closer-mop:method-generic-function method)
+        :for fname        = (closer-mop:generic-function-name gf)
         :for fname-string = (when (symbolp fname) (symbol-name fname))
         :when (and (stringp fname-string)
                    (>= (length fname-string)
@@ -238,12 +239,16 @@
 (defmethod insert-codex-doc ((method method) &key (stream t) (min-doc-length 80))
   "(insert-codex-doc (find-package :mpkg))"
   (when (< min-doc-length (length (documentation method t)))
-    (let ((mqs (sb-mop:method-qualifiers method))
-          (mll (sb-mop:method-lambda-list method))
-          (msp (sb-mop:method-specializers method)))
+    (let ((mqs (closer-mop::method-qualifiers method))
+          (mll (closer-mop:method-lambda-list method))
+          (msp (closer-mop:method-specializers method)))
       (unless (and mqs (listp mqs) (= 1 (length mqs)))
-        ;; (format stream " ~s" (mpkg/obj:obj-name (first mqs)))
-        (format stream "~&  @cl:doc(method ~s" (mpkg/obj:obj-name method))
+        (let ((name (mpkg/obj:obj-name method)))
+          (cond
+            ((and (listp name) (eq 'setf (first name)))
+             (format stream "~&  @cl:doc(setf-method ~s" (second name)))
+            (t
+             (format stream "~&  @cl:doc(method ~s" name))))
         (block method-required-args
           (map 'nil
                #'(lambda (name class)
@@ -383,24 +388,42 @@
 	           methods))
           (format stream ")~%@end(section)~%"))))))
 
-#|
-(let ((print-case *print-case*))
-  (setf *print-case* :downcase)
-  (let ((methods (mpkg/pkg:package-methods package :external external :internal internal :inherited inherited)))
-    (format stream "@begin(section)~% @title(Методы)~% @cl:with-package[name=~S]("
-            (mpkg/obj:obj-name package))
-    (map nil
-	 #'(lambda (el)
-             (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
-	 (if sort
-	     (sort methods #'string<
-                   :key #'(lambda (elem)
-                            (string-downcase (mpkg/obj:obj-name elem))))
-	     methods))
-    (format stream ")~%@end(section)~%"))
-  (setf *print-case* print-case))
-|#
-  
+(defun section-setf-methods (package-name
+                             &key
+                               (stream    t)
+                               (external  t)
+                               (internal  nil)
+                               (inherited nil)
+                               (sort nil)
+                               (min-doc-length 80)
+                             &aux (package (find-package package-name)))
+  "@b(Описание:) функция @b(section-setf-methods) выводит в поток @b(stream)
+секцию с документацией в формате codex, содержащую setf-методы из пакета @b(package-name).
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (section-setf-methods :mnas-package/example :internal t)
+ @end(code)
+"
+  (declare ((or package string symbol) package-name))
+  (with-package package
+    (with-downcase
+      (let ((methods (mpkg/pkg:package-setf-methods package :external external :internal internal :inherited inherited)))
+        (when (some
+               #'(lambda (method)
+                   (when (< min-doc-length (length (documentation method t))) t))
+               methods)
+          (format stream "@begin(section)~% @title(Setf-методы)~% @cl:with-package[name=~S]("
+                  (mpkg/obj:obj-name package))
+          (map nil
+	       #'(lambda (el)
+                   (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
+	       (if sort
+	           (sort methods #'string<
+                         :key #'(lambda (elem)
+                                  (string-downcase (mpkg/obj:obj-name elem))))
+	           methods))
+          (format stream ")~%@end(section)~%"))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -423,7 +446,8 @@
              #'section-generics
              #'section-setf-functions 
              #'section-setf-generics  
-             #'section-methods   
+             #'section-methods
+             #'section-setf-methods                
              #'section-classes))
   (format stream "@end(section)~%"))
 
@@ -603,7 +627,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
 (defun make-doc-generics (package class prefix &key (stream t) (min-doc-length 80))
   "@b(Описание:) функция @b(make-doc-methods) выводит в поток
 @b(stream) раздел документации, подготовленной для вставки в 
@@ -758,7 +781,7 @@ scr-файл системы документирования codex. Этот р�
 		      :from from-node
 		      :to   (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name el))))
 		     graph))
-	        (sb-mop:class-direct-subclasses class)))))
+	        (closer-mop:class-direct-subclasses class)))))
          )
     (mnas-graph:insert-to
      (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name class)))
@@ -789,7 +812,7 @@ scr-файл системы документирования codex. Этот р�
 		      :from (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name el)))
 		      :to   to-node)
 		     graph))
-	        (sb-mop:class-direct-superclasses class)))))
+	        (closer-mop:class-direct-superclasses class)))))
          )
     (mnas-graph:insert-to
      (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name class)))
