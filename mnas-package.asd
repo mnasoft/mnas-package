@@ -124,13 +124,13 @@
   :components ((:module "src/tests"
 		:serial nil
                 :components ((:file "package")
-                             (:file "all"  :depends-on ("package"))
-                             (:file "obj"  :depends-on ("all"))
-                             (:file "pkg"  :depends-on ("all"))
-                             (:file "make" :depends-on ("all"))
-                             (:file "view" :depends-on ("all"))
-                             (:file "main" :depends-on ("all"))
-                             (:file "run"  :depends-on ("obj" "pkg" "make" "view" "main"))
+                             (:file "all"    :depends-on ("package"))
+                             (:file "obj"    :depends-on ("all"))
+                             (:file "pkg"    :depends-on ("all"))
+                             (:file "make"   :depends-on ("all"))
+                             (:file "main"   :depends-on ("all"))
+                             (:file "insert" :depends-on ("all" "main"))
+                             (:file "run"    :depends-on ("obj" "pkg" "make" "main" "insert"))
                              ))))
 
 (defsystem "mnas-package/example"
