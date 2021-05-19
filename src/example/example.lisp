@@ -217,7 +217,7 @@
 ================================================================================"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; Generics
+;;;; Setf-Generics
 
 (defgeneric (setf m-c-exp) (val obj)
   (:documentation
@@ -233,8 +233,80 @@
   (:documentation
    "Documentation example for defgeneric @b((setf m-b-exp))
 ================================================================================"))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; defmethods
+;;;; Methods
+
+(defmethod m-c-exp ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
+  "Documentation example for method @b(m-c-exp (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
+================================================================================"
+  t)
+
+
+(defmethod m-b-exp ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
+  "Documentation example for method @b(m-b-exp (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
+================================================================================"
+  t)
+
+(defmethod m-a-exp ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
+  "Documentation example for method @b(m-a-exp ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>)))
+================================================================================"
+  t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Setf-Methods
+
+(defmethod (setf m-c-exp) (val (a <c-a-int>))
+  "Documentation example for defgeneric @b((setf m-c-exp) (val (a <c-a-int>)))
+================================================================================"
+  (setf (<c-a-int>-a a) val)
+  a)
+
+(defmethod (setf m-c-exp) ((val number) (a <c-a-int>))
+    "Documentation example for defgeneric @b((setf m-c-exp) ((val number) (a <c-a-int>)))
+================================================================================"
+  (setf (<c-a-int>-a a) (1+ val))
+  a)
+
+(defmethod (setf m-c-exp) (val (b <c-b-int>))
+    "Documentation example for defgeneric @b((setf m-c-exp) (val (b <c-b-int>)))
+================================================================================"
+  (setf (<c-b-int>-b b) val)
+  b)
+
+(defmethod (setf m-c-exp) ((val number) (b <c-b-int>))
+    "Documentation example for defgeneric @b((setf m-c-exp) ((val number) (b <c-b-int>)))
+================================================================================"
+  (setf (<c-b-int>-b b) (1+ val))
+  b)
+
+;;;;;;;;;;;;;;;;;;;;
+
+(defmethod (setf m-a-exp) (val (a <c-a-int>))
+  "Documentation example for defgeneric @b((setf m-a-exp) (val (a <c-a-int>)))
+================================================================================"
+  (setf (<c-a-int>-a a) val)
+  a)
+
+(defmethod (setf m-a-exp) ((val number) (a <c-a-int>))
+    "Documentation example for defgeneric @b((setf m-a-exp) ((val number) (a <c-a-int>)))
+================================================================================"
+  (setf (<c-a-int>-a a) (1+ val))
+  a)
+
+(defmethod (setf m-a-exp) (val (b <c-b-int>))
+    "Documentation example for defgeneric @b((setf m-a-exp) (val (b <c-b-int>)))
+================================================================================"
+  (setf (<c-b-int>-b b) val)
+  b)
+
+(defmethod (setf m-a-exp) ((val number) (b <c-b-int>))
+    "Documentation example for defgeneric @b((setf m-a-exp) ((val number) (b <c-b-int>)))
+================================================================================"
+  (setf (<c-b-int>-b b) (1+ val))
+  b)
+ 
+;;;;;;;;;;;;;;;;;;;;
 
 (defmethod (setf m-b-exp) (val (a <c-a-int>))
   "Documentation example for defgeneric @b((setf m-b-exp) (val (a <c-a-int>)))
@@ -260,85 +332,26 @@
   (setf (<c-b-int>-b b) (1+ val))
   b)
 
-#|
-(defparameter *<c-a-int>* (make-instance '<c-a-int>))
-(defparameter *<c-b-int>* (make-instance '<c-b-int>))
-
-(setf (m-b-exp *<c-b-int>*) 10.25)
-(setf (m-b-exp *<c-a-int>*) 210.25)
-|#
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defmethod m-b-exp ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
-  "Documentation example for defmethod m-b-exp (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>)  01 ==================================="
-  t)
-
-(defmethod m-b-exp :after ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
-  "Documentation example for defmethod m-b-exp :after (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>) 02 ============================="
-  t)
-
-(defmethod m-b-exp :before ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
-  "Documentation example for defmethod m-b-exp :before (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>) 03 ============================"
-  t)
-
-(defmethod m-b-exp :around ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
-  "Documentation example for defmethod m-b-exp :before (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>) 04 ============================"
-  t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defmethod m-b-exp ((x <c-a-int>) (y <c-b-int>) z)
-  "Documentation example for defmethod m-b-exp (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>) 05 ===================================="
-  t)
-
-(defmethod m-b-exp :after ((x <c-a-int>) (y <c-b-int>) z)
-  "Documentation example for defmethod m-b-exp :after (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>) 06 ============================="
-  t)
-
-(defmethod m-b-exp :before ((x <c-a-int>) (y <c-b-int>) z)
-  "Documentation example for defmethod m-b-exp :before (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>) 07 ============================"
-  t)
-
-(defmethod m-b-exp :around ((x <c-a-int>) (y <c-b-int>) z)
-  "Documentation example for defmethod m-b-exp :before (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>) 08 ============================"
-  t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defmethod m-b-exp ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
-  "Documentation example for defmethod m-b-exp (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>) 01"
-  t)
-
-(defmethod m-b-exp :after ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
-  "Documentation example for defmethod m-b-exp :after (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>) 02"
-  t)
-
-(defmethod m-b-exp :before ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
-  "Documentation example for defmethod m-b-exp :before (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>) 03"
-  t)
-
-(defmethod m-b-exp :around ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
-  "Documentation example for defmethod m-b-exp :before (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>) 04"
-  t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defmethod m-b-exp ((x <c-a-int>) (y <c-b-int>) z)
-  "Documentation example for defmethod m-b-exp (x <c-a-int>) (y <c-b-int>) z 05"
-  t)
-
-(defmethod m-b-exp :after ((x <c-a-int>) (y <c-b-int>) z)
-  "Documentation example for defmethod m-b-exp :after (x <c-a-int>) (y <c-b-int>) <c-с-exp> 06"
-  t)
-
-(defmethod m-b-exp :before ((x <c-a-int>) (y <c-b-int>) z)
-  "Documentation example for defmethod m-b-exp :before (x <c-a-int>) (y <c-b-int>) <c-с-exp> 07"
-  t)
-
-(defmethod m-b-exp :around ((x <c-a-int>) (y <c-b-int>) z)
-  "Documentation example for defmethod m-b-exp :before (x <c-a-int>) (y <c-b-int>) z 08"
-  t)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Methods whit modifiers
+
+#+nil
+(defmethod m-b-exp :after ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
+  "Documentation example for defmethod m-b-exp :after (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>)
+================================================================================"
+  t)
+
+#+nil
+(defmethod m-b-exp :before ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
+  "Documentation example for defmethod m-b-exp :before (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>)
+================================================================================"
+  t)
+
+#+nil
+(defmethod m-b-exp :around ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
+  "Documentation example for defmethod m-b-exp :before (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>)
+================================================================================"
+  t)
+
+
+

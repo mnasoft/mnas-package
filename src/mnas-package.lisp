@@ -623,7 +623,7 @@
 	          (mpkg/obj:obj-name package))
           (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
                (if sort
-                   (sort setf-funcs #'string< :key #'(lambda (elem) (mpkg/obj:obj-name elem)))
+                   (sort setf-funcs #'string< :key #'(lambda (elem) (second (mpkg/obj:obj-name elem))))
                    setf-funcs))
           (format stream ")~%@end(section)~%"))))))
 
