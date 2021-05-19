@@ -428,9 +428,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun section-package (package-name
-                        &key (stream t)
+                        &key
+                          (stream t)
                           (external t) (internal nil) (inherited nil)
-                          (sort nil) (min-doc-length 80)
+                          (sort t) (min-doc-length 80)
                         &aux (package (find-package package-name)))
   "(section-package :mnas-package)"
   (format stream "@begin(section) @title(~A)~2%"
@@ -439,7 +440,7 @@
   (map nil
        #'(lambda (func)
            (funcall func package :stream stream
-                                 ;; :sort sort
+                                 :sort sort
                                  :min-doc-length min-doc-length
                                  :external external :internal internal :inherited inherited))
        (list #'section-variables
@@ -600,7 +601,7 @@
                                 (external t)
                                 (internal nil)
                                 (inherited nil)
-                                (sort nil)
+                                (sort t)
                                 (min-doc-length 80)
                               &aux (package (find-package package-name)))
   "@b(Описание:) функция @b(section-setf-generics) выводит в поток stream
@@ -627,6 +628,17 @@
                    setf-funcs))
           (format stream ")~%@end(section)~%"))))))
 
+#+nil
+(section-setf-generics :mnas-package/example :sort t)
+
+#+nil
+(section-setf-generics :mnas-package/example :sort nil)
+
+#+nil
+(sort (mpkg/pkg:package-setf-generics :mnas-package/example :external t :internal nil :inherited nil)
+ #'string< :key #'(lambda (elem) (second (mpkg/obj:obj-name elem))))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun make-doc-generics (package class prefix &key (stream t) (min-doc-length 80))
@@ -643,12 +655,6 @@ scr-файл системы документирования codex. Этот р�
         (map 'nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length :pkg package))
              (find-all-generics class prefix)))
       (format stream ")~%"))))
-
-#|
-(require :temperature-fild)
-(with-open-file (os "~/123.scr" :direction :output :if-exists :supersede)
-  (make-doc-generics (find-package 'mtf) (find-class 'mtf/t-fild::<t-fild>) "" :stream os :min-doc-length 50))
-|#
 
 (export '(make-doc-methods))
 
@@ -675,7 +681,7 @@ scr-файл системы документирования codex. Этот р�
                                    (external t)
                                    (internal nil)
                                    (inherited nil)
-                                   (sort nil)
+                                   (sort t)
                                    (min-doc-length 80)
                                  &aux (package (find-package package-name)))
   "@b(Описание:) функция @b(make-codex-documentation) выводит в поток @b(stream)
@@ -831,7 +837,7 @@ scr-файл системы документирования codex. Этот р�
                    (external t)
                    (internal nil)
                    (inherited nil)
-                   (sort nil)
+                   (sort t)
                    (min-doc-length 80)
                    )
   " @b(Описание:) функция @b(document) формирует scr-файл (сценарий
