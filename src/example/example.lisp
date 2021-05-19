@@ -44,7 +44,7 @@
  @item(\"dl\" - для элементов, с длинными строками документации.)
 @end(list)
 "
-  )
+  ))
 
 (in-package :mnas-package/example)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -106,45 +106,58 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Setf-Functions
 
+(defun (setf f-c-exp) (val lst n)
+  "Documentation example for function @b((setf f-b-exp))
+================================================================================" 
+  (setf (nth n lst) (* val val))
+  lst)
+
+(defun (setf f-a-exp) (val lst n)
+  "Documentation example for function @b((setf f-b-exp))
+================================================================================" 
+  (setf (nth n lst) (* val val))
+  lst)
+
 (defun (setf f-b-exp) (val lst n)
   "Documentation example for function @b((setf f-b-exp))
 ================================================================================" 
   (setf (nth n lst) (* val val))
   lst)
 
-(defun f-a-exp ()
-  "Documentation example for function f-a-exp
-================================================================================"
-  (f-b-exp))
-
-(defun f-c-exp ()
-  "Documentation example for function f-c-exp 
-================================================================================"
-  (f-a-exp))
-
-(defun f-b-exp ()
-  "Documentation example for function f-b-exp"  
-  t)
-
-(defun f-a-exp ()
-  "Documentation example for function f-a-exp"
-  (f-b-exp))
-
-(defun f-c-exp ()
-  "Documentation example for function f-c-exp"
-  (f-a-exp))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defmacro k-a (a b)
+;;;; Makro
+(defmacro k-c-exp (a b)
   "Documentation example for macro k-a ==================================================================="
   `(list ,a ,b))
 
-(defmacro k-a (a b)
+(defmacro k-a-exp (a b)
+  "Documentation example for macro k-a ==================================================================="
+  `(list ,a ,b))
+
+(defmacro k-b-exp (a b)
+  "Documentation example for macro k-a"
+  `(list ,a ,b))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defmacro k-c-int (a b)
+  "Documentation example for macro k-a ==================================================================="
+  `(list ,a ,b))
+
+(defmacro k-a-int (a b)
+  "Documentation example for macro k-a ==================================================================="
+  `(list ,a ,b))
+
+(defmacro k-b-int (a b)
   "Documentation example for macro k-a"
   `(list ,a ,b))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Classes
+(defclass <c-c-int> ()
+  ((c :accessor <c-c-int>-c :initarg c :initform nil))
+  (:documentation
+   "Documentation example for class <c-c-int> ===================================================================="))
+
+(defmethod print-object ((c <c-c-int>) s) (format s "#<c-c-int>(a=~S)" (<c-c-int>-c c)))
 
 (defclass <c-a-int> ()
   ((a :accessor <c-a-int>-a :initarg a :initform nil))
@@ -161,19 +174,21 @@
 (defmethod print-object ((b <c-b-int>) s) (format s "#<c-b-int>(b=~S)" (<c-b-int>-b b))
   (call-next-method))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defclass <c-с-exp> (<c-b-int>) ()
   (:documentation
    "Documentation example for class <c-с-exp> ===================================================================="))
 
-(defclass <a> () ()
+(defclass <c-a-exp> () ()
   (:documentation
    "Documentation example for class <a>"))
 
-(defclass <b> (<a>) ()
+(defclass <c-b-exp> (<a>) ()
   (:documentation
    "Documentation example for class <b-s>"))
 
-(defclass <c> (<b>) ()
+(defclass <c-c-exp> (<b>) ()
   (:documentation
    "Documentation example for class <c-s>"))
 

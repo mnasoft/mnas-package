@@ -13,9 +13,9 @@
  @title(Функции)
  @cl:with-package[name="MNAS-PACKAGE/MAKE"](
   @cl:doc(function call-graph)
-  @cl:doc(function system-graph)
+  @cl:doc(function class-graph)
   @cl:doc(function class-slot-graph)
   @cl:doc(function symbol-graph)
-  @cl:doc(function class-graph))
+  @cl:doc(function system-graph))
 @end(section)
 @end(section)

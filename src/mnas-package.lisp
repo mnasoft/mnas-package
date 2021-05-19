@@ -467,7 +467,7 @@
                             (external t)
                             (internal nil)
                             (inherited nil)
-                            (sort nil)
+                            (sort t)
                             (min-doc-length 80)
                           &aux (package (find-package package-name)))
   "@b(Описание:) функция section-functions выводит в поток stream
@@ -534,7 +534,7 @@
                                  (external t)
                                  (internal nil)
                                  (inherited nil)
-                                 (sort nil)
+                                 (sort t)
                                  (min-doc-length 80)
                                &aux (package (find-package package-name)))
   "@b(Описание:) функция @b(section-setf-functions) выводит в поток stream
