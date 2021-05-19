@@ -321,7 +321,7 @@
                             (external t)
                             (internal nil)
                             (inherited nil)
-                            (sort nil)
+                            (sort t)
                             (min-doc-length 80)
                           &aux (package (find-package package-name)))
   "@b(Описание:) функция @b(section-classes) выводит в поток @b(stream)
@@ -438,7 +438,9 @@
   (insert-codex-doc package :stream stream :min-doc-length min-doc-length)
   (map nil
        #'(lambda (func)
-           (funcall func package :stream stream :sort sort :min-doc-length min-doc-length
+           (funcall func package :stream stream
+                                 ;; :sort sort
+                                 :min-doc-length min-doc-length
                                  :external external :internal internal :inherited inherited))
        (list #'section-variables
              #'section-macroses  
