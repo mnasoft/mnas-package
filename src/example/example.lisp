@@ -2,234 +2,305 @@
 
 (defpackage #:mnas-package/example
   (:use #:cl)
-  (:export *a-exp* *b-exp*)
-  (:export foo bar baz)
-  (:export baz-short)
-  (:export <c>)
-  (:export mak-a)
-  (:export m-foo)
+  ;; Vriables
+  (:export *v-c-exp* *v-a-exp* *v-b-exp*)
+  (:intern *v-c-int* *v-a-int* *v-b-int*)
+  ;; Functionss
+  (:export  f-c-exp   f-a-exp   f-b-exp )
+  (:intern  f-c-int   f-a-int   f-b-int )
+  ;; Classes
+  (:export <c-с-exp> <c-a-exp> <c-b-exp>)
+  (:intern <c-с-int> <c-a-int> <c-b-int>)
+  ;; Macro
+  (:export  k-c-exp   k-a-exp   k-b-exp )
+  (:intern  k-c-int   k-a-int   k-b-int )
+  ;; Generics, methods
+  (:export  m-c-exp   m-a-exp   m-b-exp )
+  (:intern  m-c-int   m-a-int   m-b-int )
   (:documentation
    "Documentation example for package @b(mnas-package/example)
-================================================================================")
+
+ Соглашения по именованию.
+
+ Имена должны начинаться с группы символов:
+@begin(list)
+ @item(\"v\" - для глобальных переменных;)
+ @item(\"f\" - для функций;)
+ @item(\"k\" - для макросов;)
+ @item(\"m\" - для обобщенных функций и соответствующих им методов;)
+ @item(\"с\" - классов;)
+ @item(\"s\" - структур.)
+@end(list)
+
+ Имена должны иметь признак, указываемый предпоследним:
+@begin(list)
+ @item(\"exp\" - для экспортируемых символов;)
+ @item(\"int\" - для внутрених символов.)
+@end(list)
+
+ Имена должны заканчиваться на:
+@begin(list)
+ @item(\"ds\" - для элементов, с короткими строками документации;)
+ @item(\"dl\" - для элементов, с длинными строками документации.)
+@end(list)
+"
   )
 
 (in-package :mnas-package/example)
-
-(defparameter *a-exp* '(0 1 2 3 4 5 6)
-  "Documentation example for variable @b(*a-exp*)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Varibles
+(defparameter *v-c-exp* '(0 1 2 3 4 5 6)
+    "Documentation example for variable @b(*v-c-exp*)
 ================================================================================")
 
-(defparameter *b-exp* '(0 1 2 3 4 5 6)
-  "Documentation example for variable @b(*b-exp*)
+(defparameter *v-a-exp* '(0 1 2 3 4 5 6)
+  "Documentation example for variable @b(*v-a-exp*)
 ================================================================================")
 
-(defparameter *c* '(0 1 2 3 4 5 6)
-  "Documentation example for variable @b(*c*)")
+(defparameter *v-b-exp* '(0 1 2 3 4 5 6)
+    "Documentation example for variable @b(*v-b-exp*)
+================================================================================")
 
-(defun foo ()
-  "Documentation example for function @b(foo)
+(defparameter *v-c-int* '(0 1 2 3 4 5 6)
+  "Documentation example for variable @b(*v-c-int*)
+================================================================================")
+
+(defparameter *v-a-int* '(0 1 2 3 4 5 6)
+  "Documentation example for variable @b(*v-a-int*)")
+
+(defparameter *v-b-int* '(0 1 2 3 4 5 6)
+  "Documentation example for variable @b(*v-a-int*)")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Functions
+(defun f-c-exp ()
+  "Documentation example for function @b(f-c-exp)
 ================================================================================"
   t)
 
-(defun (setf foo) (val lst n)
-  "Documentation example for function @b((setf foo))
+(defun f-a-exp ()
+  "Documentation example for function @b(f-a-exp)
+================================================================================"
+  t)
+
+(defun f-b-exp ()
+  "Documentation example for function @b(f-b-exp)
+================================================================================"
+  t)
+
+(defun f-c-int ()
+  "Documentation example for function @b(f-c-exp)
+================================================================================"
+  t)
+
+(defun f-a-int ()
+  "Documentation example for function @b(f-a-exp)
+================================================================================"
+  t)
+
+(defun f-b-int ()
+  "Documentation example for function @b(f-b-exp)
+================================================================================"
+  t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Setf-Functions
+
+(defun (setf f-b-exp) (val lst n)
+  "Documentation example for function @b((setf f-b-exp))
 ================================================================================" 
   (setf (nth n lst) (* val val))
   lst)
 
-(defun bar ()
-  "Documentation example for function bar
+(defun f-a-exp ()
+  "Documentation example for function f-a-exp
 ================================================================================"
-  (foo))
+  (f-b-exp))
 
-(defun baz ()
-  "Documentation example for function baz 
+(defun f-c-exp ()
+  "Documentation example for function f-c-exp 
 ================================================================================"
-  (bar))
+  (f-a-exp))
 
-(defun foo-short ()
-  "Documentation example for function foo-short"  
+(defun f-b-exp ()
+  "Documentation example for function f-b-exp"  
   t)
 
-(defun bar-short ()
-  "Documentation example for function bar-short"
-  (foo))
+(defun f-a-exp ()
+  "Documentation example for function f-a-exp"
+  (f-b-exp))
 
-(defun baz-short ()
-  "Documentation example for function baz-short"
-  (bar-short))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defmacro mak-a (a b)
-  "Documentation example for macro mak-a ==================================================================="
-  `(list ,a ,b))
-
-(defmacro mak-a-short (a b)
-  "Documentation example for macro mak-a"
-  `(list ,a ,b))
+(defun f-c-exp ()
+  "Documentation example for function f-c-exp"
+  (f-a-exp))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defclass <a> ()
-  ((a :accessor <a>-a :initarg a :initform nil))
+(defmacro k-a (a b)
+  "Documentation example for macro k-a ==================================================================="
+  `(list ,a ,b))
+
+(defmacro k-a (a b)
+  "Documentation example for macro k-a"
+  `(list ,a ,b))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defclass <c-a-int> ()
+  ((a :accessor <c-a-int>-a :initarg a :initform nil))
   (:documentation
-   "Documentation example for class <a> ===================================================================="))
+   "Documentation example for class <c-a-int> ===================================================================="))
 
-(defmethod print-object ((a <a>) s) (format s "#<a>(a=~S)" (<a>-a a)))
+(defmethod print-object ((a <c-a-int>) s) (format s "#<c-a-int>(a=~S)" (<c-a-int>-a a)))
 
-(defclass <b> (<a>)
-  ((b :accessor <b>-b :initarg b :initform nil))
+(defclass <c-b-int> (<c-a-int>)
+  ((b :accessor <c-b-int>-b :initarg b :initform nil))
   (:documentation
-   "Documentation example for class <b> ===================================================================="))
+   "Documentation example for class <c-b-int> ===================================================================="))
 
-(defmethod print-object ((b <b>) s) (format s "#<b>(b=~S)" (<b>-b b))
+(defmethod print-object ((b <c-b-int>) s) (format s "#<c-b-int>(b=~S)" (<c-b-int>-b b))
   (call-next-method))
 
-(defclass <c> (<b>) ()
+(defclass <c-с-exp> (<c-b-int>) ()
   (:documentation
-   "Documentation example for class <c> ===================================================================="))
+   "Documentation example for class <c-с-exp> ===================================================================="))
 
-(defclass <a-short> () ()
+(defclass <a> () ()
   (:documentation
-   "Documentation example for class <a-short>"))
+   "Documentation example for class <a>"))
 
-(defclass <b-short> (<a-short>) ()
+(defclass <b> (<a>) ()
   (:documentation
    "Documentation example for class <b-s>"))
 
-(defclass <c-short> (<b-short>) ()
+(defclass <c> (<b>) ()
   (:documentation
    "Documentation example for class <c-s>"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; defgeneric
 
-(defgeneric (setf m-foo) (val obj)
+(defgeneric (setf m-b-exp) (val obj)
   (:documentation
-   "Documentation example for defgeneric @b((setf m-foo))
+   "Documentation example for defgeneric @b((setf m-b-exp))
 ================================================================================"))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; defmethods
 
-(defmethod (setf m-foo) (val (a <a>))
-  "Documentation example for defgeneric @b((setf m-foo) (val (a <a>)))
+(defmethod (setf m-b-exp) (val (a <c-a-int>))
+  "Documentation example for defgeneric @b((setf m-b-exp) (val (a <c-a-int>)))
 ================================================================================"
-  (setf (<a>-a a) val)
+  (setf (<c-a-int>-a a) val)
   a)
 
-(defmethod (setf m-foo) ((val number) (a <a>))
-    "Documentation example for defgeneric @b((setf m-foo) ((val number) (a <a>)))
+(defmethod (setf m-b-exp) ((val number) (a <c-a-int>))
+    "Documentation example for defgeneric @b((setf m-b-exp) ((val number) (a <c-a-int>)))
 ================================================================================"
-  (setf (<a>-a a) (1+ val))
+  (setf (<c-a-int>-a a) (1+ val))
   a)
 
-(defmethod (setf m-foo) (val (b <b>))
-    "Documentation example for defgeneric @b((setf m-foo) (val (b <b>)))
+(defmethod (setf m-b-exp) (val (b <c-b-int>))
+    "Documentation example for defgeneric @b((setf m-b-exp) (val (b <c-b-int>)))
 ================================================================================"
-  (setf (<b>-b b) val)
+  (setf (<c-b-int>-b b) val)
   b)
 
-(defmethod (setf m-foo) ((val number) (b <b>))
-    "Documentation example for defgeneric @b((setf m-foo) ((val number) (b <b>)))
+(defmethod (setf m-b-exp) ((val number) (b <c-b-int>))
+    "Documentation example for defgeneric @b((setf m-b-exp) ((val number) (b <c-b-int>)))
 ================================================================================"
-  (setf (<b>-b b) (1+ val))
+  (setf (<c-b-int>-b b) (1+ val))
   b)
 
 #|
-(defparameter *<a>* (make-instance '<a>))
-(defparameter *<b>* (make-instance '<b>))
+(defparameter *<c-a-int>* (make-instance '<c-a-int>))
+(defparameter *<c-b-int>* (make-instance '<c-b-int>))
 
-(setf (m-foo *<b>*) 10.25)
-(setf (m-foo *<a>*) 210.25)
+(setf (m-b-exp *<c-b-int>*) 10.25)
+(setf (m-b-exp *<c-a-int>*) 210.25)
 |#
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defgeneric m-foo (x y z)
+(defgeneric m-b-exp (x y z)
   (:documentation
-   "Documentation example for defgeneric @b(m-foo)
+   "Documentation example for defgeneric @b(m-b-exp)
 ================================================================================"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod m-foo ((x <a>) (y <b>) (z <c>))
-  "Documentation example for defmethod m-foo (x <a>) (y <b>) (z <c>)  01 ==================================="
+(defmethod m-b-exp ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
+  "Documentation example for defmethod m-b-exp (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>)  01 ==================================="
   t)
 
-(defmethod m-foo :after ((x <a>) (y <b>) (z <c>))
-  "Documentation example for defmethod m-foo :after (x <a>) (y <b>) (z <c>) 02 ============================="
+(defmethod m-b-exp :after ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
+  "Documentation example for defmethod m-b-exp :after (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>) 02 ============================="
   t)
 
-(defmethod m-foo :before ((x <a>) (y <b>) (z <c>))
-  "Documentation example for defmethod m-foo :before (x <a>) (y <b>) (z <c>) 03 ============================"
+(defmethod m-b-exp :before ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
+  "Documentation example for defmethod m-b-exp :before (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>) 03 ============================"
   t)
 
-(defmethod m-foo :around ((x <a>) (y <b>) (z <c>))
-  "Documentation example for defmethod m-foo :before (x <a>) (y <b>) (z <c>) 04 ============================"
-  t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(defmethod m-foo ((x <a>) (y <b>) z)
-  "Documentation example for defmethod m-foo (x <a>) (y <b>) (z <c>) 05 ===================================="
-  t)
-
-(defmethod m-foo :after ((x <a>) (y <b>) z)
-  "Documentation example for defmethod m-foo :after (x <a>) (y <b>) (z <c>) 06 ============================="
-  t)
-
-(defmethod m-foo :before ((x <a>) (y <b>) z)
-  "Documentation example for defmethod m-foo :before (x <a>) (y <b>) (z <c>) 07 ============================"
-  t)
-
-(defmethod m-foo :around ((x <a>) (y <b>) z)
-  "Documentation example for defmethod m-foo :before (x <a>) (y <b>) (z <c>) 08 ============================"
+(defmethod m-b-exp :around ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
+  "Documentation example for defmethod m-b-exp :before (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>) 04 ============================"
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defgeneric m-foo-short (x y z)
+
+(defmethod m-b-exp ((x <c-a-int>) (y <c-b-int>) z)
+  "Documentation example for defmethod m-b-exp (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>) 05 ===================================="
+  t)
+
+(defmethod m-b-exp :after ((x <c-a-int>) (y <c-b-int>) z)
+  "Documentation example for defmethod m-b-exp :after (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>) 06 ============================="
+  t)
+
+(defmethod m-b-exp :before ((x <c-a-int>) (y <c-b-int>) z)
+  "Documentation example for defmethod m-b-exp :before (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>) 07 ============================"
+  t)
+
+(defmethod m-b-exp :around ((x <c-a-int>) (y <c-b-int>) z)
+  "Documentation example for defmethod m-b-exp :before (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>) 08 ============================"
+  t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defgeneric m-b-exp (x y z)
   (:documentation
-   "Documentation example for defgeneric m-foo-short"))
+   "Documentation example for defgeneric m-b-exp"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defmethod m-foo-short ((x <a>) (y <b>) (z <c>))
-  "Documentation example for defmethod m-foo-short (x <a>) (y <b>) (z <c>) 01"
+(defmethod m-b-exp ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
+  "Documentation example for defmethod m-b-exp (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>) 01"
   t)
 
-(defmethod m-foo-short :after ((x <a>) (y <b>) (z <c>))
-  "Documentation example for defmethod m-foo-short :after (x <a>) (y <b>) (z <c>) 02"
+(defmethod m-b-exp :after ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
+  "Documentation example for defmethod m-b-exp :after (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>) 02"
   t)
 
-(defmethod m-foo-short :before ((x <a>) (y <b>) (z <c>))
-  "Documentation example for defmethod m-foo-short :before (x <a>) (y <b>) (z <c>) 03"
+(defmethod m-b-exp :before ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
+  "Documentation example for defmethod m-b-exp :before (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>) 03"
   t)
 
-(defmethod m-foo-short :around ((x <a>) (y <b>) (z <c>))
-  "Documentation example for defmethod m-foo-short :before (x <a>) (y <b>) (z <c>) 04"
+(defmethod m-b-exp :around ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
+  "Documentation example for defmethod m-b-exp :before (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>) 04"
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defmethod m-foo-short ((x <a>) (y <b>) z)
-  "Documentation example for defmethod m-foo-short (x <a>) (y <b>) z 05"
+(defmethod m-b-exp ((x <c-a-int>) (y <c-b-int>) z)
+  "Documentation example for defmethod m-b-exp (x <c-a-int>) (y <c-b-int>) z 05"
   t)
 
-(defmethod m-foo-short :after ((x <a>) (y <b>) z)
-  "Documentation example for defmethod m-foo-short :after (x <a>) (y <b>) <c> 06"
+(defmethod m-b-exp :after ((x <c-a-int>) (y <c-b-int>) z)
+  "Documentation example for defmethod m-b-exp :after (x <c-a-int>) (y <c-b-int>) <c-с-exp> 06"
   t)
 
-(defmethod m-foo-short :before ((x <a>) (y <b>) z)
-  "Documentation example for defmethod m-foo-short :before (x <a>) (y <b>) <c> 07"
+(defmethod m-b-exp :before ((x <c-a-int>) (y <c-b-int>) z)
+  "Documentation example for defmethod m-b-exp :before (x <c-a-int>) (y <c-b-int>) <c-с-exp> 07"
   t)
 
-(defmethod m-foo-short :around ((x <a>) (y <b>) z)
-  "Documentation example for defmethod m-foo-short :before (x <a>) (y <b>) z 08"
+(defmethod m-b-exp :around ((x <c-a-int>) (y <c-b-int>) z)
+  "Documentation example for defmethod m-b-exp :before (x <c-a-int>) (y <c-b-int>) z 08"
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-
