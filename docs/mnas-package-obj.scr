@@ -11,10 +11,10 @@
 @begin(section)
  @title(Обобщенные функции)
  @cl:with-package[name="MNAS-PACKAGE/OBJ"](
-  @cl:doc(generic obj-package)
-  @cl:doc(generic obj-package-string)
   @cl:doc(generic obj-name)
-  @cl:doc(generic obj-name-string))
+  @cl:doc(generic obj-name-string)
+  @cl:doc(generic obj-package)
+  @cl:doc(generic obj-package-string))
 @end(section)
 @begin(section)
  @title(Методы)

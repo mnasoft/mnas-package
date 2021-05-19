@@ -127,17 +127,22 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Makro
 (defmacro k-c-exp (a b)
-  "Documentation example for macro k-a ==================================================================="
+  "Documentation example for macro k-c-exp 
+==================================================================="
   `(list ,a ,b))
 
 (defmacro k-a-exp (a b)
-  "Documentation example for macro k-a ==================================================================="
+  "Documentation example for macro k-a-exp
+==================================================================="
   `(list ,a ,b))
 
 (defmacro k-b-exp (a b)
-  "Documentation example for macro k-a"
+  "Documentation example for macro k-b-exp
+==================================================================="
   `(list ,a ,b))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defmacro k-c-int (a b)
   "Documentation example for macro k-a ==================================================================="
   `(list ,a ,b))
@@ -155,45 +160,74 @@
 (defclass <c-c-int> ()
   ((c :accessor <c-c-int>-c :initarg c :initform nil))
   (:documentation
-   "Documentation example for class <c-c-int> ===================================================================="))
+   "Documentation example for class <c-c-int> 
+===================================================================="))
 
 (defmethod print-object ((c <c-c-int>) s) (format s "#<c-c-int>(a=~S)" (<c-c-int>-c c)))
 
 (defclass <c-a-int> ()
   ((a :accessor <c-a-int>-a :initarg a :initform nil))
   (:documentation
-   "Documentation example for class <c-a-int> ===================================================================="))
+   "Documentation example for class <c-a-int> 
+===================================================================="))
 
 (defmethod print-object ((a <c-a-int>) s) (format s "#<c-a-int>(a=~S)" (<c-a-int>-a a)))
 
 (defclass <c-b-int> (<c-a-int>)
   ((b :accessor <c-b-int>-b :initarg b :initform nil))
   (:documentation
-   "Documentation example for class <c-b-int> ===================================================================="))
+   "Documentation example for class <c-b-int> 
+===================================================================="))
 
 (defmethod print-object ((b <c-b-int>) s) (format s "#<c-b-int>(b=~S)" (<c-b-int>-b b))
   (call-next-method))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defclass <c-с-exp> (<c-b-int>) ()
+(defclass <c-с-exp> (<c-c-int>) ()
   (:documentation
-   "Documentation example for class <c-с-exp> ===================================================================="))
+   "Documentation example for class <c-с-exp> 
+===================================================================="))
 
-(defclass <c-a-exp> () ()
+(defclass <c-a-exp> (<c-a-int>) ()
   (:documentation
-   "Documentation example for class <a>"))
+   "Documentation example for class <c-a-exp> 
+===================================================================="))
 
-(defclass <c-b-exp> (<a>) ()
+(defclass <c-b-exp> (<c-b-int>) ()
   (:documentation
-   "Documentation example for class <b-s>"))
-
-(defclass <c-c-exp> (<b>) ()
-  (:documentation
-   "Documentation example for class <c-s>"))
+   "Documentation example for class <c-b-exp> 
+===================================================================="))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;; defgeneric
+;;;; Generics
+(defgeneric m-c-exp (x y z)
+  (:documentation
+   "Documentation example for defgeneric @b(m-c-exp)
+================================================================================"))
+
+(defgeneric m-a-exp (x y z)
+  (:documentation
+   "Documentation example for defgeneric @b(m-a-exp)
+================================================================================"))
+
+(defgeneric m-b-exp (x y z)
+  (:documentation
+   "Documentation example for defgeneric @b(m-b-exp)
+================================================================================"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; Generics
+
+(defgeneric (setf m-c-exp) (val obj)
+  (:documentation
+   "Documentation example for defgeneric @b((setf m-c-exp))
+================================================================================"))
+
+(defgeneric (setf m-a-exp) (val obj)
+  (:documentation
+   "Documentation example for defgeneric @b((setf m-a-exp))
+================================================================================"))
 
 (defgeneric (setf m-b-exp) (val obj)
   (:documentation
@@ -236,13 +270,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defgeneric m-b-exp (x y z)
-  (:documentation
-   "Documentation example for defgeneric @b(m-b-exp)
-================================================================================"))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defmethod m-b-exp ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
   "Documentation example for defmethod m-b-exp (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>)  01 ==================================="
   t)
@@ -278,11 +305,7 @@
   t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defgeneric m-b-exp (x y z)
-  (:documentation
-   "Documentation example for defgeneric m-b-exp"))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defmethod m-b-exp ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
   "Documentation example for defmethod m-b-exp (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>) 01"
   t)
