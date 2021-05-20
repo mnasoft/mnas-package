@@ -12,23 +12,25 @@
 #+EXCLUDE_TAGS: noexport
 #+CREATOR: Emacs 26.3 (Org mode 9.1.9)
 
-* [44/49] Задачи
-1. [ ] Устранить ошибки, возникающие вверх от section-setf-generics,
+* [45/51] Задачи
+1. [ ] Отделить подпроект sec.  
+2. [ ] Устранить ошибки, возникающие вверх от section-setf-generics,
    зависимые от ключевого параметра sort
-2. [ ] Добавить функцию, генерирующую граф параметров обобщенных
+3. [ ] Добавить функцию, генерирующую граф параметров обобщенных
    функций. Данный граф должен быть трехуровневым: первый уровень имя
    обобщенной функции; второй - имя обязательного параметра; третий -
    тип обязательного параметра - generic-graph.
-3. [ ] Определить функцию для нахождения подсистем базовой системы.
-4. [ ] Определить функцию для нахождения пакетов, которые определяет система.
-5. [ ] Откорректировать функцию отображения графа вызовов так, чтобы:
+4. [ ] Определить функцию для нахождения подсистем базовой системы.
+5. [ ] Определить функцию для нахождения пакетов, которые определяет система.
+6. [ ] Откорректировать функцию отображения графа вызовов так, чтобы:
    - [ ] имена функций для текущего пакета отображались без имени
      пакета;
    - [ ] имена функций для нетекущего пакета отображались с префиксом
      пакета;
    - [ ] при построении графа вызовов целесообразно хранить не строки
      с именами функций, а функции и обобщенные функции.
-6. [X] Проверить возможность выполнения сортировки для функций:
+7. [X] make-doc-generics - warning :pkg 
+8. [X] Проверить возможность выполнения сортировки для функций:
    - [X] section-variables;
    - [X] section-macroses;
    - [X] section-functions;
@@ -38,130 +40,130 @@
    - [X] section-methods;
    - [X] section-setf-methods;
    - [X] section-classes;
-7. [X] Расширить систему mnas-package/example для выполнения проверки
+9. [X] Расширить систему mnas-package/example для выполнения проверки
    по сортировке символов.
-8. [X] Добавить функции поиска и вывода документации для нодов
-   следующих типов:
-   - [X] "variable"      - 'docparser:variable-node;
-   - [X] "macro"         - 'docparser:macro-node;
-   - [X] "function"      - 'docparser:function-node;
-   - [X] "generic"       - 'docparser:generic-function-node;
-   - [X] "method"        - 'docparser:method-node;
-   - [X] "setf-function" - 'docparser:function-node;
-   - [X] "setf-generic"  - 'docparser:generic-function-node;
-   - [X] "setf-method"   - 'docparser:method-node;
-   - [X] "class"         - 'docparser:class-node;
-   - [X] Отложено (далекая задача) 
-     - "cfunction"     - 'docparser:cffi-function;
-     - "ctype"         - 'docparser:cffi-type;
-     - "cstruct"       - 'docparser:cffi-struct;
-     - "cunion"        - 'docparser:cffi-union;
-     - "cenum"         - 'docparser:cffi-enum;
-     - "cbitfield"     - 'docparser:cffi-bitfield.
-     - "struct"        - 'docparser:struct-node;
-     - "condition"     - 'docparser:condition-node;
-     - "type"          - 'docparser:type-node;
-9. [X] При формировании документации для  методов необходимо исключить
-   из методов методы типа reader, writer, accessor. Причина: информация
-   о них присутствует в описании соответствующих им слотов.
-10. [X] sb-mop -> closer-mop 
-11. [X] Добавить функцию section-setf-methods.
+10. [X] Добавить функции поиска и вывода документации для нодов
+    следующих типов:
+    - [X] "variable"      - 'docparser:variable-node;
+    - [X] "macro"         - 'docparser:macro-node;
+    - [X] "function"      - 'docparser:function-node;
+    - [X] "generic"       - 'docparser:generic-function-node;
+    - [X] "method"        - 'docparser:method-node;
+    - [X] "setf-function" - 'docparser:function-node;
+    - [X] "setf-generic"  - 'docparser:generic-function-node;
+    - [X] "setf-method"   - 'docparser:method-node;
+    - [X] "class"         - 'docparser:class-node;
+    - [X] Отложено (далекая задача) 
+      - "cfunction"     - 'docparser:cffi-function;
+      - "ctype"         - 'docparser:cffi-type;
+      - "cstruct"       - 'docparser:cffi-struct;
+      - "cunion"        - 'docparser:cffi-union;
+      - "cenum"         - 'docparser:cffi-enum;
+      - "cbitfield"     - 'docparser:cffi-bitfield.
+      - "struct"        - 'docparser:struct-node;
+      - "condition"     - 'docparser:condition-node;
+      - "type"          - 'docparser:type-node;
+11. [X] При формировании документации для  методов необходимо исключить
+    из методов методы типа reader, writer, accessor. Причина: информация
+    о них присутствует в описании соответствующих им слотов.
+12. [X] sb-mop -> closer-mop 
+13. [X] Добавить функцию section-setf-methods.
     - [X] определить package-setf-methods
     - [X] проверить работу package-methods
-12. [X] Пересмотреть реализацию функций
+14. [X] Пересмотреть реализацию функций
     - [X] package-setf-functions;
     - [X] filter-setf-functions;
-13. [X] Реализовать функции
+15. [X] Реализовать функции
     - [X] package-setf-generics;
     - [X] filter-setf-generics;
-14. [X] Добавить функцию section-setf-generics.
-15. [X] Добавить документацию к подпакетам.
+16. [X] Добавить функцию section-setf-generics.
+17. [X] Добавить документацию к подпакетам.
     - [X] make;
     - [X] view;
     - [X] pkg;
-16. [X] Перенести class-slot-graph в подпроект make и подпроект view.
-17. [X] Для фукции mnas-package:make-codex-graphs исключить собственно
+18. [X] Перенести class-slot-graph в подпроект make и подпроект view.
+19. [X] Для фукции mnas-package:make-codex-graphs исключить собственно
     раздел вывода графов если нет ни одной вершины ни в доном из,
     выводимых графов.
-18. [X] Определить функцию class-slot-graph(class),
+20. [X] Определить функцию class-slot-graph(class),
     которая строила бы граф слотов класса.
-19. [X] Для фукции mnas-package:make-codex-graphs исключить графы, у
+21. [X] Для фукции mnas-package:make-codex-graphs исключить графы, у
     которых нет ни одной вершины.
-20. [X] Добавить в функцию make-codex-documentation информацию
+22. [X] Добавить в функцию make-codex-documentation информацию
     извлекаемую из системы;
-21. [X] Для функции mnas-package:document исключить разделы
+23. [X] Для функции mnas-package:document исключить разделы
     (относящиеся к различным типам документации), у которых нет ни
     одной документируемой сущности.
-22. [X] Сгруппировать разделы относящиеся к отдельным типам
+24. [X] Сгруппировать разделы относящиеся к отдельным типам
     документируемых объектов попакетно.
-23. [X] Определить функцию для вывода шаблона документации в каталог ./docs/build -> document.
-24. [X] Переопределить функцию class-undirect-subclasses, так чтобы она
+25. [X] Определить функцию для вывода шаблона документации в каталог ./docs/build -> document.
+26. [X] Переопределить функцию class-undirect-subclasses, так чтобы она
     возвращала граф дочерних классов -> sub-class-graph;
-25. [X] Определить функцию для поиска родительских классов ->
+27. [X] Определить функцию для поиска родительских классов ->
     super-class-graph;
-26. [X] Добавить функции тестирования mpkg::insert-codex-doc
-27. [X] Написать макрос для использования в функциях вывода секций с
+28. [X] Добавить функции тестирования mpkg::insert-codex-doc
+29. [X] Написать макрос для использования в функциях вывода секций с
     документацией о: функциях; макросах; и т.д. и.т.п, устанавливающий
     значение текущего пакета и восстанавливающий предідущее значение
     with-package.
-28. [X] Написать макрос для использования в функциях вывода секций с
+30. [X] Написать макрос для использования в функциях вывода секций с
     документацией о: функциях; макросах; и т.д. и.т.п, устанавливающий
     нижний регистр вывода на печать и восстанавливающий исходное
     значение with-downcase.
-29. [X] Откорректировать метод вывода для методов добавить вывод
+31. [X] Откорректировать метод вывода для методов добавить вывод
     квалификаторов (но методы с квалификаторами не выводить).
-30. [X] Создать набор тестов.
+32. [X] Создать набор тестов.
     - [X] mnas-package/obj  - obj;
     - [X] mnas-package/pkg  - pkg;
     - [X] mnas-package/make - make;
     - [X] mnas-package/view - view пока не создавать;
     - [X] mnas-package -      main.
-31. [X] Исключить сортировку функций, обобщенных функций, методов как
+33. [X] Исключить сортировку функций, обобщенных функций, методов как
     параметр по умолчанию. 
-32. [X] Исключить из методов insert-doc ключевой параметр - pkg. При
+34. [X] Исключить из методов insert-doc ключевой параметр - pkg. При
     этом вероятно придется добавить фунцию фильтрации символов, функций
     и т.д. и т.п. на принадлежность определенному пакету.
-33. [X] Добавить в методы insert-doc ключевой параметр - pkg. Вероятно
+35. [X] Добавить в методы insert-doc ключевой параметр - pkg. Вероятно
     это позволит устранить ошибку исчезновения при третьем выводе выводе
     информации относящейся к методам. - Не помогло.
-34. [X] Добавить функцию filter-macroses
-35. [X] Добавить функцию package-macroses
-36. [X] Добавить в функцию make-codex-documentation информацию
+36. [X] Добавить функцию filter-macroses
+37. [X] Добавить функцию package-macroses
+38. [X] Добавить в функцию make-codex-documentation информацию
     извлекаемую из пакета;:
-37. [X] Тестирование добавить систему tests;
-38. [X] Устранение ошибок при вызове функции make-codex-section-variables.
-39. [X] Определить правильный набор экспортируемых функций.
-40. [X] Разделить mnas-package на подсистемы:
+39. [X] Тестирование добавить систему tests;
+40. [X] Устранение ошибок при вызове функции make-codex-section-variables.
+41. [X] Определить правильный набор экспортируемых функций.
+42. [X] Разделить mnas-package на подсистемы:
     - [X] core -> obj;
     - [X] pkg;
     - [X] make-graph -> make;
     - [X] view;
-41. [X] Определить методы:
+43. [X] Определить методы:
     - [X] obj-name
     - [X] obj-name-string
     - [X] obj-package
     - [X] obj-package-string.
-42. [X] Справиться с предупреждениями при компиляции.
-43. [X] Определить функцию make-symbol-graph для создания графа
+44. [X] Справиться с предупреждениями при компиляции.
+45. [X] Определить функцию make-symbol-graph для создания графа
     использования функциями внешних-символов пакета. По шаблону:
     функция -> внешний-символ
-44. [X] Определить функцию package-symbol-graph (make-symbol-graph),
+46. [X] Определить функцию package-symbol-graph (make-symbol-graph),
     которая-бы строила граф использования во всех функциях пакета
     глобальных параметров.
-45. [X] Определить функцию package-system-graph (make-system-graph),
+47. [X] Определить функцию package-system-graph (make-system-graph),
     которая-бы формировала граф зависимостей систем asdf.
-46. [X] Выполнить переименование функций
+48. [X] Выполнить переименование функций
     - [X] package-call-graph -> view-call-graph;
     - [X] package-system-graph -> view-system-graph;
     - [X] package-symbol-graph -> view-symbol-graph;
     - [X] package-class-graph -> view-class-graph;
     - [X] выполнить переименования в файлах Developers-memo.org;
-47. [X] Переименовать make-codex-documentation -> make-codex-graphs
-48. [X] Переписать функции, которые генерируют вывод для системы Codex
+49. [X] Переименовать make-codex-documentation -> make-codex-graphs
+50. [X] Переписать функции, которые генерируют вывод для системы Codex
     с использованием переменной *\*print-case\** равной *:downcase*,
     так чтобы после их выполнения системная переменная принимала
     значение, установленное перед входом в функцию.
-49. [X] Исключить неиспользуемые функции.
+51. [X] Исключить неиспользуемые функции.
     - [X] smbl-name-downcase
     - [X] smbl-name
     - [X] smbl-separator-bak

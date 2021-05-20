@@ -36,7 +36,7 @@
 "
   :author "Nick Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
-  :version "0.42.47"
+  :version "0.44.50"
   :serial nil
   :in-order-to ((test-op (test-op "mnas-package/tests")))
   :depends-on ("mnas-package/obj"
@@ -44,13 +44,32 @@
                "mnas-package/sys"
                "mnas-package/make"
                "mnas-package/view"
+               "mnas-package/sec"
                "mnas-package/example"
-               "mnas-string") ;;  "mnas-graph" "codex" "trivial-documentation"
+
+               "mnas-string") 
   :components
   ((:module "src" 
     :serial nil
     :components
     ((:file "mnas-package")))))
+
+(defsystem "mnas-package/sec"
+  :description "Содержит некоторые функции и обобщенные функции,
+используемые в проекте повсеместно"
+  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
+  :serial t
+  :depends-on ("mnas-package/obj"
+               "mnas-package/pkg"
+               "mnas-package/sys"
+               "mnas-package/make"
+               "mnas-package/view"
+               "mnas-package/example"
+               "mnas-string") 
+  :components ((:module "src/sec"
+		:serial nil
+                :components ((:file "sec")))))
 
 (defsystem "mnas-package/obj"
   :description "Содержит некоторые функции и обобщенные функции,
@@ -145,4 +164,7 @@
   :description "Зависимости для сборки документации"
   :author "Nick Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
-  :depends-on ("mnas-package" "codex"))
+  :depends-on ("mnas-package" "codex")
+  :components ((:module "src/docs"
+		:serial nil
+                :components ((:file "docs")))))
