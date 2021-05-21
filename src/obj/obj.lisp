@@ -44,6 +44,7 @@
 представляющий имя символа."
   (values symbol :symbol))
 
+#+nil
 (defmethod obj-name ((function function))
   "@b(Описание:) метод @b(obj-name) возвращает символ,
 представляющий имя функции.
@@ -56,17 +57,50 @@
     (cond ((symbolp name) (values name :function))
           ((listp   name) (values (second name) (first name))))))
 
+(defmethod obj-name ((function function))
+  "@b(Описание:) метод @b(obj-name) возвращает символ,
+представляющий имя функции.
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (obj-name (second (package-functions :mnas-package)))
+@end(code)"
+  (let ((name (nth-value 2 (function-lambda-expression function))))
+    (cond
+      ((symbolp name) (values name :function))
+      ((and (listp name)
+            (= 2 (length name))
+            (eq 'setf (first name)))
+       (values (second name) :setf-function))
+      ((and (listp name) (= 2 (length name)) (eq 'macro-function (first name)))
+       (values (second name) :macro-function))
+      ((and (listp name) (= 2 (length name)) (eq :macro (first name)))
+       (values (second name) :macro))
+      (t (error "Неожиданное значение аргумента name=~S" name)))))
+
 (defmethod obj-name ((generic standard-generic-function))
   "@b(Описание:) метод @b(obj-name) возвращает символ,
 представляющий имя обобщенной функции.
 
- @b(Пример использования:)
+ Вторым значением возвращается:
+@begin(list)
+ @item(:generic - для обыкновенной обобщенной функции;)
+ @item(:setf-generic - для setf обобщенной функции.)
+@end(list)"
+  
+#+nil
+  " @b(Пример использования:)
 @begin[lang=lisp](code)
- (require :dxf)
- (obj-name (first (package-generics :dxf)))
-@end(code)
-"
-  (values (closer-mop:generic-function-name generic) :generic-function))
+;;;; Доработать (obj-name mnas-package/example:))
+@end(code)"
+    (let ((name (closer-mop:generic-function-name generic)))
+    (cond
+      ((symbolp name) (values name :generic))
+      ((and (listp name)
+            (= 2 (length name))
+            (eq 'setf (first name)))
+       (values (second name) :setf-generic))
+      (t (error "Неожиданное значение аргумента name=~S" name)))))
 
 (defmethod obj-name ((method method))
   "@b(Описание:) метод @b(obj-name) возвращает символ,
@@ -77,10 +111,16 @@
  (require :dxf)
  (obj-name (second (closer-mop:generic-function-methods (first (package-generics :dxf)))))
 @end(code)"
-  (values
-   (closer-mop:generic-function-name
-    (closer-mop:method-generic-function method))
-   :method))
+  (let ((name (closer-mop:generic-function-name
+               (closer-mop:method-generic-function method))))
+    (cond
+      ((symbolp name) (values name :method))
+      ((and (listp name)
+            (= 2 (length name))
+            (eq 'setf (first name)))
+       (values (second name) :setf-method))
+      (t (error "Неожиданное значение аргумента name=~S" name)))
+    ))
 
 (defmethod obj-name ((class class))
   "@b(Описание:) метод @b(obj-name) возвращает символ,

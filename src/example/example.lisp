@@ -209,6 +209,23 @@
    "Documentation example for defgeneric @b(m-b-exp)
 ================================================================================"))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defgeneric m-c-int (x y z)
+  (:documentation
+   "Documentation example for defgeneric @b(m-c-int)
+================================================================================"))
+
+(defgeneric m-a-int (x y z)
+  (:documentation
+   "Documentation example for defgeneric @b(m-a-int)
+================================================================================"))
+
+(defgeneric m-b-int (x y z)
+  (:documentation
+   "Documentation example for defgeneric @b(m-b-int)
+================================================================================"))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Setf-Generics
 

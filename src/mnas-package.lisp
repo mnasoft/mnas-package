@@ -59,20 +59,6 @@
 
 (in-package #:mnas-package)
 
-(defmacro with-downcase (&body body)
-  (let ((print-case (gensym)))
-    `(let ((,print-case *print-case*))
-       (setf *print-case* :downcase)
-       ,@body
-       (setf *print-case* ,print-case))))
-
-(defmacro with-package (package-new &body body)
-  (let ((package-old (gensym)))
-    `(let ((,package-old *package*))
-       (setf *package* ,package-new)
-       ,@body
-       (setf *package* ,package-old))))
-
 (defun codex-docs-pathname (system-designator)
   "@b(Описание:) функция @b(codex-docs-pathname) возвращает строку,
 содержащую расположение каталога ./docs системы @b(system-designator) на диске.

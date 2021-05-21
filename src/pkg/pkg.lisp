@@ -318,7 +318,7 @@ var. Возвращает список, каждым элементом кото
     (mapc
      #'(lambda (el)
          (when (and (fboundp el)
-                    (eq :generic-function
+                    (eq :generic
                         (nth-value
                          1
                          (mpkg/obj:obj-name
@@ -489,7 +489,12 @@ var. Возвращает список, каждым элементом кото
  @b(Пример использования:)
 @begin[lang=lisp](code)
   (package-generics :mnas-package/example :internal t) 
-  => (#<STANDARD-GENERIC-FUNCTION MNAS-PACKAGE/EXAMPLE::M-FOO (8))>
+ => (#<STANDARD-GENERIC-FUNCTION MNAS-PACKAGE/EXAMPLE:M-C-EXP (1)>
+     #<STANDARD-GENERIC-FUNCTION MNAS-PACKAGE/EXAMPLE:M-B-EXP (1)>
+     #<STANDARD-GENERIC-FUNCTION MNAS-PACKAGE/EXAMPLE:M-A-EXP (1)>
+     #<STANDARD-GENERIC-FUNCTION MNAS-PACKAGE/EXAMPLE::<C-C-INT>-C (1)>
+     #<STANDARD-GENERIC-FUNCTION MNAS-PACKAGE/EXAMPLE::<C-B-INT>-B (1)>
+     #<STANDARD-GENERIC-FUNCTION MNAS-PACKAGE/EXAMPLE::<C-A-INT>-A (1)>)
 @end(code)
 "
   (mapcar #'symbol-function

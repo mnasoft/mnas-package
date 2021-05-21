@@ -16,6 +16,9 @@
            section-package
            section-system)
   (:export insert-codex-doc)
+  (:export with-downcase
+           with-package
+           )
   (:documentation "Пакет @b(mnas-package/docs) содержит функции
   генерирования секций документации."))
 
@@ -25,6 +28,21 @@
   "Устанавливает длину строки, свыше которой осуществляется вставка
   инструкций на генерирование документации для соответствующего
   объекта.")
+
+(defmacro with-downcase (&body body)
+  (let ((print-case (gensym)))
+    `(let ((,print-case *print-case*))
+       (setf *print-case* :downcase)
+       ,@body
+       (setf *print-case* ,print-case))))
+
+(defmacro with-package (package-new &body body)
+  (let ((package-old (gensym)))
+    `(let ((,package-old *package*))
+       (setf *package* ,package-new)
+       ,@body
+       (setf *package* ,package-old))))
+
 
 (defgeneric insert-codex-doc (obj &key stream min-doc-length)
   (:documentation "@b(Описание:) обобщенная функция @b(make-codex-doc)
@@ -67,24 +85,20 @@
              (format stream "~%  @cl:doc(setf-function ~s)"
                      (mpkg/obj:obj-name function))
              t)))))
-#+ nil
-(defmethod insert-codex-doc ((generic standard-generic-function)
-                             &key (stream t) (min-doc-length *min-doc-length*))
-  (when (< min-doc-length (length (documentation generic t)))
-    (format stream "~&  @cl:doc(generic ~s)" (mpkg/obj:obj-name generic))
-    t))
+#+nil
+(mpkg/obj:obj-name
+ (first
+ (mpkg/pkg:package-setf-functions :mnas-package/example :external t :internal t)))
 
 (defmethod insert-codex-doc ((generic standard-generic-function)
                              &key (stream t) (min-doc-length *min-doc-length*))
   (when (< min-doc-length (length (documentation generic t)))
-    (let ((name (mpkg/obj:obj-name generic)))
-      (cond
-        ((and (listp name) (eq 'setf (first name)))
-#+ nil   (break "0001: ~S" name)
-         (format stream "~&  @cl:doc(setf-generic ~s)" (second name)))
-        (t
-         (format stream "~&  @cl:doc(generic ~s)" name))))
-    t))
+    (multiple-value-bind (name type) (mpkg/obj:obj-name generic)
+      (ecase type
+        (:generic
+         (format stream "~&  @cl:doc(generic ~s)" name))
+        (:setf-generic
+         (format stream "~&  @cl:doc(setf-generic ~s)" name))))))
 
 (defmethod insert-codex-doc ((class class) &key (stream t) (min-doc-length *min-doc-length*))
   (when (< min-doc-length (length (documentation class t)))
@@ -220,7 +234,7 @@
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
- (section-setf-methods :mnas-package/example :internal t)
+ (section-setf-methods :mnas-package/example :internal t :sort nil)
  @end(code)
 "
   (declare ((or package string symbol) package-name))
@@ -362,6 +376,7 @@
  @b(Пример использования:)
 @begin[lang=lisp](code)
  (section-setf-functions :mnas-package/example :external t :internal t :sort t) 
+ (section-setf-functions :mnas-package/example :external t :internal t :sort nil) 
 @end(code)
 "  
   (declare ((or package string symbol) package-name))
@@ -379,6 +394,9 @@
                    (sort setf-funcs #'string< :key #'(lambda (elem) (mpkg/obj:obj-name elem)))
                    setf-funcs))
           (format stream ")~%@end(section)~%"))))))
+#+nil
+(mnas-package/obj:obj-name
+ (first (mpkg/pkg:package-setf-functions :mnas-package/example :external t :internal t)))
 
 (defun section-generics (package-name
                          &key
@@ -394,9 +412,9 @@
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
- (section-generics :math/obj :sort t) 
+ (section-generics :mnas-package/example :internal t :sort t)
 @end(code)
-"  
+"
   (declare ((or package string symbol) package-name))
   (with-package package
     (with-downcase
@@ -427,30 +445,25 @@
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
- (section-setf-generics :mnas-package/example :external t :internal t) 
+ (section-setf-generics :mnas-package/example :external t :internal t :sort nil) 
+ (section-setf-generics :mnas-package/example :external t :internal t :sort t) 
 @end(code)
 "  
   (declare ((or package string symbol) package-name))
   (with-package package
     (with-downcase
-      (let ((setf-funcs (mpkg/pkg:package-setf-generics package :external external :internal internal :inherited inherited)))
+      (let ((setf-generics (mpkg/pkg:package-setf-generics package :external external :internal internal :inherited inherited)))
         (when (some
                #'(lambda (setf-func)
                    (when (< min-doc-length (length (documentation setf-func t))) t))
-               setf-funcs)
+               setf-generics)
           (format stream "@begin(section)~% @title(Обобщенные setf-функции)~% @cl:with-package[name=~S]("
 	          (mpkg/obj:obj-name package))
           (map nil #'(lambda (el) (insert-codex-doc el :stream stream :min-doc-length min-doc-length))
                (if sort
-                   (sort setf-funcs #'string< :key #'(lambda (elem) (second (mpkg/obj:obj-name elem))))
-                   setf-funcs))
+                   (sort setf-generics #'string< :key #'(lambda (elem) (mpkg/obj:obj-name elem)))
+                   setf-generics))
           (format stream ")~%@end(section)~%"))))))
-
-#+nil
-(section-setf-generics :mnas-package/example :sort t)
-
-#+nil
-(section-setf-generics :mnas-package/example :sort nil)
 
 #+nil
 (sort (mpkg/pkg:package-setf-generics :mnas-package/example :external t :internal nil :inherited nil)
