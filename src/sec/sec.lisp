@@ -104,36 +104,6 @@
   (when (< min-doc-length (length (documentation class t)))
     (format stream "~&  @cl:doc(class ~s)" (mpkg/obj:obj-name class))
     t))
-#+nil
-(defmethod insert-codex-doc ((method method) &key (stream t) (min-doc-length *min-doc-length*))
-  "(insert-codex-doc (find-package :mpkg))"
-  (when (< min-doc-length (length (documentation method t)))
-    (let ((mqs (closer-mop::method-qualifiers method))
-          (mll (closer-mop:method-lambda-list method))
-          (msp (closer-mop:method-specializers method)))
-      (unless (and mqs (listp mqs) (= 1 (length mqs)))
-        (let ((name (mpkg/obj:obj-name method)))
-          (cond
-            ((and (listp name) (eq 'setf (first name)))
-             (format stream "~&  @cl:doc(setf-method ~s" (second name)))
-            (t
-             (format stream "~&  @cl:doc(method ~s" name))))
-        (block method-required-args
-          (map 'nil
-               #'(lambda (name class)
-                   (cond
-                     ((eq class (find-class t))
-                      (format stream " ~s" name))
-                     ((not (eq class (find-class t)))
-                      (format stream " (~s ~s)" name (mpkg/obj:obj-name class)))))
-               mll msp))
-        (block method-rest-args
-          (map 'nil
-               #'(lambda (el) (format stream "~a" (format nil " ~s" el)))
-               (nthcdr (length msp) mll)))
-        (block method-end
-          (format stream ")")))
-      t)))
 
 (defmethod insert-codex-doc ((method method) &key (stream t) (min-doc-length *min-doc-length*))
   "(insert-codex-doc (find-package :mpkg))"

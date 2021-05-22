@@ -153,19 +153,20 @@
                       &aux
                         (package *package*)
 		        (graph (make-instance 'mnas-graph:<graph>)))
-  "Выполнить определение пока это заглушка."
+  "@b(Описание:) функция @b(generic-graph) возвращает граф параметров
+ обобщенной функций. 
+
+ Данный граф должен быть трехуровневым:
+@begin(list)
+ @item(первый уровень - обобщенная функция;)
+ @item(второй - номер по порядку для обязательного параметра и его имя; )
+ @item(третий - тип обязательного параметра.)
+@end(list)
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+
+@end(code)
+  "
   generic
   graph)
-
-#|
-(require :mnas-package/example)
-
-(mpkg/obj:obj-name
- (first 
-  (closer-mop:method-specializers
-   (first 
-    (closer-mop:generic-function-methods #'mnas-package/example:m-foo)))))
-
-;;(closer-mop:method-lambda-list)
-
-|#

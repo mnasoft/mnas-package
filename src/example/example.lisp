@@ -9,7 +9,7 @@
   (:export  f-c-exp   f-a-exp   f-b-exp )
   (:intern  f-c-int   f-a-int   f-b-int )
   ;; Classes
-  (:export <c-с-exp> <c-a-exp> <c-b-exp>)
+  (:export <c-c-exp> <c-a-exp> <c-b-exp>)
   (:intern <c-с-int> <c-a-int> <c-b-int>)
   ;; Macro
   (:export  k-c-exp   k-a-exp   k-b-exp )
@@ -177,9 +177,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defclass <c-с-exp> (<c-c-int>) ()
+(defclass <c-c-exp> (<c-c-int>) ()
   (:documentation
-   "Documentation example for class <c-с-exp> 
+   "Documentation example for class <c-c-exp> 
 ===================================================================="))
 
 (defclass <c-a-exp> (<c-a-int>) ()
@@ -247,19 +247,24 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Methods
 
-(defmethod m-c-exp ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
-  "Documentation example for method @b(m-c-exp (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
+(defmethod m-c-exp ((x <c-a-int>) (y <c-b-int>) (z <c-c-int>))
+  "Documentation example for method @b(m-c-exp (x <c-a-int>) (y <c-b-int>) (z <c-c-exp>))
+================================================================================"
+  t)
+
+(defmethod m-c-exp ((x <c-a-exp>) (y <c-b-exp>) (z <c-c-exp> ))
+  "Documentation example for method @b(m-c-exp (x <c-a-int>) (y <c-b-int>) (z <c-c-exp>))
 ================================================================================"
   t)
 
 
-(defmethod m-b-exp ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
-  "Documentation example for method @b(m-b-exp (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
+(defmethod m-b-exp ((x <c-a-int>) (y <c-b-int>) (z <c-c-exp>))
+  "Documentation example for method @b(m-b-exp (x <c-a-int>) (y <c-b-int>) (z <c-c-exp>))
 ================================================================================"
   t)
 
-(defmethod m-a-exp ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
-  "Documentation example for method @b(m-a-exp ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>)))
+(defmethod m-a-exp ((x <c-a-int>) (y <c-b-int>) (z <c-c-exp>))
+  "Documentation example for method @b(m-a-exp ((x <c-a-int>) (y <c-b-int>) (z <c-c-exp>)))
 ================================================================================"
   t)
 
@@ -346,20 +351,20 @@
 ;;;; Methods whit modifiers
 
 #+nil
-(defmethod m-b-exp :after ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
-  "Documentation example for defmethod m-b-exp :after (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>)
+(defmethod m-b-exp :after ((x <c-a-int>) (y <c-b-int>) (z <c-c-exp>))
+  "Documentation example for defmethod m-b-exp :after (x <c-a-int>) (y <c-b-int>) (z <c-c-exp>)
 ================================================================================"
   t)
 
 #+nil
-(defmethod m-b-exp :before ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
-  "Documentation example for defmethod m-b-exp :before (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>)
+(defmethod m-b-exp :before ((x <c-a-int>) (y <c-b-int>) (z <c-c-exp>))
+  "Documentation example for defmethod m-b-exp :before (x <c-a-int>) (y <c-b-int>) (z <c-c-exp>)
 ================================================================================"
   t)
 
 #+nil
-(defmethod m-b-exp :around ((x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
-  "Documentation example for defmethod m-b-exp :before (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>)
+(defmethod m-b-exp :around ((x <c-a-int>) (y <c-b-int>) (z <c-c-exp>))
+  "Documentation example for defmethod m-b-exp :before (x <c-a-int>) (y <c-b-int>) (z <c-c-exp>)
 ================================================================================"
   t)
 

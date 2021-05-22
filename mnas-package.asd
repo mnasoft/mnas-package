@@ -36,7 +36,7 @@
 "
   :author "Nick Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
-  :version "0.47.52"
+  :version "0.48.53"
   :serial nil
   :in-order-to ((test-op (test-op "mnas-package/tests")))
   :depends-on ("mnas-package/obj"
