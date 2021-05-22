@@ -1,0 +1,33 @@
+@begin(section) @title(MNAS-PACKAGE/SEC)
+
+Пакет @b(mnas-package/docs) содержит функции
+  генерирования секций документации.@begin(section)
+ @title(Переменные)
+ @cl:with-package[name="MNAS-PACKAGE/SEC"](
+  @cl:doc(variable *min-doc-length*))
+@end(section)
+@begin(section)
+ @title(Функции)
+ @cl:with-package[name="MNAS-PACKAGE/SEC"](
+  @cl:doc(function section-classes)
+  @cl:doc(function section-functions)
+  @cl:doc(function section-generics)
+  @cl:doc(function section-macroses)
+  @cl:doc(function section-methods)
+  @cl:doc(function section-setf-functions)
+  @cl:doc(function section-setf-generics)
+  @cl:doc(function section-setf-methods)
+  @cl:doc(function section-variables))
+@end(section)
+@begin(section)
+ @title(Обобщенные функции)
+ @cl:with-package[name="MNAS-PACKAGE/SEC"](
+  @cl:doc(generic insert-codex-doc))
+@end(section)
+@begin(section)
+ @title(Методы)
+ @cl:with-package[name="MNAS-PACKAGE/SEC"](
+  @cl:doc(method insert-codex-doc (symbol symbol) &key (stream t) (min-doc-length *min-doc-length*))
+  @cl:doc(method insert-codex-doc (package package) &key (stream t) (min-doc-length *min-doc-length*)))
+@end(section)
+@end(section)

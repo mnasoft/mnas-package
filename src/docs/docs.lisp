@@ -13,16 +13,16 @@
 (defun make-document ()
     (loop
       :for i :in
-      '((:mnas-package      :mnas-package)
-        (:mnas-package/sys  nil)
-        (:mnas-package/view nil)
-        (:mnas-package/make nil)
-        (:mnas-package/pkg  nil)
-        (:mnas-package/obj  nil)
-        (:mnas-package/example nil)
+      '((:mnas-package         :mnas-package)
+        (:mnas-package/sys     nil)
+        (:mnas-package/view    nil)
+        (:mnas-package/make    nil)
+        (:mnas-package/pkg     nil)
+        (:mnas-package/obj     nil)
+        (:mnas-package/sec     nil :internal t)
+        (:mnas-package/example nil :internal t)
         )
       :do (apply #'mnas-package:document i)))
-
 
 (defun make-graphs ()
   (loop
@@ -32,7 +32,8 @@
       :mnas-package/view  
       :mnas-package/make  
       :mnas-package/pkg   
-      :mnas-package/obj   
+      :mnas-package/obj
+      :mnas-package/sec
       )
     :do (mnas-package:make-codex-graphs i i)))
 
@@ -41,3 +42,6 @@
   (make-graphs)
   (codex:document :mnas-package)
   (make-graphs))
+
+#+nil
+(make-all)

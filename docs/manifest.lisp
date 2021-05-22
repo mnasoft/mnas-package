@@ -23,6 +23,9 @@
                         "mnas-package-obj.scr"
                         "mnas-package-obj-graph.scr"
 
+                        "mnas-package-sec.scr"
+;;                      "mnas-package-sec-graph.scr"
+
                         "mnas-package-example.scr"
                         ))))
 

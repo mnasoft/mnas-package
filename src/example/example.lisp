@@ -151,7 +151,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Classes
 (defclass <c-c-int> ()
-  ((c :accessor <c-c-int>-c :initarg c :initform nil))
+  ((c :accessor <c-c-int>-c :initarg c :initform nil :documentation "Slot @b(c) for something."))
   (:documentation
    "Documentation example for class <c-c-int> 
 ===================================================================="))
@@ -159,7 +159,7 @@
 (defmethod print-object ((c <c-c-int>) s) (format s "#<c-c-int>(a=~S)" (<c-c-int>-c c)))
 
 (defclass <c-a-int> ()
-  ((a :accessor <c-a-int>-a :initarg a :initform nil))
+  ((a :accessor <c-a-int>-a :initarg a :initform nil :documentation "Slot @b(a) for something."))
   (:documentation
    "Documentation example for class <c-a-int> 
 ===================================================================="))
@@ -167,7 +167,7 @@
 (defmethod print-object ((a <c-a-int>) s) (format s "#<c-a-int>(a=~S)" (<c-a-int>-a a)))
 
 (defclass <c-b-int> (<c-a-int>)
-  ((b :accessor <c-b-int>-b :initarg b :initform nil))
+  ((b :accessor <c-b-int>-b :initarg b :initform nil :documentation "Slot @b(b) for something."))
   (:documentation
    "Documentation example for class <c-b-int> 
 ===================================================================="))
