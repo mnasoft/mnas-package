@@ -40,6 +40,12 @@
 (defun make-all ()
   (make-document)
   (make-graphs)
+  (mnas-package:make-mainfest-lisp
+   '(:mnas-package) 
+   "Mnas-Package"
+   '("Nick Matvyeyev")
+   (mnas-package:find-sources
+    "mnas-package"))
   (codex:document :mnas-package)
   (make-graphs))
 

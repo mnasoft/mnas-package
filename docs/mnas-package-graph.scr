@@ -2,5 +2,6 @@
   @begin(list)
    @item(system-graph @image[src=./system-graph-mnas-package.gv.png]())
    @item(call-graph   @image[src=./call-graph-mnas-package.gv.png]())
+   @item(symbol-graph @image[src=./symbol-graph-mnas-package.gv.png]())
   @end(list)
  @end(section)

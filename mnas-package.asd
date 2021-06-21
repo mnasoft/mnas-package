@@ -46,6 +46,7 @@
                "mnas-package/view"
                "mnas-package/sec"
                "mnas-package/example"
+               "trivial-shell"
 
                "mnas-string") 
   :components

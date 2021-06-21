@@ -5,6 +5,8 @@
   (:nicknames "MPKG")
 
   (:export document)
+  (:export make-mainfest-lisp
+           find-sources)
   (:intern make-codex-documentation)
   
   (:export sub-class-graph
@@ -404,3 +406,71 @@ scr-файл системы документирования codex. Этот р�
                               :stream stream
                               :external external :internal internal :inherited inherited
                               :sort sort :min-doc-length min-doc-length)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defparameter +mainfest-lisp-template+
+  "(:docstring-markup-format
+   :scriba
+   :systems ~S
+   :documents ((:title ~S
+	        :authors ~S
+	        :output-format (:type :multi-html :template :minima)
+                :sources ~S
+                )))")
+
+(defun find-sources (system)
+  (concatenate 'list
+               (sort 
+                (mapcar
+                 #'(lambda (el)
+                     (mnas-string:replace-all el "./" ""))
+                 (mnas-string:split "
+"
+                                    (nth-value 0
+                                               (trivial-shell:shell-command
+                                                (concatenate 'string
+                                                             "cd"
+                                                             " "
+                                                             (namestring
+                                                              (merge-pathnames
+                                                               #P"docs/"
+                                                               (asdf:system-source-directory
+                                                                (asdf:find-system system))))
+                                                             ";" " "
+                                                             "find" " " "." " " "-name" " " "\"*.scr\"" " " "-not" " " "-name" " "  "\"*graph*.scr\"")))))
+                #'string<
+                :key #'(lambda (el)
+                         (mnas-string:replace-all el ".scr" "")))
+
+               (sort 
+                (mapcar
+                 #'(lambda (el)
+                     (mnas-string:replace-all el "./" ""))
+                 (mnas-string:split "
+"
+                                    (nth-value 0
+                                               (trivial-shell:shell-command
+                                                (concatenate 'string
+                                                             "cd"
+                                                             " "
+                                                             (namestring
+                                                              (merge-pathnames
+                                                               #P"docs/"
+                                                               (asdf:system-source-directory
+                                                                (asdf:find-system system))))
+                                                             ";" " "
+                                                             "find" " " "." " " "-name" " " "\"*-graph.scr\"")))))
+                #'string<
+                :key #'(lambda (el)
+                         (mnas-string:replace-all el "-graph.scr" "")))))
+
+(defun make-mainfest-lisp (systems title authors sources)
+  (with-open-file
+      (stream
+       (merge-pathnames #P"docs/manifest.lisp"
+                        (asdf:system-source-directory
+                         (asdf:find-system (first systems))))
+       :direction :output
+       :if-exists :supersede)
+    (format stream +mainfest-lisp-template+ systems title authors sources)))
