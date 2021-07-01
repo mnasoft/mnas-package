@@ -37,11 +37,16 @@
       )
     :do (mnas-package:make-codex-graphs i i)))
 
+(mnas-package:make-codex-graphs :mnas-package    :mnas-package     )
+
 (defun make-all ()
   (make-document)
   (make-graphs)
   (codex:document :mnas-package)
-  (make-graphs))
+  (make-graphs)
+;  (mnas-package:copy-doc->public-html "mnas-package")
+                                        ;  (mnas-package:rsync-doc "mnas-package")
+  )
 
 #+nil
 (make-all)
