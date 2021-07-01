@@ -26,18 +26,14 @@
 	(push class rez-classes)
 	(bar class)))))
 
-(closer-mop:reader-method-class (find-class 'mnas-icem:<tin>)
-                            (closer-mop:class-direct-slots   (find-class 'mnas-icem:<tin>)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(first
- (closer-mop:slot-definition-readers
-  (elt 
-   (closer-mop:class-direct-slots (find-class 'mnas-icem:<tin>))
-   1)))
 
-(first
- (closer-mop:slot-definition-writers
-  (elt 
-   (closer-mop:class-direct-slots (find-class 'mnas-icem:<tin>))
-   1)))
+
+
+
+
+
+
+
