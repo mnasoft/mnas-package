@@ -5,8 +5,9 @@
   (:nicknames "MPKG")
 
   (:export document)
-  (:export make-mainfest-lisp
-           find-sources)
+  (:export copy-doc->public-html)
+  (:export rsync-doc)
+  
   (:intern make-codex-documentation)
   
   (:export sub-class-graph
@@ -107,6 +108,60 @@
 		   (car (last (mnas-string:split "/" (namestring  (asdf:system-source-directory system-designator)))))
 ;;;; 		   (string-downcase (package-name (find-package package-designator)))		   
 		   "/html")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun mk-pathname (dir-list)
+  (let ((rez))
+    (loop :for i :in dir-list
+          :do
+             (push "/" rez) (push i rez))
+    (apply #'concatenate 'string (nreverse rez))))
+
+(defun remove-msys-prefix (path)
+  (let ((msystem-prefix (uiop:getenv "MSYSTEM_PREFIX")))
+    (when msystem-prefix
+      (mk-pathname
+       (nthcdr   
+        (1- (length (mnas-string:split "/" msystem-prefix)))
+        (mnas-string:split "/" path))))))
+
+(defun codex-html-pathname/ (system-name)
+  (concatenate 'string (remove-msys-prefix (codex-html-pathname (asdf:find-system system-name))) "/"))
+
+(defun copy-doc->public-html (system-name)
+  "@b(Описание:) функция @b(copy-doc->public-html) выполняет
+  копирование документации системы @b(system-name) в каталог
+  ~/public_html/Common-Lisp-Programs.
+"
+  (inferior-shell:run/lines
+   `(mkdir -p
+           ,(concatenate 'string
+                         (namestring (uiop/common-lisp:user-homedir-pathname))
+                         "public_html/Common-Lisp-Programs/")))
+  (inferior-shell:run/lines
+   `(rsync "-Pazh"
+           "--delete"
+           ,(codex-html-pathname/ system-name)  
+           ,(remove-msys-prefix (concatenate 'string
+                                             (namestring (uiop/common-lisp:user-homedir-pathname))
+                                             "public_html/Common-Lisp-Programs/"
+                                             system-name)))))
+
+(defun rsync-doc (system-name)
+  "@b(Описание:) функция @b(rsync-doc) выполняет копирование
+  документации на удаленный сервер."
+  (when (find (uiop:hostname) '("MNASOFT-01" "mnasoft-00" ) :test #'string=)
+    (inferior-shell:run/lines `("sh" "pi-html")))
+  (when (find (uiop:hostname) '("N000308") :test #'string=)
+    (inferior-shell:run/lines `(rsync
+                                "-Pazh"
+                                "--delete"
+                                ,(codex-html-pathname/ system-name)
+                                ,(concatenate
+                                 'string
+                                 "//n133619/home/_namatv/public_html/Site/Development/Common-Lisp-Programs/"
+                                 system-name)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

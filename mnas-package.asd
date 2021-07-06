@@ -46,9 +46,8 @@
                "mnas-package/view"
                "mnas-package/sec"
                "mnas-package/example"
-               "trivial-shell"
-
-               "mnas-string") 
+               "mnas-string"
+               "inferior-shell") 
   :components
   ((:module "src" 
     :serial nil
