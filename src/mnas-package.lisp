@@ -446,7 +446,7 @@ scr-файл системы документирования codex. Этот р�
  (mnas-package:document :mnas-package :mnas-package) => path_to_mnas-package_system/docs/mnas-package.scr
  (mnas-package:document :mnas-package/view nil) => path_to_mnas-package_system/docs/mnas-package-view.scr
 @end(code)
-"  
+"
   (with-open-file
       (stream (concatenate 'string
                            (codex-docs-pathname package-name)
