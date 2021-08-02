@@ -37,11 +37,10 @@
       )
     :do (mnas-package:make-codex-graphs i i)))
 
-(mnas-package:make-codex-graphs :mnas-package    :mnas-package     )
-
 (defun make-all ()
   (make-document)
   (make-graphs)
+  #+nil
   (mnas-package:make-mainfest-lisp
    '(:mnas-package) 
    "Mnas-Package"
@@ -50,8 +49,8 @@
     "mnas-package"))
   (codex:document :mnas-package)
   (make-graphs)
-;  (mnas-package:copy-doc->public-html "mnas-package")
-                                        ;  (mnas-package:rsync-doc "mnas-package")
+;;;;  (mnas-package:copy-doc->public-html "mnas-package")
+;;;;  (mnas-package:rsync-doc "mnas-package")
   )
 
 #+nil
