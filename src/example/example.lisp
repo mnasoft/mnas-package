@@ -74,12 +74,12 @@
 (defun f-a-exp ()
   "Documentation example for function @b(f-a-exp)
 ================================================================================"
-  t)
+  (f-c-exp))
 
 (defun f-b-exp ()
   "Documentation example for function @b(f-b-exp)
 ================================================================================"
-  t)
+  (f-a-exp))
 
 (defun f-c-int ()
   "Documentation example for function @b(f-c-exp)
@@ -89,12 +89,12 @@
 (defun f-a-int ()
   "Documentation example for function @b(f-a-exp)
 ================================================================================"
-  t)
+  (f-c-int))
 
 (defun f-b-int ()
   "Documentation example for function @b(f-b-exp)
 ================================================================================"
-  t)
+  (f-a-int))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; Setf-Functions
