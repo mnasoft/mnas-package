@@ -137,13 +137,22 @@
       thing
       (intern (symbol-name thing) :keyword)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmethod ->key ((thing cons))
+  "Выполнить отладку!"
+  nil)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defgeneric dependencies-of (system))
 
 (defmethod dependencies-of ((system symbol))
-  (mapcar #'->key
-          (slot-value
-           (asdf/system:find-system system)
-           'asdf/component:sideway-dependencies)))
+  (remove-if #'null
+             (mapcar #'->key
+                     (slot-value
+                      (asdf/system:find-system system)
+                      'asdf/component:sideway-dependencies))))
   
 (defun ordered-dep-tree (dep-tree)
   (let ((res))

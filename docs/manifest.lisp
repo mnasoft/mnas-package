@@ -3,7 +3,7 @@
    :systems (:MNAS-PACKAGE)
    :documents ((:title "mnas-package"
 	        :authors ("Nick Matvyeyev")
-	        :output-format (:type :multi-html :template :minima)
+	        :output-format (:type :multi-html :template :gamma)
                 :sources ("mnas-package.scr" "mnas-package-example.scr"
                           "mnas-package-make.scr" "mnas-package-obj.scr"
                           "mnas-package-pkg.scr" "mnas-package-sec.scr"
