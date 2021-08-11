@@ -39,6 +39,7 @@
 
 (defun make-all ()
   (make-document)
+  #+nil
   (make-graphs)
   #+nil
   (mnas-package:make-mainfest-lisp
@@ -48,6 +49,7 @@
    (mnas-package:find-sources
     "mnas-package"))
   (codex:document :mnas-package)
+  #+nil
   (make-graphs)
 ;;;;  (mnas-package:copy-doc->public-html "mnas-package")
 ;;;;  (mnas-package:rsync-doc "mnas-package")
