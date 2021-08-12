@@ -40,18 +40,16 @@
 (defun make-all ()
   (make-document)
   (make-graphs)
-#+nil
-  (mnas-package::make-mainfest-lisp
-   '(:mnas-package) 
+  (mnas-package:make-mainfest-lisp
+   '(:mnas-package)
    "Mnas-Package"
    '("Nick Matvyeyev")
-   (mnas-package::find-sources
-    "mnas-package"))
+   (mnas-package:find-sources "mnas-package")
+   :output-format '(:type :multi-html :template :gamma))
   (codex:document :mnas-package)
-  (make-graphs)
+  (make-graphs))
 ;;;;  (mnas-package:copy-doc->public-html "mnas-package")
 ;;;;  (mnas-package:rsync-doc "mnas-package")
-  )
 
 #+nil
 (make-all)

@@ -15,6 +15,8 @@
   (:export make-codex-graphs)
   (:export make-doc-generics
            make-doc-methods)
+  (:export make-mainfest-lisp
+           find-sources)
   (:documentation
    "@b(Описание:) пакет @b(mnas-package) является основным в системе @b(mnas-package).
 
@@ -470,57 +472,97 @@ scr-файл системы документирования codex. Этот р�
    :systems ~S
    :documents ((:title ~S
 	        :authors ~S
-	        :output-format (:type :multi-html :template :minima)
+	        :output-format ~S 
                 :sources ~S
                 )))")
 
+#+nil
+(defun find-sources-bak (system)
+  (concatenate
+   'list
+   (sort 
+    (mapcar
+     #'(lambda (el)
+         (mnas-string:replace-all el "./" ""))
+     (mnas-string:split "
+"
+                        (nth-value 0
+                                   (trivial-shell:shell-command
+                                    (concatenate 'string
+                                                 "cd"
+                                                 " "
+                                                 (namestring
+                                                  (merge-pathnames
+                                                   #P"docs/"
+                                                   (asdf:system-source-directory
+                                                    (asdf:find-system system))))
+                                                 ";" " "
+                                                 "find" " " "." " " "-name" " " "\"*.scr\"" " " "-not" " " "-name" " "  "\"*graph*.scr\"")))))
+    #'string<
+    :key #'(lambda (el)
+             (mnas-string:replace-all el ".scr" "")))
+
+   (sort 
+    (mapcar
+     #'(lambda (el)
+         (mnas-string:replace-all el "./" ""))
+     (mnas-string:split "
+"
+                        (nth-value 0
+                                   (trivial-shell:shell-command
+                                    (concatenate 'string
+                                                 "cd"
+                                                 " "
+                                                 (namestring
+                                                  (merge-pathnames
+                                                   #P"docs/"
+                                                   (asdf:system-source-directory
+                                                    (asdf:find-system system))))
+                                                 ";" " "
+                                                 "find" " " "." " " "-name" " " "\"*-graph.scr\"")))))
+    #'string<
+    :key #'(lambda (el)
+             (mnas-string:replace-all el "-graph.scr" "")))))
+
 (defun find-sources (system)
-  (concatenate 'list
-               (sort 
-                (mapcar
-                 #'(lambda (el)
-                     (mnas-string:replace-all el "./" ""))
-                 (mnas-string:split "
-"
-                                    (nth-value 0
-                                               (trivial-shell:shell-command
-                                                (concatenate 'string
-                                                             "cd"
-                                                             " "
-                                                             (namestring
-                                                              (merge-pathnames
-                                                               #P"docs/"
-                                                               (asdf:system-source-directory
-                                                                (asdf:find-system system))))
-                                                             ";" " "
-                                                             "find" " " "." " " "-name" " " "\"*.scr\"" " " "-not" " " "-name" " "  "\"*graph*.scr\"")))))
-                #'string<
-                :key #'(lambda (el)
-                         (mnas-string:replace-all el ".scr" "")))
+  (let* ((path-doc  (merge-pathnames #P"docs/" (asdf:system-source-directory (asdf:find-system system))))
+         (scr-graph (uiop:directory-files path-doc #P"*-graph.scr"))
+         (scr-all   (uiop:directory-files path-doc #P"*.scr"))
+         (path-scr (concatenate 'list
+                                (sort (set-difference scr-all scr-graph)
+                                      #'uiop:timestamp<
+                                      :key #'file-write-date)
+                                (sort scr-graph  #'uiop:timestamp<
+                                      :key #'file-write-date))))
+    (mapcar #'(lambda (el)
+                (concatenate 'string (pathname-name el) "." (pathname-type el)))
+            path-scr)))
+#+nil
+(find-sources :mnas-package)
+#+nil
+(pathname-name
+ (second
+  (uiop:directory-files #P"D:/home/_namatv/PRG/msys64/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/"  #P"*-graph.scr")))
 
-               (sort 
-                (mapcar
-                 #'(lambda (el)
-                     (mnas-string:replace-all el "./" ""))
-                 (mnas-string:split "
-"
-                                    (nth-value 0
-                                               (trivial-shell:shell-command
-                                                (concatenate 'string
-                                                             "cd"
-                                                             " "
-                                                             (namestring
-                                                              (merge-pathnames
-                                                               #P"docs/"
-                                                               (asdf:system-source-directory
-                                                                (asdf:find-system system))))
-                                                             ";" " "
-                                                             "find" " " "." " " "-name" " " "\"*-graph.scr\"")))))
-                #'string<
-                :key #'(lambda (el)
-                         (mnas-string:replace-all el "-graph.scr" "")))))
+#+nil
+(pathname-type
+ (second
+  (uiop:directory-files #P"D:/home/_namatv/PRG/msys64/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/"  #P"*-graph.scr")))
+#+nil
+(pathname-directory
+ (second
+  (uiop:directory-files #P"D:/home/_namatv/PRG/msys64/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/"  #P"*-graph.scr")))
+#+nil
+(pathname-device
+ (second
+  (uiop:directory-files #P"D:/home/_namatv/PRG/msys64/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/"  #P"*-graph.scr")))
+#+nil
+(uiop:pathname-root
+ (second
+  (uiop:directory-files #P"D:/home/_namatv/PRG/msys64/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/"  #P"*-graph.scr")))
 
-(defun make-mainfest-lisp (systems title authors sources)
+(defun make-mainfest-lisp (systems title authors sources
+                           &key (output-format '(:type :multi-html :template :minima)))
   (with-open-file
       (stream
        (merge-pathnames #P"docs/manifest.lisp"
@@ -528,4 +570,4 @@ scr-файл системы документирования codex. Этот р�
                          (asdf:find-system (first systems))))
        :direction :output
        :if-exists :supersede)
-    (format stream +mainfest-lisp-template+ systems title authors sources)))
+    (format stream +mainfest-lisp-template+ systems title authors output-format sources)))
