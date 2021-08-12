@@ -37,7 +37,12 @@
       )
     :do (mnas-package:make-codex-graphs i i)))
 
-(defun make-all ()
+(defun make-all (&aux
+                   (of (if (find (uiop:hostname)
+                                 mnas-package:*intranet-hosts*
+                                 :test #'string=)
+                           '(:type :multi-html :template :minima)
+                           '(:type :multi-html :template :gamma))))
   (make-document)
   (make-graphs)
   (mnas-package:make-mainfest-lisp
@@ -45,11 +50,11 @@
    "Mnas-Package"
    '("Nick Matvyeyev")
    (mnas-package:find-sources "mnas-package")
-   :output-format '(:type :multi-html :template :gamma))
+   :output-format of)
   (codex:document :mnas-package)
-  (make-graphs))
-;;;;  (mnas-package:copy-doc->public-html "mnas-package")
-;;;;  (mnas-package:rsync-doc "mnas-package")
+  (make-graphs)
+  (mnas-package:copy-doc->public-html "mnas-package")
+  (mnas-package:rsync-doc "mnas-package"))
 
 #+nil
 (make-all)

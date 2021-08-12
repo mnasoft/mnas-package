@@ -17,6 +17,9 @@
            make-doc-methods)
   (:export make-mainfest-lisp
            find-sources)
+
+  (:export *internet-hosts*
+           *intranet-hosts*)
   (:documentation
    "@b(Описание:) пакет @b(mnas-package) является основным в системе @b(mnas-package).
 
@@ -150,12 +153,20 @@
                                              "public_html/Common-Lisp-Programs/"
                                              system-name)))))
 
+(defparameter *internet-hosts* '("MNASOFT-01" "mnasoft-00")
+  "@b(Описание:) параметр @b(*internet-hosts*) содержит перечень
+  хостов в доступом в интернет.")
+
+(defparameter *intranet-hosts* '("N000308")
+    "@b(Описание:) параметр @b(*intranet-hosts*) содержит перечень
+    хостов в доступом в корпоративную сеть.")
+
 (defun rsync-doc (system-name)
   "@b(Описание:) функция @b(rsync-doc) выполняет копирование
   документации на удаленный сервер."
-  (when (find (uiop:hostname) '("MNASOFT-01" "mnasoft-00" ) :test #'string=)
+  (when (find (uiop:hostname) *internet-hosts* :test #'string=)
     (inferior-shell:run/lines `("sh" "pi-html")))
-  (when (find (uiop:hostname) '("N000308") :test #'string=)
+  (when (find (uiop:hostname) *intranet-hosts* :test #'string=)
     (inferior-shell:run/lines `(rsync
                                 "-Pazh"
                                 "--delete"
