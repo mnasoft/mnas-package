@@ -47,8 +47,7 @@
                "mnas-package/sec"
                "mnas-package/example"
                "mnas-string"
-               "trivial-shell" ;;; что-то нужно удалить
-               "inferior-shell") 
+               "inferior-shell") ;;  Рассмотреть вопрос об удалении inferior-shell
   :components
   ((:module "src" 
     :serial nil

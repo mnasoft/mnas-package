@@ -464,8 +464,6 @@ scr-файл системы документирования codex. Этот р�
                               :external external :internal internal :inherited inherited
                               :sort sort :min-doc-length min-doc-length)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (defparameter +mainfest-lisp-template+
   "(:docstring-markup-format
    :scriba
@@ -475,54 +473,6 @@ scr-файл системы документирования codex. Этот р�
 	        :output-format ~S 
                 :sources ~S
                 )))")
-
-#+nil
-(defun find-sources-bak (system)
-  (concatenate
-   'list
-   (sort 
-    (mapcar
-     #'(lambda (el)
-         (mnas-string:replace-all el "./" ""))
-     (mnas-string:split "
-"
-                        (nth-value 0
-                                   (trivial-shell:shell-command
-                                    (concatenate 'string
-                                                 "cd"
-                                                 " "
-                                                 (namestring
-                                                  (merge-pathnames
-                                                   #P"docs/"
-                                                   (asdf:system-source-directory
-                                                    (asdf:find-system system))))
-                                                 ";" " "
-                                                 "find" " " "." " " "-name" " " "\"*.scr\"" " " "-not" " " "-name" " "  "\"*graph*.scr\"")))))
-    #'string<
-    :key #'(lambda (el)
-             (mnas-string:replace-all el ".scr" "")))
-
-   (sort 
-    (mapcar
-     #'(lambda (el)
-         (mnas-string:replace-all el "./" ""))
-     (mnas-string:split "
-"
-                        (nth-value 0
-                                   (trivial-shell:shell-command
-                                    (concatenate 'string
-                                                 "cd"
-                                                 " "
-                                                 (namestring
-                                                  (merge-pathnames
-                                                   #P"docs/"
-                                                   (asdf:system-source-directory
-                                                    (asdf:find-system system))))
-                                                 ";" " "
-                                                 "find" " " "." " " "-name" " " "\"*-graph.scr\"")))))
-    #'string<
-    :key #'(lambda (el)
-             (mnas-string:replace-all el "-graph.scr" "")))))
 
 (defun find-sources (system)
   (let* ((path-doc  (merge-pathnames #P"docs/" (asdf:system-source-directory (asdf:find-system system))))
@@ -537,6 +487,20 @@ scr-файл системы документирования codex. Этот р�
     (mapcar #'(lambda (el)
                 (concatenate 'string (pathname-name el) "." (pathname-type el)))
             path-scr)))
+
+(defun make-mainfest-lisp (systems title authors sources
+                           &key (output-format '(:type :multi-html :template :minima)))
+  (with-open-file
+      (stream
+       (merge-pathnames #P"docs/manifest.lisp"
+                        (asdf:system-source-directory
+                         (asdf:find-system (first systems))))
+       :direction :output
+       :if-exists :supersede)
+    (format stream +mainfest-lisp-template+ systems title authors output-format sources)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 #+nil
 (find-sources :mnas-package)
 #+nil
@@ -560,14 +524,3 @@ scr-файл системы документирования codex. Этот р�
 (uiop:pathname-root
  (second
   (uiop:directory-files #P"D:/home/_namatv/PRG/msys64/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/"  #P"*-graph.scr")))
-
-(defun make-mainfest-lisp (systems title authors sources
-                           &key (output-format '(:type :multi-html :template :minima)))
-  (with-open-file
-      (stream
-       (merge-pathnames #P"docs/manifest.lisp"
-                        (asdf:system-source-directory
-                         (asdf:find-system (first systems))))
-       :direction :output
-       :if-exists :supersede)
-    (format stream +mainfest-lisp-template+ systems title authors output-format sources)))
