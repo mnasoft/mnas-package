@@ -77,6 +77,12 @@
        вставку документации.)
 @end(list)
 @begin(section)
+ @title(Переменные)
+ @cl:with-package[name="MNAS-PACKAGE"](
+  @cl:doc(variable *internet-hosts*)
+  @cl:doc(variable *intranet-hosts*))
+@end(section)
+@begin(section)
  @title(Функции)
  @cl:with-package[name="MNAS-PACKAGE"](
   @cl:doc(function copy-doc->public-html)

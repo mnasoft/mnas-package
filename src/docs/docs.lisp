@@ -41,8 +41,8 @@
                    (of (if (find (uiop:hostname)
                                  mnas-package:*intranet-hosts*
                                  :test #'string=)
-                           '(:type :multi-html :template :minima)
-                           '(:type :multi-html :template :gamma))))
+                           '(:type :multi-html :template :gamma)
+                           '(:type :multi-html :template :minima))))
   (make-document)
   (make-graphs)
   (mnas-package:make-mainfest-lisp
