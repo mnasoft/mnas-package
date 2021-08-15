@@ -7,6 +7,7 @@
   (:export document)
   (:export copy-doc->public-html)
   (:export rsync-doc)
+  (:export make-html-path)
   
   (:intern make-codex-documentation)
   
@@ -511,6 +512,14 @@ scr-файл системы документирования codex. Этот р�
     (format stream +mainfest-lisp-template+ systems title authors output-format sources)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun make-html-path (system)
+  "@b(Описание:) функция @b(make-html-path) в качестве побочного
+   эффекта создает каталог, в который система codex выводит
+   html-докуметы."
+  (inferior-shell:run/lines
+   `(mkdir -p ,(mnas-package::codex-html-pathname system))))
+
+(make-html-path :mnas-path)
 
 #+nil
 (find-sources :mnas-package)

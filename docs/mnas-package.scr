@@ -90,6 +90,7 @@
   @cl:doc(function make-codex-graphs)
   @cl:doc(function make-doc-generics)
   @cl:doc(function make-doc-methods)
+  @cl:doc(function make-html-path)
   @cl:doc(function rsync-doc)
   @cl:doc(function sub-class-graph)
   @cl:doc(function super-class-graph))

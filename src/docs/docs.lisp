@@ -43,6 +43,7 @@
                                  :test #'string=)
                            '(:type :multi-html :template :gamma)
                            '(:type :multi-html :template :minima))))
+  (mnas-package:make-html-path :mnas-package)
   (make-document)
   (make-graphs)
   (mnas-package:make-mainfest-lisp
@@ -58,3 +59,4 @@
 
 #+nil
 (make-all)
+
