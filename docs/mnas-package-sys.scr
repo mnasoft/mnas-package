@@ -1,9 +1,0 @@
-@begin(section) @title(MNAS-PACKAGE/SYS)
-
-@b(Описание:) Пакет @b(mnas-package/sys)
-  предназначен для извлечения информации из asdf-систем.@begin(section)
- @title(Функции)
- @cl:with-package[name="MNAS-PACKAGE/SYS"](
-  @cl:doc(function version))
-@end(section)
-@end(section)

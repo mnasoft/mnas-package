@@ -1,6 +1,0 @@
-  @begin(section) @title(Графы mnas-package-view)
-  @begin(list)
-   @item(system-graph @image[src=./system-graph-mnas-package-view.gv.png]())
-   @item(call-graph   @image[src=./call-graph-mnas-package-view.gv.png]())
-  @end(list)
- @end(section)
