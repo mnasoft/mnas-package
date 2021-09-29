@@ -18,9 +18,10 @@
            make-doc-methods)
   (:export make-mainfest-lisp
            find-sources)
-
-  (:export *internet-hosts*
-           *intranet-hosts*)
+  (:export *internet-hosts*)
+  (:export *intranet-hosts*
+           *intranet-server*
+           )
   (:documentation
    "@b(Описание:) пакет @b(mnas-package) является основным в системе @b(mnas-package).
 
@@ -162,6 +163,13 @@
     "@b(Описание:) параметр @b(*intranet-hosts*) содержит перечень
     хостов в доступом в корпоративную сеть.")
 
+(defparameter *intranet-server*
+  #+nil
+  "//n133619/home/_namatv/public_html/Site/Development/Common-Lisp-Programs/"
+  "//n000171/home/_namatv/public_html/Site/Development/Common-Lisp-Programs/"
+  "@b(Описание:) переменная @b(*intranet-server*) содержит путь к
+  документации в локальной сети.")
+
 (defun rsync-doc (system-name)
   "@b(Описание:) функция @b(rsync-doc) выполняет копирование
   документации на удаленный сервер."
@@ -172,10 +180,7 @@
                                 "-Pazh"
                                 "--delete"
                                 ,(codex-html-pathname/ system-name)
-                                ,(concatenate
-                                 'string
-                                 "//n133619/home/_namatv/public_html/Site/Development/Common-Lisp-Programs/"
-                                 system-name)))))
+                                ,(concatenate 'string *intranet-server* system-name)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
