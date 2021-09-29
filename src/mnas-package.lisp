@@ -510,8 +510,11 @@ scr-файл системы документирования codex. Этот р�
   (with-open-file
       (stream
        (merge-pathnames #P"docs/manifest.lisp"
-                        (asdf:system-source-directory
-                         (asdf:find-system (first systems))))
+                         (asdf:system-source-directory
+                          (asdf:find-system (first systems))))
+       #+nil
+       (namestring
+        )
        :direction :output
        :if-exists :supersede)
     (format stream +mainfest-lisp-template+ systems title authors output-format sources)))
