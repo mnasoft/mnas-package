@@ -174,7 +174,7 @@
   "@b(Описание:) функция @b(rsync-doc) выполняет копирование
   документации на удаленный сервер."
   (when (find (uiop:hostname) *internet-hosts* :test #'string=)
-    (inferior-shell:run/lines `("sh" "pi-html")))
+    (inferior-shell:run/lines `("sh" "rs-pi-html")))
   (when (find (uiop:hostname) *intranet-hosts* :test #'string=)
     (inferior-shell:run/lines `(rsync
                                 "-Pazh"
