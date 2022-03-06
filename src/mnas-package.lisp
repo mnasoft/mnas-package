@@ -174,7 +174,12 @@
   "@b(Описание:) функция @b(rsync-doc) выполняет копирование
   документации на удаленный сервер."
   (when (find (uiop:hostname) *internet-hosts* :test #'string=)
-    (inferior-shell:run/lines `("sh" "rs-pi-html")))
+    #+nil (inferior-shell:run/lines `("sh" "rs-pi-html"))
+    `(rsync "-Pavzhe"
+            "ssh"
+            "--delete"
+            "~/public_html/Common-Lisp-Programs/"
+            "namatv@mnasoft.ddns.mksat.net:/usr/share/nginx/html/Common-Lisp-Programs/"))
   (when (find (uiop:hostname) *intranet-hosts* :test #'string=)
     (inferior-shell:run/lines `(rsync
                                 "-Pazh"
