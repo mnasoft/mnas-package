@@ -365,25 +365,25 @@ scr-файл системы документирования codex. Этот р�
     (with-open-file (os (concatenate 'string (codex-docs-pathname sys) "/" pkg-name "-graph.scr")
 			:if-exists :supersede :direction :output)
       (format os " ")
-      (when (< 0 (+ (mnas-graph:<graph>-nodes-count system-graph)
-                    (mnas-graph:<graph>-nodes-count call-graph  )
-                    (mnas-graph:<graph>-nodes-count symbol-graph)
-                    (mnas-graph:<graph>-nodes-count class-graph )))
+      (when (< 0 (+ (mnas-graph:count-nodes system-graph)
+                    (mnas-graph:count-nodes call-graph  )
+                    (mnas-graph:count-nodes symbol-graph)
+                    (mnas-graph:count-nodes class-graph )))
         (format os " @begin(section) @title(Графы ~A)~%" pkg-name)
         (format os "  @begin(list)~%")
-        (when (< 0 (mnas-graph:<graph>-nodes-count system-graph))
+        (when (< 0 (mnas-graph:count-nodes system-graph))
           (format os "   @item(system-graph @image[src=./system-graph-~A.gv.png]())~%" pkg-name))
-        (when (< 0 (mnas-graph:<graph>-nodes-count call-graph))
+        (when (< 0 (mnas-graph:count-nodes call-graph))
           (format os "   @item(call-graph   @image[src=./call-graph-~A.gv.png]())~%" pkg-name))
-        (when (< 0 (mnas-graph:<graph>-nodes-count symbol-graph))
+        (when (< 0 (mnas-graph:count-nodes symbol-graph))
           (format os "   @item(symbol-graph @image[src=./symbol-graph-~A.gv.png]())~%" pkg-name))
-        (when (< 0 (mnas-graph:<graph>-nodes-count class-graph))
+        (when (< 0 (mnas-graph:count-nodes class-graph))
           (format os "   @item(class-graph  @image[src=./class-graph-~A.gv.png]())~%" pkg-name))
         (format os "  @end(list)~% @end(section)")))))
 
 #|
 (make-codex-graphs :mnas-package :mnas-package) ;
-(< 0 (mnas-graph:<graph>-nodes-count (mpkg/view:symbol-graph (find-package :mnas-package))))
+(< 0 (mnas-graph:count-nodes (mpkg/view:symbol-graph (find-package :mnas-package))))
 |#
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -406,8 +406,8 @@ scr-файл системы документирования codex. Этот р�
 		    (mnas-graph:insert-to
 		     (make-instance
 		      'mnas-graph:<edge>
-		      :from from-node
-		      :to   (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name el))))
+		      :tail from-node
+		      :head (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name el))))
 		     graph))
 	        (closer-mop:class-direct-subclasses class)))))
          )
@@ -437,8 +437,8 @@ scr-файл системы документирования codex. Этот р�
 		    (mnas-graph:insert-to
 		     (make-instance
 		      'mnas-graph:<edge>
-		      :from (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name el)))
-		      :to   to-node)
+		      :tail (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name el)))
+		      :head to-node)
 		     graph))
 	        (closer-mop:class-direct-superclasses class)))))
          )

@@ -87,8 +87,8 @@
 		(mnas-graph:insert-to
 		 (make-instance
 		  'mnas-graph:<edge>
-		  :from (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name class)))
-		  :to   (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name el))))
+		  :tail (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name class)))
+		  :head (make-instance 'mnas-graph:<node> :owner graph :name (string (class-name el))))
 		 graph))
 	    (closer-mop:class-direct-subclasses class))
 	   graph))
@@ -140,8 +140,8 @@
          (mnas-graph:insert-to
 	  (make-instance
 	   'mnas-graph:<edge>
-	   :from cl-node
-	   :to   (make-instance 'mnas-graph:<node> :owner graph :name (string (mnas-package/obj:obj-name el))))
+	   :tail cl-node
+	   :head (make-instance 'mnas-graph:<node> :owner graph :name (string (mnas-package/obj:obj-name el))))
 	  graph)
          )
      (closer-mop:class-slots class))
