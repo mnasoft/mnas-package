@@ -399,7 +399,7 @@ scr-файл системы документирования codex. Этот р�
 @end(code)
 "
   (flet ((find-sub-classes (class)
-           (let ((from-node (mnas-graph:find-node graph (string (class-name class)))))
+           (let ((from-node (mnas-graph:find-node (string (class-name class)) graph)))
              (when from-node
 	       (mapc
 	        #'(lambda (el)
@@ -430,7 +430,7 @@ scr-файл системы документирования codex. Этот р�
 @end(code)
 "
   (flet ((find-super-classes (class)
-           (let ((to-node (mnas-graph:find-node graph (string (class-name class)))))
+           (let ((to-node (mnas-graph:find-node (string (class-name class)) graph)))
              (when to-node
 	       (mapc
 	        #'(lambda (el)
