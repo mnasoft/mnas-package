@@ -34,7 +34,7 @@
 @end(list)
 @end(section)
 "
-  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :version "0.48.53"
   :serial nil
@@ -57,7 +57,7 @@
 (defsystem "mnas-package/sec"
   :description "Содержит некоторые функции и обобщенные функции,
 используемые в проекте повсеместно"
-  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :serial t
   :depends-on ("mnas-package/obj"
@@ -74,7 +74,7 @@
 (defsystem "mnas-package/obj"
   :description "Содержит некоторые функции и обобщенные функции,
 используемые в проекте повсеместно"
-  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :serial t
   :in-order-to ((test-op (test-op "math/obj/tests")))
@@ -86,7 +86,7 @@
 (defsystem "mnas-package/pkg"
   :description "Содержит некоторые функции и обобщенные функции,
 используемые в проекте повсеместно"
-  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :serial t
   :in-order-to ((test-op (test-op "math/obj/tests")))
@@ -100,7 +100,7 @@
 
 (defsystem "mnas-package/sys"
   :description "Содержит некоторые функции для извлечения иформации о системах, поределенных с помощью @b(asdf)"
-  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :serial t
   :in-order-to ((test-op (test-op "math/obj/tests")))
@@ -112,7 +112,7 @@
 (defsystem "mnas-package/make"
   :description "Содержит некоторые функции и обобщенные функции,
 используемые в проекте повсеместно"
-  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :serial t
   :in-order-to ((test-op (test-op "math/obj/tests")))
@@ -124,7 +124,7 @@
 (defsystem "mnas-package/view"
   :description "Содержит некоторые функции и обобщенные функции,
 используемые в проекте повсеместно"
-  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :serial t
   :in-order-to ((test-op (test-op "math/obj/tests")))
@@ -135,7 +135,7 @@
 
 (defsystem "mnas-package/tests"
   :description "Тестирование систем, входящих  в проект mnas-package"
-  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :depends-on ("mnas-package" "mnas-package/example" "fiveam")
   :perform (test-op (o s)
@@ -154,7 +154,7 @@
 
 (defsystem "mnas-package/example"
   :description "Пример системы для выполнения тестирования пакета mnas-package"
-  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :components ((:module "src/example"
 			:serial t
@@ -162,7 +162,7 @@
 
 (defsystem "mnas-package/docs"
   :description "Зависимости для сборки документации"
-  :author "Nick Matvyeyev <mnasoft@gmail.com>"
+  :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :depends-on ("mnas-package" "codex")
   :components ((:module "src/docs"

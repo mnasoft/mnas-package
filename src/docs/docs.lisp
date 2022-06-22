@@ -49,7 +49,7 @@
   (mnas-package:make-mainfest-lisp
    '(:mnas-package)
    "Mnas-Package"
-   '("Nick Matvyeyev")
+   '("Mykola Matvyeyev")
    (mnas-package:find-sources "mnas-package")
    :output-format of)
   (codex:document :mnas-package)
