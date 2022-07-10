@@ -84,5 +84,5 @@
 
 
 (map 'nil #'(lambda (el)
-             (mnas-package::insert-codex-doc el))
+             (mnas-package/sec::insert-codex-doc el))
      (mnas-package/pkg:package-setf-generics :mnas-package/example :internal t))

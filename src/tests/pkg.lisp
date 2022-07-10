@@ -20,7 +20,7 @@
     (is-true (eq  3 (length (mnas-package/pkg:package-setf-functions pkg :internal t))))
     (is-true (eq  3 (length (mnas-package/pkg:package-setf-functions pkg))))
     
-    (is-true (eq  11 (length (mnas-package/pkg:package-generics pkg :internal t))))
+    (is-true (eq  11 (length (mnas-package/pkg:package-generics :mnas-package/example :internal t))))
     (is-true (eq  3 (length (mnas-package/pkg:package-generics pkg))))
     
     (is-true (eq  6 (length (mnas-package/pkg:package-setf-generics pkg :internal t))))
@@ -164,3 +164,41 @@
     (loop :for i :in (mnas-package/pkg:package-classes pkg :internal t)
           :do
              (is-true (find i mets :test #'equal)))))
+
+"
+ Running test suite PKG
+  Running test PACKAGE-BY-TYPE-LENGTH ........f.......
+  Running test PACKAGE-VARIABLES ......
+  Running test PACKAGE-FUNCTIONS ......
+  Running test PACKAGE-MACROSES ......
+  Running test PACKAGE-SETF-FUNCTIONS ...
+  Running test PACKAGE-GENERICS X
+  Running test PACKAGE-SETF-GENERICS ......
+  Running test PACKAGE-METHODS ....
+  Running test PACKAGE-CLASSES ......
+ Running test MAKE .....
+ Running test suite MAIN
+  Running test SECTION-VARIABLES ...
+  Running test SECTION-FUNCTIONS ....
+  Running test SECTION-SETF-FUNCTIONS ....
+  Running test SECTION-GENERICS/TEST ....
+  Running test SECTION-METHODS .....
+  Running test SECTION-CLASSES ....
+  Running test INSERT .
+ Did 96 checks.
+    Pass: 94 (97%)
+    Skip: 0 ( 0%)
+    Fail: 2 ( 2%)
+
+ Failure Details:
+ --------------------------------
+ PACKAGE-GENERICS in PKG [(mnas-package/pkg:package-generics :mnas-package/example :internal t)
+ ]: 
+      Unexpected Error: #<UNDEFINED-FUNCTION M-FOO-SHORT {1004AEC4D3}>
+The function MNAS-PACKAGE/EXAMPLE::M-FOO-SHORT is undefined..
+ --------------------------------
+ --------------------------------
+ PACKAGE-BY-TYPE-LENGTH in PKG []: 
+      (EQ 11 (LENGTH (MNAS-PACKAGE/PKG:PACKAGE-GENERICS PKG :INTERNAL T))) did not return a true value
+ --------------------------------
+"

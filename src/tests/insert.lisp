@@ -43,7 +43,7 @@
                         #'(lambda (el)
                             (closer-mop:generic-function-methods
                              (uiop/common-lisp:ensure-generic-function el)))
-                        '(mnas-package/example:m-a-exp mnas-package/example::m-foo-short)))))))
+                        '(mnas-package/example:m-a-exp #+nil mnas-package/example::m-foo-short))))))) 
       (get-output-stream-string os))
     "
   @cl:doc(variable *v-a-exp*)
