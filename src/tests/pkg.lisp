@@ -20,7 +20,7 @@
     (is-true (eq  3 (length (mnas-package/pkg:package-setf-functions pkg :internal t))))
     (is-true (eq  3 (length (mnas-package/pkg:package-setf-functions pkg))))
     
-    (is-true (eq  11 (length (mnas-package/pkg:package-generics :mnas-package/example :internal t))))
+    (is-true (eq  9 (length (mnas-package/pkg:package-generics pkg :internal t))))
     (is-true (eq  3 (length (mnas-package/pkg:package-generics pkg))))
     
     (is-true (eq  6 (length (mnas-package/pkg:package-setf-generics pkg :internal t))))
@@ -93,19 +93,16 @@
  "
   (let ((pkg (find-package :mnas-package/example))
         (gens (list #'MNAS-PACKAGE/EXAMPLE:M-C-EXP
-                      #'MNAS-PACKAGE/EXAMPLE:M-B-EXP
-                      #'MNAS-PACKAGE/EXAMPLE:M-A-EXP
-                      #'MNAS-PACKAGE/EXAMPLE::M-FOO
-                      #'MNAS-PACKAGE/EXAMPLE::<C-C-INT>-C
-                      #'MNAS-PACKAGE/EXAMPLE::M-B-INT
-                      #'MNAS-PACKAGE/EXAMPLE::M-A-INT
-                      #'MNAS-PACKAGE/EXAMPLE::M-FOO-SHORT
-                      #'MNAS-PACKAGE/EXAMPLE::<C-B-INT>-B
-                      #'MNAS-PACKAGE/EXAMPLE::M-C-INT
-                      #'MNAS-PACKAGE/EXAMPLE::<C-A-INT>-A)))
-        (loop :for i :in (mnas-package/pkg:package-generics pkg :internal t)
-          :do
-             (is-true (find i gens :test #'equal)))))
+                    #'MNAS-PACKAGE/EXAMPLE:M-B-EXP
+                    #'MNAS-PACKAGE/EXAMPLE:M-A-EXP
+                    #'MNAS-PACKAGE/EXAMPLE::<C-C-INT>-C
+                    #'MNAS-PACKAGE/EXAMPLE::M-B-INT
+                    #'MNAS-PACKAGE/EXAMPLE::M-A-INT
+                    #'MNAS-PACKAGE/EXAMPLE::<C-B-INT>-B
+                    #'MNAS-PACKAGE/EXAMPLE::M-C-INT
+                    #'MNAS-PACKAGE/EXAMPLE::<C-A-INT>-A)))
+    (loop :for i :in (mnas-package/pkg:package-generics pkg :internal t)
+          :do (is-true (find i gens :test #'equal)))))
 
 (def-test package-setf-generics ()
   "(mnas-package/pkg:package-setf-generics :mnas-package/example :internal t)
