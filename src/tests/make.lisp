@@ -7,10 +7,9 @@
 
 (in-suite make)
 
-#+nil
-(defparameter g (mnas-package/make:call-graph :mnas-package/example))
-
 (def-test make ()
+  "(mnas-package/make:call-graph :mnas-package/example)
+"
   (let ((g (mnas-package/make:call-graph :mnas-package/example)))
     (is-true (eq 6 (hash-table-count (mnas-graph:nodes g))))
     (is-true (eq 4 (hash-table-count (mnas-graph:edges g))))))
