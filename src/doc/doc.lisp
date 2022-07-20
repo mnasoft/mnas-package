@@ -59,25 +59,6 @@
                    (mnas-package/obj:obj-name i)
                    (documentation i t))))
 
-
-(sb-mop:class-direct-slots
- (second (mnas-package/pkg:package-classes :mnas-package/example)))
-
-
-
-
-
-(make-doc
- (find-slot 'MNAS-PACKAGE/EXAMPLE::B 'mnas-package/example::<c-b-int>)
- t
- "SLOT COOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOL
-Slot @b(b) for something."
- )
-
-(documentation
-  (find-slot 'MNAS-PACKAGE/EXAMPLE::B 'mnas-package/example::<c-b-int>)
- t)
-
 ;;;;;;;;;;;;;;;;;;;;
 
 (defun make-slots (package &key (external t) (internal nil) (inherited nil))
