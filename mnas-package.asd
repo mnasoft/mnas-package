@@ -36,7 +36,7 @@
 "
   :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
-  :version "0.48.53"
+  :version "0.48.54"
   :serial nil
   :in-order-to ((test-op (test-op "mnas-package/tests")))
   :depends-on ("mnas-package/obj"
@@ -160,11 +160,26 @@
 			:serial t
 			:components ((:file "example")))))
 
+(defsystem "mnas-package/doc"
+  :description "@b(Описание:) система @b(mnas-package/doc) содержит
+  функции, позволяющие извлекать строки документации из систем,
+  пакетов, классов, переменных, функций, обобщенных функций, методов.
+  Cистема @b(mnas-package/doc) позволяет генерировать код для
+  динамического создания документации к системам, пакетам, классам,
+  переменным, функциям, обобщенным функциям, методам с целью их
+  последующей локализации."
+  :author "Mykola Matvyeyev <mnasoft@gmail.com>"
+  :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
+  :depends-on ("mnas-package/obj" "mnas-package/pkg")
+  :components ((:module "src/doc"
+		:serial nil
+                :components ((:file "doc")))))
+
 (defsystem "mnas-package/docs"
   :description "Зависимости для сборки документации"
   :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :depends-on ("mnas-package" "codex")
-  :components ((:module "src/docs"
+  :components ((:module "src/doc"
 		:serial nil
-                :components ((:file "docs")))))
+                :components ((:file "doc")))))
