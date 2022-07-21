@@ -15,6 +15,7 @@
            make-variables
            make-methods
            make-setf-methods)
+  (:export make-all)
   (:documentation "Пакет @b(mnas-package/doc) содержит функции предназначенные для:
 
 @begin(list)
@@ -112,7 +113,7 @@
 
 (defun make-setf-generics (package &key (external t) (internal nil) (inherited nil))
   "(make-setf-generics :mnas-package/example)"
-  (loop :for i :in (mnas-package/pkg:package-setf-functions package :external external :internal internal :inherited inherited)
+  (loop :for i :in (mnas-package/pkg:package-setf-generics package :external external :internal internal :inherited inherited)
         :do
            (format t "~%
 (make-doc
