@@ -28,6 +28,10 @@
   хостов в доступом в интернет.")
 
 (make-doc
+  'MNAS-PACKAGE::+MAINFEST-LISP-TEMPLATE+ 'variable
+  NIL)
+
+(make-doc
   #'MNAS-PACKAGE:SUPER-CLASS-GRAPH 'function
   " @b(Описание:) метод @b(sub-class-graph) возвращает граф,
 содержащий иерархию предков для класса @b(class).
@@ -146,3 +150,89 @@ scr-файл системы документирования codex. Этот р�
      @cl:doc(method m-c-exp (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>)))
 => #<package \"MNAS-PACKAGE\">
 @end(code) ")
+
+(make-doc
+  #'MNAS-PACKAGE::CODEX-HTML-PATHNAME 'function
+  "@b(Описание:) функция @b(codex-html-pathname) возвращает строку,
+содержащую расположение каталога ./docs/build/mnas-package/html системы 
+@b(system-designator) на диске.
+
+ (codex-html-pathname :mnas-package) 
+ \"D:/PRG/msys32/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/build/mnas-package/html\"
+ 
+")
+
+(make-doc
+  #'MNAS-PACKAGE::CODEX-DOCS-PATHNAME 'function
+  "@b(Описание:) функция @b(codex-docs-pathname) возвращает строку,
+содержащую расположение каталога ./docs системы @b(system-designator) на диске.
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (codex-docs-pathname :mnas-package) 
+ => \"D:/PRG/msys32/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs\"
+@end(code)
+")
+
+(make-doc
+  #'MNAS-PACKAGE::MK-PATHNAME 'function
+  NIL)
+
+(make-doc
+  #'MNAS-PACKAGE::FIND-ALL-GENERICS 'function
+  "@b(Описание:) функция @b(find-all-generics) возвращает список
+обобщенных функций, связанных с классом @b(class), начинающихся с 
+префикса @b(prefix).
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (require :temperature-fild/t-fild)
+ (find-all-generics (find-class 'mtf/t-fild:<t-fild>) \"SPLOT\")
+@end(code)
+")
+
+(make-doc
+  #'MNAS-PACKAGE::FIND-ALL-METHODS 'function
+  "(pprint (find-all-methods (find-class 'mtf:<sector>) \"SEC\"))")
+
+(make-doc
+  #'MNAS-PACKAGE::MAKE-CODEX-DOCUMENTATION 'function
+  "@b(Описание:) функция @b(make-codex-documentation) выводит в поток @b(stream)
+секции с документацией в формате codex, содержащие:
+@begin(list)
+ @item(переменные;)
+ @item(функции;)
+ @item(макросы;)
+ @item(setf-функции;)
+ @item(обобщенные функции;)
+ @item(методы;)
+ @item(классы.)
+@end(list)
+из пакета @b(package-name).
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (make-codex-documentation :mnas-package/example :internal t)
+@end(code)
+")
+
+(make-doc
+  #'MNAS-PACKAGE::REMOVE-MSYS-PREFIX 'function
+  NIL)
+
+(make-doc
+  #'MNAS-PACKAGE::CODEX-BUILD-PATHNAME 'function
+  "@b(Описание:) функция @b(codex-docs-pathname) возвращает строку,
+содержащую расположение каталога ./docs системы @b(system-designator) на диске.
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (codex-build-pathname :mnas-package) 
+ => \"D:/PRG/msys32/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs\"
+@end(code)
+")
+
+(make-doc
+  #'MNAS-PACKAGE::CODEX-HTML-PATHNAME/ 'function
+  NIL)
+

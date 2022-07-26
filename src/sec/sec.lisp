@@ -24,10 +24,7 @@
 
 (in-package :mnas-package/sec)
 
-(defparameter *min-doc-length* 80
-  "Устанавливает длину строки, свыше которой осуществляется вставка
-  инструкций на генерирование документации для соответствующего
-  объекта.")
+(defparameter *min-doc-length* 80)
 
 (defmacro with-downcase (&body body)
   (let ((print-case (gensym)))
@@ -44,27 +41,12 @@
        (setf *package* ,package-old))))
 
 
-(defgeneric insert-codex-doc (obj &key stream min-doc-length)
-  (:documentation "@b(Описание:) обобщенная функция @b(make-codex-doc)
-выводит в поток @b(stream) код для вставки документации, относящейся к 
-объекту @b(obj). Документация объекта выводится в поток только если
-ее длина превышает @b(min-doc-length). 
-
- Возвращает: 
-@begin(list)
- @item(@b(t) - если документация была выведена в поток;)
- @item(@b(nil) - если документация не была выведена в поток.)
-@end(list)"))
+(defgeneric insert-codex-doc (obj &key stream min-doc-length))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod insert-codex-doc ((symbol symbol)
                              &key (stream t) (min-doc-length *min-doc-length*))
-  " @b(Пример использования:) 
-@begin[lang=lisp](code)
- (mapcar #'insert-codex-doc (mpkg/pkg:package-variables :mnas-package/example :internal t))
-@end(code)
-"
   (when (< min-doc-length (length (documentation symbol 'variable)))
     (format stream "~%  @cl:doc(variable ~s)" (mpkg/obj:obj-name symbol))
     t))
@@ -85,10 +67,6 @@
              (format stream "~%  @cl:doc(setf-function ~s)"
                      (mpkg/obj:obj-name function))
              t)))))
-#+nil
-(mpkg/obj:obj-name
- (first
- (mpkg/pkg:package-setf-functions :mnas-package/example :external t :internal t)))
 
 (defmethod insert-codex-doc ((generic standard-generic-function)
                              &key (stream t) (min-doc-length *min-doc-length*))
@@ -106,7 +84,6 @@
     t))
 
 (defmethod insert-codex-doc ((method method) &key (stream t) (min-doc-length *min-doc-length*))
-  "(insert-codex-doc (find-package :mpkg))"
   (when (< min-doc-length (length (documentation method t)))
     (let ((mqs (closer-mop::method-qualifiers method))
           (mll (closer-mop:method-lambda-list method))
@@ -137,10 +114,6 @@
 
 (defmethod insert-codex-doc ((package package)
                              &key (stream t) (min-doc-length *min-doc-length*))
-  " @b(Пример использования:)
-@begin[lang=lisp](code)
- (insert-codex-doc (find-package :mpkg))
-@end(code) "
   (when (< min-doc-length (length (documentation package t)))
     (format stream "~a" (documentation package t))
     t))
@@ -156,15 +129,6 @@
                             (sort t)
                             (min-doc-length *min-doc-length*)
                           &aux (package (find-package package-name)))
-  "@b(Описание:) функция @b(section-classes) выводит в поток @b(stream)
-секцию с документацией в формате codex, содержащую переменные из пакета @b(package-name).
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (require :dxf)
- (section-classes :dxf :internal t)
- @end(code)
-"  
   (declare ((or package string symbol) package-name))
   (with-package package
     (with-downcase
@@ -192,14 +156,6 @@
                           (sort nil)
                           (min-doc-length *min-doc-length*)
                         &aux (package (find-package package-name)))
-  "@b(Описание:) функция @b(section-methods) выводит в поток @b(stream)
-секцию с документацией в формате codex, содержащую методы из пакета @b(package-name).
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (section-methods :mnas-package/example :internal t)
- @end(code)
-"
   (declare ((or package string symbol) package-name))
   (with-package package
     (with-downcase
@@ -229,14 +185,6 @@
                                (sort nil)
                                (min-doc-length *min-doc-length*)
                              &aux (package (find-package package-name)))
-  "@b(Описание:) функция @b(section-setf-methods) выводит в поток @b(stream)
-секцию с документацией в формате codex, содержащую setf-методы из пакета @b(package-name).
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (section-setf-methods :mnas-package/example :internal t :sort nil)
- @end(code)
-"
   (declare ((or package string symbol) package-name))
   (with-package package
     (with-downcase
@@ -265,7 +213,6 @@
                           (external t) (internal nil) (inherited nil)
                           (sort t) (min-doc-length *min-doc-length*)
                         &aux (package (find-package package-name)))
-  "(section-package :mnas-package)"
   (format stream "@begin(section) @title(~A)~2%"
           (mnas-package/obj:obj-name package))
   (insert-codex-doc package :stream stream :min-doc-length min-doc-length)
@@ -303,14 +250,6 @@
                             (sort t)
                             (min-doc-length *min-doc-length*)
                           &aux (package (find-package package-name)))
-  "@b(Описание:) функция section-functions выводит в поток stream
-секцию с документацией в формате codex, содержащую функции из пакета package-name.
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (section-functions :math/stat :external t :internal t :sort t) 
-@end(code)
-"  
   (declare ((or package string symbol) package-name))
   (with-package package
     (with-downcase
@@ -336,15 +275,6 @@
                            (sort t)
                            (min-doc-length *min-doc-length*)
                          &aux (package (find-package package-name)))
-  "@b(Описание:) функция section-functions выводит в поток stream
-секцию с документацией в формате codex, содержащую функции из пакета package-name.
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (section-macroses :mnas-package/example :external t :internal t :sort t)
- (section-macroses :mnas-package/example :external t :internal t :sort t :min-doc-length 10) 
-@end(code)
-"  
   (declare ((or package string symbol) package-name))
   (with-package package
     (with-downcase
@@ -370,15 +300,6 @@
                                  (sort t)
                                  (min-doc-length *min-doc-length*)
                                &aux (package (find-package package-name)))
-  "@b(Описание:) функция @b(section-setf-functions) выводит в поток stream
-секцию с документацией в формате codex, содержащую setf-функции из пакета package-name.
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (section-setf-functions :mnas-package/example :external t :internal t :sort t) 
- (section-setf-functions :mnas-package/example :external t :internal t :sort nil) 
-@end(code)
-"  
   (declare ((or package string symbol) package-name))
   (with-package package
     (with-downcase
@@ -394,9 +315,6 @@
                    (sort setf-funcs #'string< :key #'(lambda (elem) (mpkg/obj:obj-name elem)))
                    setf-funcs))
           (format stream ")~%@end(section)~%"))))))
-#+nil
-(mnas-package/obj:obj-name
- (first (mpkg/pkg:package-setf-functions :mnas-package/example :external t :internal t)))
 
 (defun section-generics (package-name
                          &key
@@ -407,14 +325,6 @@
                            (sort t)
                            (min-doc-length *min-doc-length*)
                          &aux (package (find-package package-name)))
-  "@b(Описание:) функция @b(section-generics) выводит в поток stream
-секцию с документацией в формате codex, содержащую обобщенные функции из пакета @b(package-name).
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (section-generics :mnas-package/example :internal t :sort t)
-@end(code)
-"
   (declare ((or package string symbol) package-name))
   (with-package package
     (with-downcase
@@ -440,15 +350,6 @@
                                 (sort t)
                                 (min-doc-length *min-doc-length*)
                               &aux (package (find-package package-name)))
-  "@b(Описание:) функция @b(section-setf-generics) выводит в поток stream
-секцию с документацией в формате codex, содержащую обощенные setf-функции из пакета package-name.
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (section-setf-generics :mnas-package/example :external t :internal t :sort nil) 
- (section-setf-generics :mnas-package/example :external t :internal t :sort t) 
-@end(code)
-"  
   (declare ((or package string symbol) package-name))
   (with-package package
     (with-downcase
@@ -465,10 +366,6 @@
                    setf-generics))
           (format stream ")~%@end(section)~%"))))))
 
-#+nil
-(sort (mpkg/pkg:package-setf-generics :mnas-package/example :external t :internal nil :inherited nil)
-      #'string< :key #'(lambda (elem) (second (mpkg/obj:obj-name elem))))
-
 (defun section-classes (package-name
                         &key
                           (stream t)
@@ -478,15 +375,6 @@
                           (sort t)
                           (min-doc-length *min-doc-length*)
                         &aux (package (find-package package-name)))
-  "@b(Описание:) функция @b(section-classes) выводит в поток @b(stream)
-секцию с документацией в формате codex, содержащую классы из пакета @b(package-name).
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (require :dxf)
- (section-classes :dxf :internal t)
- @end(code)
-"  
   (declare ((or package string symbol) package-name))
   (with-package package
     (with-downcase
@@ -503,5 +391,3 @@
 	           (sort classes #'string< :key #'(lambda (elem) (string-downcase (mpkg/obj:obj-name elem))))
 	           classes))
           (format stream ")~%@end(section)~%"))))))
-
-;;(when (some #'(lambda (class) (when (< min-doc-length (length (documentation class t))) t)) (mpkg/pkg:package-classes :mnas-package :external t :internal nil)))

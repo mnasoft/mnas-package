@@ -85,16 +85,6 @@
        (inherited-lst nil)
        (rez nil)
        (package (find-package package-name)))
-  "@b(Описание:) package-symbols-by-category выполнят поиск символов, 
-определенных пакетом @b(package-name).
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (package-symbols-by-category 'mnas-package :internal nil)                 ;; отбор только внешних символов;
- (package-symbols-by-category :mnas-package)                               ;; отбор внешних и внутренних символов;
- (package-symbols-by-category \"MNAS-PACKAGE\" :internal nil :inherited t) ;; отбор только внешних и заимствованных символов;
-@end(code)
-"
   (declare ((or package string symbol) package-name))
   (cond
     (package
@@ -113,17 +103,6 @@
     (t (error "~S does not designate a package" package-name))))
 
 (defun package-symbols-all (package-name &aux (lst nil) (package (find-package package-name)))
-"@b(Описание:) package-symbols-all Выполнят поиск всех символов, 
-определенных пакетом @b(package-name).
-
- @b(Пример использования:)
- @begin[lang=lisp](code)
- (package-symbols-all 'mnas-package)
- (package-symbols-all :mnas-package)
- (package-symbols-all (find-package :mnas-package))
- (package-symbols-all \"MNAS-PACKAGE\")
-@end(code)
-"
   (declare ((or package string symbol) package-name))
   (cond
     (package (do-symbols (s package ) (push s lst)) lst)
@@ -140,7 +119,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmethod ->key ((thing cons))
-  "Выполнить отладку!"
   nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -190,7 +168,6 @@
      (string-downcase (format nil "~S" func)))))
 
 (defun defu-defm-name (func)
-""
   (cond
     ((listp (first func))
      (second (first func)))
@@ -198,15 +175,6 @@
      (first func))))
 
 (defun who-references (var)
-  " Выполняет поиск функций, в которых есть ссылка на внешнюю переменную
-var. Возвращает список, каждым элементом которого является список следующего
-формата: (функция переменная).
- 
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (who-references '*sample-var*) 
- => ((\"who-references\" \"*sample-var*\"))
-@end(code)"
   (let ((rez (slynk-backend:who-references var))
         ;; (rez (swank/backend:who-references var))
         (func-str (func-to-string var)))
@@ -221,13 +189,11 @@ var. Возвращает список, каждым элементом кото
       :test #'equal))))
 
 (defun who-references-lst (var-lst)
-"who-references-lst"
   (apply #'append
    (mapcar #'who-references
 	   var-lst)))
 
 (defun who-calls (func)
-  ""
   (let ((rez (slynk-backend:who-calls func))
         ;;(rez (swank/backend:who-calls func))
         (func-str (func-to-string func)))
@@ -242,7 +208,6 @@ var. Возвращает список, каждым элементом кото
       :test #'equal))))
 
 (defun who-calls-lst (func-lst)
-  ""
   (apply #'append
          (mapcar #'who-calls
 	         func-lst)))
@@ -250,14 +215,6 @@ var. Возвращает список, каждым элементом кото
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun filter-variables (symbols)
-  " @b(Описание:) функция filter-variables возвращает список символов, являющихся
-сопряженными со значениями.
-
- @b(Переменые:)
-@begin(list) 
-@item(symbols - список символов пакета.)
-@end(list)
-"
   (let ((rez nil))
     (mapc
      #'(lambda (el)
@@ -267,11 +224,6 @@ var. Возвращает список, каждым элементом кото
     rez))
 
 (defun filter-functions (symbols)
-  "@b(Описание:) функция filter-functions возвращает список символов, являющихся
-сопряженными с функциями.
-
- @b(Переменые:) @begin(list) @item(symbols - список символов пакета.)  @end(list)
-"
   (let ((rez nil))
     (mapc
      #'(lambda (el)
@@ -286,11 +238,6 @@ var. Возвращает список, каждым элементом кото
     rez))
 
 (defun filter-macroses (symbols)
-  " @b(Описание:) функция filter-functions возвращает список символов сопряженных
-с макросами.
-
- @b(Переменые:) @begin(list) @item(symbols - список символов пакета.)
- @end(list)"
   (let ((rez nil))
     (map nil
      #'(lambda (el) (when (macro-function el) (push el rez)))
@@ -298,14 +245,6 @@ var. Возвращает список, каждым элементом кото
     rez))
 
 (defun filter-setf-functions (symbols)
-  "@b(Описание:) функция filter-functions возвращает список символов,
-являющихся сопряженными с setf-функциями.
-
- @b(Переменые:)
-@begin(list) 
-@item(symbols - список символов пакета.)
-@end(list)
-"
   (let ((rez nil))
     (mapc
      #'(lambda (symbol)
@@ -318,11 +257,6 @@ var. Возвращает список, каждым элементом кото
     rez))
 
 (defun filter-generics (symbols)
-  " @b(Описание:) функция @b(filter-generics) возвращает список
-символов сопряженных с обобщеными функциями.
-
- @b(Переменые:) @begin(list) @item(symbols - список символов пакета.)  @end(list)
-"
   (let ((rez nil))
     (mapc
      #'(lambda (el)
@@ -337,14 +271,6 @@ var. Возвращает список, каждым элементом кото
     rez))
 
 (defun filter-setf-generics (symbols)
-  "@b(Описание:) функция @b(filter-setf-generics) возвращает список символов,
-являющихся сопряженными с обобщенными setf-функциями.
-
- @b(Переменые:)
-@begin(list) 
-@item(symbols - список символов пакета.)
-@end(list)
-"
   (let ((rez nil))
     (mapc
      #'(lambda (symbol)
@@ -356,14 +282,6 @@ var. Возвращает список, каждым элементом кото
     rez))
 
 (defun filter-methods (methods)
-  "@b(Описание:) функция @b(filter-methods) возвращает список символов,
-являющихся сопряженными с setf-методами.
-
- @b(Переменые:)
-@begin(list) 
-@item(symbols - список символов пакета.)
-@end(list)
-"
   (let ((rez nil))
     (mapc
      #'(lambda (method)
@@ -373,14 +291,6 @@ var. Возвращает список, каждым элементом кото
     rez))
 
 (defun filter-setf-methods (methods)
-  "@b(Описание:) функция @b(filter-setf-methods) возвращает список символов,
-являющихся сопряженными с setf-методами.
-
- @b(Переменые:)
-@begin(list) 
-@item(symbols - список символов пакета.)
-@end(list)
-"
   (let ((rez nil))
     (mapc
      #'(lambda (method)
@@ -392,14 +302,6 @@ var. Возвращает список, каждым элементом кото
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun package-variables (package-name &key (external t) (internal nil) (inherited nil))
-  " @b(Описание:) функция @b(package-variables) возвращает список символов пакета
-@b(package-name).
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (package-variables :mnas-package :inherited t)
-@end(code)
-"
   (filter-variables
    (package-symbols-by-category
     package-name
@@ -407,18 +309,7 @@ var. Возвращает список, каждым элементом кото
     :internal internal
     :inherited inherited)))
 
-#|
-(package-variables :mnas-package :inherited t)
-|#
-
 (defun package-functions (package-name &key (external t) (internal nil) (inherited nil) )
-  "@b(Описание:) функция @b(package-functions) возвращает список функций пакета @b(package-name).
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (package-functions :mnas-package/example :internal t)
- => (#<FUNCTION MNAS-PACKAGE/EXAMPLE:BAZ-SHORT> #<FUNCTION MNAS-PACKAGE/EXAMPLE:BAZ>)
-@end(code)"
   (mapcar #'symbol-function (filter-functions
 	                     (package-symbols-by-category
 	                      package-name
@@ -427,15 +318,6 @@ var. Возвращает список, каждым элементом кото
 	                      :inherited inherited))))
 
 (defun package-macroses (package-name &key (external t) (internal nil) (inherited nil) )
-  "@b(Описание:) функция @b(package-functions) возвращает список макросов пакета @b(package-name).
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (package-macroses :mnas-package/example :internal t)
- => (#<FUNCTION (MACRO-FUNCTION MNAS-PACKAGE/EXAMPLE::MAK-A-SHORT) {52D45ECB}>
-     #<FUNCTION (MACRO-FUNCTION MNAS-PACKAGE/EXAMPLE::MAK-A) {52D454BB}>)
-@end(code)
-"
   (mapcar #'macro-function
 	  (filter-macroses
 	   (package-symbols-by-category
@@ -445,14 +327,6 @@ var. Возвращает список, каждым элементом кото
 	    :inherited inherited))))
 
 (defun package-setf-functions (package-name &key (external t) (internal nil) (inherited nil) )
-  "@b(Описание:) функция @b(package-functions) возвращает список функций пакета
-@b(package-name).
-
- @b(Пример использования:) @begin[lang=lisp](code)
- (package-setf-functions :mnas-package/example :internal t)
- => (#<FUNCTION (SETF MNAS-PACKAGE/EXAMPLE::FOO)>)
-@end(code)
-"
   (mapcar #'(lambda (el) (alexandria:ensure-function `(setf ,el)))
           (filter-setf-functions
            (package-symbols-by-category
@@ -466,19 +340,6 @@ var. Возвращает список, каждым элементом кото
 			  (rez nil)
 			  (class nil)
 			  (package (find-package package-name)))
-  "@b(Описание:) package-classes возвращает список классов пакета.
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (package-classes :mnas-package/example) => (#<STANDARD-CLASS MNAS-PACKAGE/EXAMPLE:<C>>)
- (package-classes :mnas-package/example :external nil :internal t)
-  => (#<STANDARD-CLASS MNAS-PACKAGE/EXAMPLE::<A>>
-      #<STANDARD-CLASS MNAS-PACKAGE/EXAMPLE::<B>>
-      #<STANDARD-CLASS MNAS-PACKAGE/EXAMPLE::<B-SHORT>>
-      #<STANDARD-CLASS MNAS-PACKAGE/EXAMPLE::<C-SHORT>>
-      #<STANDARD-CLASS MNAS-PACKAGE/EXAMPLE::<A-SHORT>>)
-@end(code)
-"
   (declare ((or package string symbol) package-name))
   (map nil 
    #'(lambda (el)
@@ -492,20 +353,6 @@ var. Возвращает список, каждым элементом кото
   rez)
 
 (defun package-generics (package-name &key (external t) (internal nil) (inherited nil))
-  "@b(Описание:) функция @b(package-generics) возвращает список обобщенных функций
-пакета @b(package-name).
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
-  (package-generics :mnas-package/example :internal t) 
- => (#<STANDARD-GENERIC-FUNCTION MNAS-PACKAGE/EXAMPLE:M-C-EXP (1)>
-     #<STANDARD-GENERIC-FUNCTION MNAS-PACKAGE/EXAMPLE:M-B-EXP (1)>
-     #<STANDARD-GENERIC-FUNCTION MNAS-PACKAGE/EXAMPLE:M-A-EXP (1)>
-     #<STANDARD-GENERIC-FUNCTION MNAS-PACKAGE/EXAMPLE::<C-C-INT>-C (1)>
-     #<STANDARD-GENERIC-FUNCTION MNAS-PACKAGE/EXAMPLE::<C-B-INT>-B (1)>
-     #<STANDARD-GENERIC-FUNCTION MNAS-PACKAGE/EXAMPLE::<C-A-INT>-A (1)>)
-@end(code)
-"
   (mapcar #'symbol-function
           (filter-generics
 	   (package-symbols-by-category
@@ -515,14 +362,6 @@ var. Возвращает список, каждым элементом кото
 	    :inherited inherited))))
 
 (defun package-setf-generics (package-name &key (external t) (internal nil) (inherited nil) )
-  "@b(Описание:) функция @b(package-functions) возвращает список функций пакета
-@b(package-name).
-
- @b(Пример использования:) @begin[lang=lisp](code)
- (package-setf-functions :mnas-package/example :internal t)
- => (#<FUNCTION (SETF MNAS-PACKAGE/EXAMPLE::FOO)>)
-@end(code)
-"
   (mapcar #'(lambda (el) (alexandria:ensure-function `(setf ,el)))
           (filter-setf-generics
            (package-symbols-by-category
@@ -532,19 +371,6 @@ var. Возвращает список, каждым элементом кото
             :inherited inherited))))
 
 (defun package-methods (package-name &key (external t) (internal nil) (inherited nil))
-  "@b(Описание:) функция @b(package-methods) возвращает список методов пакета
-@b(package-name).
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
-  (package-methods :mnas-package/example :internal t)
-  (#<STANDARD-METHOD MNAS-PACKAGE/EXAMPLE:M-A-EXP (MNAS-PACKAGE/EXAMPLE::<C-A-INT> MNAS-PACKAGE/EXAMPLE::<C-B-INT> MNAS-PACKAGE/EXAMPLE:<C-C-EXP>) {1004634963}>
-   #<STANDARD-METHOD MNAS-PACKAGE/EXAMPLE:M-B-EXP (MNAS-PACKAGE/EXAMPLE::<C-A-INT> MNAS-PACKAGE/EXAMPLE::<C-B-INT> MNAS-PACKAGE/EXAMPLE:<C-C-EXP>) {1004634983}>
-   #<STANDARD-METHOD MNAS-PACKAGE/EXAMPLE:M-C-EXP (MNAS-PACKAGE/EXAMPLE::<C-A-INT> MNAS-PACKAGE/EXAMPLE::<C-B-INT> MNAS-PACKAGE/EXAMPLE::<C-C-INT>) {10046349A3}>
-   #<STANDARD-METHOD MNAS-PACKAGE/EXAMPLE:M-C-EXP (MNAS-PACKAGE/EXAMPLE:<C-A-EXP> MNAS-PACKAGE/EXAMPLE:<C-B-EXP> MNAS-PACKAGE/EXAMPLE:<C-C-EXP>) {10049D5BD3}>)
-
-@end(code)
-"
   (filter-methods
    (apply #'append 
           (mapcar #'closer-mop:generic-function-methods
@@ -554,17 +380,6 @@ var. Возвращает список, каждым элементом кото
                                     :inherited inherited)))))
 
 (defun package-setf-methods (package-name &key (external t) (internal nil) (inherited nil))
-  "@b(Описание:) функция @b(package-setf-methods) возвращает список setf-методов пакета
-@b(package-name).
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
-  (package-setf-methods :mnas-package/example :internal t)
-    (#<STANDARD-METHOD MNAS-PACKAGE/EXAMPLE::M-FOO :AROUND (MNAS-PACKAGE/EXAMPLE::<A> MNAS-PACKAGE/EXAMPLE::<B> T) {10019B69A3}>
-     ...
-     #<STANDARD-METHOD MNAS-PACKAGE/EXAMPLE::M-FOO-SHORT (MNAS-PACKAGE/EXAMPLE::<A> MNAS-PACKAGE/EXAMPLE::<B> MNAS-PACKAGE/EXAMPLE:<C>) {1001C6CAC3}>)
-@end(code)
-"
   (filter-setf-methods 
    (apply #'append 
           (mapcar #'closer-mop:generic-function-methods

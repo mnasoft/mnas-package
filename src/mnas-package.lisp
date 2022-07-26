@@ -70,44 +70,18 @@
 (in-package #:mnas-package)
 
 (defun codex-docs-pathname (system-designator)
-  "@b(Описание:) функция @b(codex-docs-pathname) возвращает строку,
-содержащую расположение каталога ./docs системы @b(system-designator) на диске.
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (codex-docs-pathname :mnas-package) 
- => \"D:/PRG/msys32/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs\"
-@end(code)
-"
     (let ((system (asdf:find-system system-designator)))
       (concatenate 'string
 		   (namestring (asdf:system-source-directory system))
 		   "docs")))
 
 (defun codex-build-pathname (system-designator)
-  "@b(Описание:) функция @b(codex-docs-pathname) возвращает строку,
-содержащую расположение каталога ./docs системы @b(system-designator) на диске.
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (codex-build-pathname :mnas-package) 
- => \"D:/PRG/msys32/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs\"
-@end(code)
-"
     (let ((system (asdf:find-system system-designator)))
       (concatenate 'string
 		   (namestring (asdf:system-source-directory system))
 		   "docs/build")))
 
 (defun codex-html-pathname (system-designator)
-  "@b(Описание:) функция @b(codex-html-pathname) возвращает строку,
-содержащую расположение каталога ./docs/build/mnas-package/html системы 
-@b(system-designator) на диске.
-
- (codex-html-pathname :mnas-package) 
- \"D:/PRG/msys32/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/build/mnas-package/html\"
- 
-"
     (let ((system (asdf:find-system system-designator)))
       (concatenate 'string
 		   (namestring (asdf:system-source-directory system))
@@ -137,10 +111,6 @@
   (concatenate 'string (remove-msys-prefix (codex-html-pathname (asdf:find-system system-name))) "/"))
 
 (defun copy-doc->public-html (system-name)
-  "@b(Описание:) функция @b(copy-doc->public-html) выполняет
-  копирование документации системы @b(system-name) в каталог
-  ~/public_html/Common-Lisp-Programs.
-"
   (inferior-shell:run/lines
    `(mkdir -p
            ,(concatenate 'string
@@ -155,24 +125,17 @@
                                              "public_html/Common-Lisp-Programs/"
                                              system-name)))))
 
-(defparameter *internet-hosts* '("MNASOFT-01" "mnasoft-00")
-  "@b(Описание:) параметр @b(*internet-hosts*) содержит перечень
-  хостов в доступом в интернет.")
+(defparameter *internet-hosts* '("MNASOFT-01" "mnasoft-00"))
 
-(defparameter *intranet-hosts* '("N000308" "N133907")
-    "@b(Описание:) параметр @b(*intranet-hosts*) содержит перечень
-    хостов в доступом в корпоративную сеть.")
+(defparameter *intranet-hosts* '("N000308" "N133907"))
 
 (defparameter *intranet-server*
   #+nil
   "//n133619/home/_namatv/public_html/Site/Development/Common-Lisp-Programs/"
   "//n000171/home/_namatv/public_html/Site/Development/Common-Lisp-Programs/"
-  "@b(Описание:) переменная @b(*intranet-server*) содержит путь к
-  документации в локальной сети.")
+)
 
 (defun rsync-doc (system-name)
-  "@b(Описание:) функция @b(rsync-doc) выполняет копирование
-  документации на удаленный сервер."
   (when (find (uiop:hostname) *internet-hosts* :test #'string=)
     #+nil (inferior-shell:run/lines `("sh" "rs-pi-html"))
     `(rsync "-Pavzhe"
@@ -190,16 +153,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun find-all-generics (class prefix)
-  "@b(Описание:) функция @b(find-all-generics) возвращает список
-обобщенных функций, связанных с классом @b(class), начинающихся с 
-префикса @b(prefix).
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (require :temperature-fild/t-fild)
- (find-all-generics (find-class 'mtf/t-fild:<t-fild>) \"SPLOT\")
-@end(code)
-"
   (loop :for method :in (closer-mop:specializer-direct-methods class)
         :for gf           = (closer-mop:method-generic-function method)
         :for fname        = (closer-mop:generic-function-name gf)
@@ -229,25 +182,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun make-doc-generics (package class prefix &key (stream t) (min-doc-length mpkg/sec:*min-doc-length*))
-  "@b(Описание:) функция @b(make-doc-methods) выводит в поток
-@b(stream) раздел документации, подготовленной для вставки в scr-файл
-системы документирования codex. Этот раздел содержит обобщенные
-функции класса @b(class), имена которых начинаются с префикса
-@b(prefix).
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
-(make-doc-generics
- (find-package :mnas-package/example)
- (find-class 'mnas-package/example:<c-с-exp>)
- \"\")
-@end(code)
-->  @cl:with-package[name=\"MNAS-PACKAGE/EXAMPLE\"](
-     @cl:doc(generic m-a-exp)
-     @cl:doc(generic m-b-exp)
-     @cl:doc(generic m-c-exp))
-=> #<package \"MNAS-PACKAGE\">
-"
 #+nil
   (make-doc-generics (find-package :mnas-package/example) (find-class 'mnas-package/example:<c-с-exp>) "") 
   (with-package package
@@ -263,24 +197,6 @@
       (format stream ")~%"))))
 
 (defun make-doc-methods (package class prefix &key (stream t) (min-doc-length mpkg/sec:*min-doc-length*))
-  "@b(Описание:) функция @b(make-doc-methods) выводит в поток
-@b(stream) раздел документации, подготовленной для вставки в 
-scr-файл системы документирования codex. Этот раздел содержит 
-методы класса @b(class), имена которых начинаются 
-с префикса @b(prefix).
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
-(make-doc-generics
- (find-package :mnas-package/example)
- (find-class 'mnas-package/example:<c-с-exp>)
- \"\")
--> @cl:with-package[name=\"MNAS-PACKAGE/EXAMPLE\"](
-     @cl:doc(method m-a-exp (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
-     @cl:doc(method m-b-exp (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>))
-     @cl:doc(method m-c-exp (x <c-a-int>) (y <c-b-int>) (z <c-с-exp>)))
-=> #<package \"MNAS-PACKAGE\">
-@end(code) "
 #+nil
   (make-doc-methods (find-package :mnas-package/example) (find-class 'mnas-package/example:<c-с-exp>) "")
   (with-package package
@@ -304,24 +220,6 @@ scr-файл системы документирования codex. Этот р�
                                    (sort t)
                                    (min-doc-length mpkg/sec:*min-doc-length*)
                                  &aux (package (find-package package-name)))
-  "@b(Описание:) функция @b(make-codex-documentation) выводит в поток @b(stream)
-секции с документацией в формате codex, содержащие:
-@begin(list)
- @item(переменные;)
- @item(функции;)
- @item(макросы;)
- @item(setf-функции;)
- @item(обобщенные функции;)
- @item(методы;)
- @item(классы.)
-@end(list)
-из пакета @b(package-name).
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (make-codex-documentation :mnas-package/example :internal t)
-@end(code)
-"
   (when system-name (mpkg/sec:section-system system-name :stream stream))
   (mpkg/sec:section-package package :stream stream
                            :external external :internal internal :inherited inherited
@@ -331,21 +229,7 @@ scr-файл системы документирования codex. Этот р�
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun make-codex-graphs (system-designator package-designator
-                          &key
-                            (external t)
-                            (internal t)
-                            (inherited nil)
-                            )
-  "  @b(Описание:) функция @b(make-codex-graphs) создает в каталоге
-./docs/build/mnas-package/html gv-файлы и png-файлы, содержащие графы,
-отображающие завмсимости
-@begin(list)
- @item(классов;)
- @item(систем;)
- @item(символов;)
- @item(вызовов.)
-@end(list)
-"
+                          &key (external t) (internal t) (inherited nil))
   (let* ((pkg  package-designator)
 	 (sys  system-designator)
 	 (fpath (codex-html-pathname sys))
@@ -389,15 +273,6 @@ scr-файл системы документирования codex. Этот р�
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun sub-class-graph (class &aux (graph (make-instance 'mnas-graph:<graph>)))
-  " @b(Описание:) метод @b(sub-class-graph) возвращает граф,
-содержащий иерархию подклассов класса @b(class).
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (mnas-graph:view-graph (sub-class-graph (find-class 'mnas-package/example::<a>)))
- (mnas-graph:view-graph (sub-class-graph (find-class 'list)))
-@end(code)
-"
   (flet ((find-sub-classes (class)
            (let ((from-node (mnas-graph:find-node (string (class-name class)) graph)))
              (when from-node
@@ -420,15 +295,6 @@ scr-файл системы документирования codex. Этот р�
     graph))
 
 (defun super-class-graph (class &aux (graph (make-instance 'mnas-graph:<graph>)))
-  " @b(Описание:) метод @b(sub-class-graph) возвращает граф,
-содержащий иерархию предков для класса @b(class).
-
- @b(Пример использования:)
-@begin[lang=lisp](code)
- (mnas-graph:view-graph (super-class-graph (find-class 'mnas-package/example:<c>)))
- (mnas-graph:view-graph (super-class-graph (find-class 'list)))
-@end(code)
-"
   (flet ((find-super-classes (class)
            (let ((to-node (mnas-graph:find-node (string (class-name class)) graph)))
              (when to-node
@@ -458,19 +324,7 @@ scr-файл системы документирования codex. Этот р�
                    (internal nil)
                    (inherited nil)
                    (sort t)
-                   (min-doc-length mpkg/sec:*min-doc-length*)
-                   )
-  " @b(Описание:) функция @b(document) формирует scr-файл (сценарий
-  системы codex), содержащий документацию о пакете @b(package-name) и
-  системы системы @b(system-name). Если имя системы равно @b(nil),
-  извлечение связанной с ней документации не выполняется.
-
-  @b(Пример использования:)
-@begin[lang=lisp](code)
- (mnas-package:document :mnas-package :mnas-package) => path_to_mnas-package_system/docs/mnas-package.scr
- (mnas-package:document :mnas-package/view nil) => path_to_mnas-package_system/docs/mnas-package-view.scr
-@end(code)
-"
+                   (min-doc-length mpkg/sec:*min-doc-length*))
   (with-open-file
       (stream (concatenate 'string
                            (codex-docs-pathname package-name)
@@ -486,15 +340,7 @@ scr-файл системы документирования codex. Этот р�
                               :external external :internal internal :inherited inherited
                               :sort sort :min-doc-length min-doc-length)))
 
-(defparameter +mainfest-lisp-template+
-  "(:docstring-markup-format
-   :scriba
-   :systems ~S
-   :documents ((:title ~S
-	        :authors ~S
-	        :output-format ~S 
-                :sources ~S
-                )))")
+(defparameter +mainfest-lisp-template+)
 
 (defun find-sources (system)
   (let* ((path-doc  (merge-pathnames #P"docs/" (asdf:system-source-directory (asdf:find-system system))))
@@ -526,9 +372,6 @@ scr-файл системы документирования codex. Этот р�
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun make-html-path (system)
-  "@b(Описание:) функция @b(make-html-path) в качестве побочного
-   эффекта создает каталог, в который система codex выводит
-   html-докуметы."
   (inferior-shell:run/lines
    `(mkdir -p ,(mnas-package::codex-html-pathname system))))
 

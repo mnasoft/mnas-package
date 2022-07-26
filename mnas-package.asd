@@ -70,7 +70,8 @@
                "mnas-string") 
   :components ((:module "src/sec"
 		:serial nil
-                :components ((:file "sec")))))
+                :components ((:file "sec")
+                             (:file "sec-doc")))))
 
 (defsystem "mnas-package/obj"
   :description "Содержит некоторые функции и обобщенные функции,
@@ -82,7 +83,8 @@
   :depends-on ("closer-mop")
   :components ((:module "src/obj"
 		:serial nil
-                :components ((:file "obj")))))
+                :components ((:file "obj")
+                             (:file "obj-doc")))))
 
 (defsystem "mnas-package/pkg"
   :description "Содержит некоторые функции и обобщенные функции,
@@ -97,7 +99,8 @@
                )
   :components ((:module "src/pkg"
 		:serial nil
-                :components ((:file "pkg")))))
+                :components ((:file "pkg")
+                             (:file "pkg-doc")))))
 
 (defsystem "mnas-package/sys"
   :description "Содержит некоторые функции для извлечения иформации о системах, поределенных с помощью @b(asdf)"
@@ -108,7 +111,8 @@
   :depends-on ("alexandria")
   :components ((:module "src/sys"
 		:serial nil
-                :components ((:file "sys")))))
+                :components ((:file "sys")
+                             (:file "sys-doc")))))
 
 (defsystem "mnas-package/make"
   :description "Содержит некоторые функции и обобщенные функции,
@@ -120,7 +124,8 @@
   :depends-on ("mnas-graph" "mnas-package/pkg")
   :components ((:module "src/make"
 		:serial nil
-                :components ((:file "make")))))
+                :components ((:file "make")
+                             (:file "make-doc")))))
 
 (defsystem "mnas-package/view"
   :description "Содержит некоторые функции и обобщенные функции,
@@ -132,7 +137,8 @@
   :depends-on ("mnas-package/make" "mnas-graph/view")
   :components ((:module "src/view"
 		:serial nil
-                :components ((:file "view")))))
+                :components ((:file "view")
+                             (:file "view-doc")))))
 
 (defsystem "mnas-package/tests"
   :description "Тестирование систем, входящих  в проект mnas-package"
