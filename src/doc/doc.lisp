@@ -175,7 +175,7 @@
                    (mapcar #' class-name(sb-mop:method-specializers i))
                    (documentation i t))))
 
-(defun make-all (package &key (external t) (internal nil) (inherited nil))
+(defun make-all (package &key (external t) (internal t) (inherited nil))
   "(make-all :mnas-package/example :internal t)"
   (include-macro)
   (map 'nil

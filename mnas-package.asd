@@ -52,7 +52,8 @@
   ((:module "src" 
     :serial nil
     :components
-    ((:file "mnas-package")))))
+    ((:file "mnas-package")
+     (:file "mnas-package-doc")))))
 
 (defsystem "mnas-package/sec"
   :description "Содержит некоторые функции и обобщенные функции,
