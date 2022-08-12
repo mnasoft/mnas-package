@@ -340,7 +340,7 @@
                               :external external :internal internal :inherited inherited
                               :sort sort :min-doc-length min-doc-length)))
 
-(defparameter +mainfest-lisp-template+)
+(defparameter +mainfest-lisp-template+ nil)
 
 (defun find-sources (system)
   (let* ((path-doc  (merge-pathnames #P"docs/" (asdf:system-source-directory (asdf:find-system system))))
