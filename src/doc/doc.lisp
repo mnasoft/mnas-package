@@ -3,9 +3,11 @@
 (defpackage #:mnas-package/doc
   (:use #:cl ) ;; :mnas-package/pkg
   (:nicknames "MPKG/DOC")
-  (:export include-macro
+  (:export include-in-package
+           include-macro
            find-slot)
-  (:export make-classes
+  (:export make-packages
+           make-classes
            make-slots
            make-macroses
            make-generics
@@ -16,7 +18,8 @@
            make-methods
            make-setf-methods)
   (:export make-all)
-  (:documentation "Пакет @b(mnas-package/doc) содержит функции предназначенные для:
+  (:documentation
+   "Пакет @b(mnas-package/doc) содержит функции предназначенные для:
 
 @begin(list)
  @item(извлечения строк документации;)
@@ -49,11 +52,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun make-macroses (package &key (external t) (internal nil) (inherited nil))
+(defun make-macroses (package &key (stream t) (external t) (internal nil) (inherited nil))
   "(make-macroses :mnas-package/example)"
   (loop :for i :in (mnas-package/pkg:package-macroses package :external external :internal internal :inherited inherited)
         :do
-           (format t "~%
+           (format stream "~%
 (make-doc
   (macro-function '~S) t
   ~S)"
@@ -62,11 +65,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;
 
-(defun make-slots (package &key (external t) (internal nil) (inherited nil))
+(defun make-slots (package &key (stream t) (external t) (internal nil) (inherited nil))
   "(make-slots :mnas-package/example)"
   (loop :for class :in (mnas-package/pkg:package-classes package :external external :internal internal :inherited inherited) :do
     (loop :for slot :in (sb-mop:class-direct-slots class) :do
-      (format t "~%
+      (format stream "~%
 (make-doc
  (find-slot '~S '~S)
  t
@@ -78,44 +81,56 @@
 
 ;;;;;;;;;;;;;;;;;;;;
 
-(defun make-classes (package &key (external t) (internal nil) (inherited nil))
+(defun include-in-package (package &key (stream t) &aux (pkg (find-package package)))
+    (format stream "~%(in-package #:~A)~2%" (mnas-package/obj:obj-name pkg)))
+
+(defun make-packages (package &key (stream t) &aux (pkg  (find-package package)))
+  "(make-packages :mnas-package/example)"
+  (format stream "~%
+(make-doc
+  (find-package '~A) t
+  ~S)"
+          (mnas-package/obj:obj-name pkg)
+          (documentation pkg t)))
+
+(defun make-classes (package &key (stream t) (external t) (internal nil) (inherited nil))
   "(make-classes :mnas-package/example)"
   (loop :for i :in (mnas-package/pkg:package-classes package :external external :internal internal :inherited inherited)
         :do
-           (format t "~%
+           (format stream "~%
 (make-doc
   (find-class '~S) t
   ~S)"
                    (mnas-package/obj:obj-name i)
                    (documentation i t))))
 
-(defun make-variables (package &key (external t) (internal nil) (inherited nil))
+(defun make-variables (package &key (stream t) (external t) (internal nil) (inherited nil))
   "(make-variables :mnas-package/example)"
   (loop :for i :in (mnas-package/pkg:package-variables package :external external :internal internal :inherited inherited)
         :do
-           (format t "~%
+           (format stream "~%
 (make-doc
   '~S 'variable
   ~S)"
                    (mnas-package/obj:obj-name i)
                    (documentation i 'variable))))
 
-(defun make-generics (package &key (external t) (internal nil) (inherited nil))
+(defun make-generics (package &key (stream t) (external t) (internal nil) (inherited nil))
   "(make-generics :mnas-package/example)"
   (loop :for i :in (mnas-package/pkg:package-generics package :external external :internal internal :inherited inherited)
         :do
-           (format t "~%
+           (format stream "~%
 (make-doc
   #'~S 'function
   ~S)"
                    (mnas-package/obj:obj-name i)
                    (documentation i t))))
 
-(defun make-setf-generics (package &key (external t) (internal nil) (inherited nil))
+(defun make-setf-generics (package &key (stream t) (external t) (internal nil) (inherited nil))
   "(make-setf-generics :mnas-package/example)"
   (loop :for i :in (mnas-package/pkg:package-setf-generics package :external external :internal internal :inherited inherited)
         :do
-           (format t "~%
+           (format stream "~%
 (make-doc
   #'(setf ~S)
   'function
@@ -123,22 +138,22 @@
                    (mnas-package/obj:obj-name i)
                    (documentation i t))))
 
-(defun make-functions (package &key (external t) (internal nil) (inherited nil))
+(defun make-functions (package &key (stream t) (external t) (internal nil) (inherited nil))
   "(make-functions :mnas-package/example)"
   (loop :for i :in (mnas-package/pkg:package-functions package :external external :internal internal :inherited inherited)
         :do
-           (format t "~%
+           (format stream "~%
 (make-doc
   #'~S 'function
   ~S)"
                    (mnas-package/obj:obj-name i)
                    (documentation i t))))
 
-(defun make-setf-functions (package &key (external t) (internal nil) (inherited nil))
+(defun make-setf-functions (package &key (stream t) (external t) (internal nil) (inherited nil))
   "(make-setf-functions :mnas-package/example)"
   (loop :for i :in (mnas-package/pkg:package-setf-functions package :external external :internal internal :inherited inherited)
         :do
-           (format t "~%
+           (format stream "~%
 (make-doc
   #'(setf ~S)
   'function
@@ -147,11 +162,11 @@
                    (documentation i t))))
 
 
-(defun make-setf-methods (package &key (external t) (internal nil) (inherited nil))
+(defun make-setf-methods (package &key (stream t) (external t) (internal nil) (inherited nil))
   "(make-setf-methods :mnas-package/example)"
   (loop :for i :in (mnas-package/pkg:package-setf-methods package :external external :internal internal :inherited inherited)
         :do
-           (format t "~%
+           (format stream "~%
 (make-doc
   (find-method #'~S ~S '~S)
   t
@@ -161,11 +176,11 @@
                    (mapcar #' class-name(sb-mop:method-specializers i))
                    (documentation i t))))
 
-(defun make-methods (package &key (external t) (internal nil) (inherited nil))
+(defun make-methods (package &key (stream t) (external t) (internal nil) (inherited nil))
   "(make-methods :mnas-package/example)"
   (loop :for i :in (mnas-package/pkg:package-methods package :external external :internal internal :inherited inherited)
         :do
-           (format t "~%
+           (format stream "~%
 (make-doc
   (find-method #'~S ~S '~S)
   t
@@ -175,12 +190,14 @@
                    (mapcar #' class-name(sb-mop:method-specializers i))
                    (documentation i t))))
 
-(defun make-all (package &key (external t) (internal t) (inherited nil))
-  "(make-all :mnas-package/example :internal t)"
+(defun make-all (package &key (stream t) (external t) (internal t) (inherited nil))
+  "(make-all :mnas-package/example)"
+  (include-in-package package)
   (include-macro)
+  (make-packages package)
   (map 'nil
        #'(lambda (fname)
-           (funcall fname package :external external :internal internal :inherited inherited))
+           (funcall fname package :stream stream :external external :internal internal :inherited inherited))
        `(,#'make-variables
          ,#'make-macroses
          ,#'make-functions ,#'make-setf-functions
@@ -189,4 +206,4 @@
          ,#'make-slots  
          ,#'make-methods  
          ,#'make-setf-methods))
-  (format t "~%~%"))
+  (format stream "~2%"))
