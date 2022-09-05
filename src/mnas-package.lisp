@@ -111,6 +111,7 @@
   (concatenate 'string (remove-msys-prefix (codex-html-pathname (asdf:find-system system-name))) "/"))
 
 (defun copy-doc->public-html (system-name)
+  (break "system-name:~S " system-name)
   (inferior-shell:run/lines
    `(mkdir -p
            ,(concatenate 'string
@@ -184,8 +185,8 @@
 (defun make-doc-generics (package class prefix &key (stream t) (min-doc-length mpkg/sec:*min-doc-length*))
 #+nil
   (make-doc-generics (find-package :mnas-package/example) (find-class 'mnas-package/example:<c-с-exp>) "") 
-  (with-package package
-    (with-downcase
+  (mnas-package/sec:with-package package
+    (mnas-package/sec:with-downcase
       (format stream " @cl:with-package[name=~s](~%" (mpkg/obj:obj-name package))
       (block make-doc-for-generics
         (map 'nil
@@ -199,8 +200,8 @@
 (defun make-doc-methods (package class prefix &key (stream t) (min-doc-length mpkg/sec:*min-doc-length*))
 #+nil
   (make-doc-methods (find-package :mnas-package/example) (find-class 'mnas-package/example:<c-с-exp>) "")
-  (with-package package
-    (with-downcase
+  (mnas-package/sec:with-package package
+    (mnas-package/sec:with-downcase
       (format stream " @cl:with-package[name=~S](~%" (mpkg/obj:obj-name package))
       (block make-doc-for-methods
         (map 'nil
@@ -340,7 +341,18 @@
                               :external external :internal internal :inherited inherited
                               :sort sort :min-doc-length min-doc-length)))
 
-(defparameter +mainfest-lisp-template+ nil)
+(defparameter +mainfest-lisp-template+
+  "(:docstring-markup-format
+   :scriba
+   :systems ~S
+   :documents ((:title ~S
+	        :authors ~S
+	        :output-format ~S
+                :sources ~S
+                )))"
+ "@b(Описание:) переменая @b(+mainfest-lisp-template+) определяет
+ шаблон для создания файла @i(docs/manifest.lisp).
+")
 
 (defun find-sources (system)
   (let* ((path-doc  (merge-pathnames #P"docs/" (asdf:system-source-directory (asdf:find-system system))))
@@ -358,24 +370,53 @@
 
 (defun make-mainfest-lisp (systems title authors sources
                            &key (output-format '(:type :multi-html :template :minima)))
+  "@b(Описание:) функция @b(make-mainfest-lisp) создает файл
+  @i(docs/manifest.lisp).
+
+ @b(Переменые:)
+@begin(list)
+ @item(systems - список систем;)
+ @item(title - заголовок;)
+ @item(authors - список авторов;)
+ @item(sources - список исходных файлов;)
+ @item(output-format - атрибуты формата вывода.)
+@end(list)
+
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (make-mainfest-lisp 
+  '(:MNAS-PACKAGE)
+  \"Mnas-Package\"
+  '(\"Mykola Matvyeyev\")
+  '(\"mnas-file-dialog.scr\" \"mnas-file-dialog-graph.scr\"))
+@end(code)
+"
   (with-open-file
       (stream
        (merge-pathnames #P"docs/manifest.lisp"
                          (asdf:system-source-directory
                           (asdf:find-system (first systems))))
-       #+nil
-       (namestring
-        )
        :direction :output
        :if-exists :supersede)
-    (format stream +mainfest-lisp-template+ systems title authors output-format sources)))
+    (format stream
+            +mainfest-lisp-template+
+            systems
+            title
+            authors
+            output-format
+            sources)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun make-html-path (system)
+  "@b(Описание:) функция @b(make-html-path) 
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (make-html-path :mnas-path)
+@end(code)"
   (inferior-shell:run/lines
    `(mkdir -p ,(mnas-package::codex-html-pathname system))))
-
-(make-html-path :mnas-path)
 
 #+nil
 (find-sources :mnas-package)

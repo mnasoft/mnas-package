@@ -24,6 +24,8 @@
         )
       :do (apply #'mnas-package:document i)))
 
+(mnas-package:document :mnas-package :mnas-package)
+
 (defun make-graphs ()
   (loop
     :for i :in
@@ -54,8 +56,8 @@
    :output-format of)
   (codex:document :mnas-package)
   (make-graphs)
-  (mnas-package:copy-doc->public-html "mnas-package")
-  (mnas-package:rsync-doc "mnas-package"))
+  #+nil (mnas-package:copy-doc->public-html "mnas-package")
+  #+nil (mnas-package:rsync-doc "mnas-package"))
 
 #+nil
 (make-all)

@@ -53,7 +53,7 @@
     :serial nil
     :components
     ((:file "mnas-package")
-     (:file "mnas-package-doc")))))
+     (:file "mnas-package-doc" :depends-on ("mnas-package"))))))
 
 (defsystem "mnas-package/sec"
   :description "Содержит некоторые функции и обобщенные функции,
@@ -71,7 +71,7 @@
   :components ((:module "src/sec"
 		:serial nil
                 :components ((:file "sec")
-                             (:file "sec-doc")))))
+                             (:file "sec-doc" :depends-on ("sec"))))))
 
 (defsystem "mnas-package/obj"
   :description "Содержит некоторые функции и обобщенные функции,
@@ -100,7 +100,7 @@
   :components ((:module "src/pkg"
 		:serial nil
                 :components ((:file "pkg")
-                             (:file "pkg-doc")))))
+                             (:file "pkg-doc" :depends-on ("pkg"))))))
 
 (defsystem "mnas-package/sys"
   :description "Содержит некоторые функции для извлечения иформации о системах, поределенных с помощью @b(asdf)"
@@ -112,7 +112,7 @@
   :components ((:module "src/sys"
 		:serial nil
                 :components ((:file "sys")
-                             (:file "sys-doc")))))
+                             (:file "sys-doc" :depends-on ("sys"))))))
 
 (defsystem "mnas-package/make"
   :description "Содержит некоторые функции и обобщенные функции,
@@ -125,7 +125,7 @@
   :components ((:module "src/make"
 		:serial nil
                 :components ((:file "make")
-                             (:file "make-doc")))))
+                             (:file "make-doc" :depends-on ("make"))))))
 
 (defsystem "mnas-package/view"
   :description "Содержит некоторые функции и обобщенные функции,
@@ -138,7 +138,7 @@
   :components ((:module "src/view"
 		:serial nil
                 :components ((:file "view")
-                             (:file "view-doc")))))
+                             (:file "view-doc" :depends-on ("view"))))))
 
 (defsystem "mnas-package/tests"
   :description "Тестирование систем, входящих  в проект mnas-package"
@@ -187,6 +187,6 @@
   :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :depends-on ("mnas-package" "codex")
-  :components ((:module "src/doc"
+  :components ((:module "src/docs"
 		:serial nil
-                :components ((:file "doc")))))
+                :components ((:file "docs")))))
