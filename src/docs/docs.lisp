@@ -13,14 +13,14 @@
 (defun make-document ()
     (loop
       :for i :in
-      '((:mnas-package         :mnas-package)
-        (:mnas-package/sys     nil)
-        (:mnas-package/view    nil)
-        (:mnas-package/make    nil)
-        (:mnas-package/pkg     nil)
-        (:mnas-package/obj     nil)
-        (:mnas-package/sec     nil :internal t)
-        (:mnas-package/example nil :internal t)
+      '((:mnas-package         :mnas-package :internal t)
+        (:mnas-package/sys     nil           :internal t)
+        (:mnas-package/view    nil           :internal t)
+        (:mnas-package/make    nil           :internal t)
+        (:mnas-package/pkg     nil           :internal t)
+        (:mnas-package/obj     nil           :internal t)
+        (:mnas-package/sec     nil           :internal t)
+        (:mnas-package/example nil           :internal t)
         )
       :do (apply #'mnas-package:document i)))
 
@@ -28,6 +28,7 @@
 
 (defun make-graphs ()
   (loop
+    :for j :from 1
     :for i :in
     '(:mnas-package     
       :mnas-package/sys 
@@ -37,27 +38,28 @@
       :mnas-package/obj
       :mnas-package/sec
       )
-    :do (mnas-package:make-codex-graphs i i)))
+    :do (progn
+          (mnas-package:make-codex-graphs i i)
+          (format t "~A ~A~%" j i))))
 
 (defun make-all (&aux
                    (of (if (find (uiop:hostname)
                                  mnas-package:*intranet-hosts*
-                                 :test #'string=)
+                                 :test #'string= :key #'first)
                            '(:type :multi-html :template :gamma)
                            '(:type :multi-html :template :minima))))
   (mnas-package:make-html-path :mnas-package)
   (make-document)
-  (make-graphs)
-  (mnas-package:make-mainfest-lisp
-   '(:mnas-package)
-   "Mnas-Package"
-   '("Mykola Matvyeyev")
-   (mnas-package:find-sources "mnas-package")
-   :output-format of)
+  (mnas-package:make-mainfest-lisp '(:mnas-package)
+                                   "Mnas-Package"
+                                   '("Mykola Matvyeyev")
+                                   (mnas-package:find-sources "mnas-package")
+                                   :output-format of)
   (codex:document :mnas-package)
   (make-graphs)
-  #+nil (mnas-package:copy-doc->public-html "mnas-package")
-  #+nil (mnas-package:rsync-doc "mnas-package"))
+  (mnas-package:copy-doc->public-html "mnas-package")
+  ;;;; (mnas-package:rsync-doc "mnas-package")
+  :make-all-finish)
 
 #+nil
 (make-all)
