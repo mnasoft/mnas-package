@@ -122,11 +122,20 @@
     (apply #'concatenate 'string (nreverse rez))))
 
 (defun remove-msys-prefix (path)
+  "@b(Описание:) функция @b(remove-msys-prefix)
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (remove-msys-prefix
+   \"D:/home/_namatv/PRG/msys64/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/build/mnas-package/html/\")
+  => \"/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/build/mnas-package/html\"
+@end(code)
+"
   (let ((msystem-prefix (uiop:getenv "MSYSTEM_PREFIX")))
     (if msystem-prefix
         (mk-pathname
          (nthcdr   
-          (1- (length (mnas-string:split "/" msystem-prefix)))
+          (1- (length (mnas-string:split "/" msystem-prefix :omit-nulls nil)))
           (mnas-string:split "/" path)))
         path)))
 
