@@ -138,10 +138,8 @@
  => \"/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/build/mnas-package/html/\"
 @end(code)
 "
-  (concatenate 'string
-               (remove-msys-prefix
-                (codex-html-pathname
-                 (asdf:find-system system-name)))
+  (concatenate 'string (codex-html-pathname
+                        (asdf:find-system system-name))
                "/"))
 
 (defun copy-doc->public-html (system-name)
@@ -155,7 +153,7 @@
   (inferior-shell:run/lines
    `(rsync "-Pazh"
            "--delete"
-           ,(codex-html-pathname/ system-name)  
+           ,(remove-msys-prefix (codex-html-pathname/ system-name))
            ,(remove-msys-prefix (concatenate 'string
                                              (namestring (uiop/common-lisp:user-homedir-pathname))
                                              "public_html/Common-Lisp-Programs/"
@@ -185,7 +183,7 @@
       (inferior-shell:run/lines `(rsync
                                   "-Pazh"
                                   "--delete"
-                                  ,(codex-html-pathname/ system-name)
+                                  ,(remove-msys-prefix (codex-html-pathname/ system-name))
                                   ,(concatenate 'string (second host) system-name))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
