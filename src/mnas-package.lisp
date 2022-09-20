@@ -127,16 +127,18 @@
  @b(Пример использования:)
 @begin[lang=lisp](code)
  (remove-msys-prefix
-   \"D:/home/_namatv/PRG/msys64/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/build/mnas-package/html/\")
-  => \"/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/build/mnas-package/html\"
-@end(code)
-"
+    \"D:/home/_namatv/PRG/msys64/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/build/mnas-package/html\")
+    => \"/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/build/mnas-package/html\"
+
+ (remove-msys-prefix
+  \"D:/home/_namatv/PRG/msys64/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/build/mnas-package/html/\")
+  => \"/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/build/mnas-package/html/\"
+@end(code)"
   (let ((msystem-prefix (uiop:getenv "MSYSTEM_PREFIX")))
     (if msystem-prefix
-        (mk-pathname
-         (nthcdr   
-          (1- (length (mnas-string:split "/" msystem-prefix :omit-nulls nil)))
-          (mnas-string:split "/" path)))
+        (let ((msystem-prefix-len (1- (length (mnas-string:split "/" msystem-prefix))))
+              (path-split (mnas-string:split "/" path :omit-nulls nil)))
+          (mk-pathname (nthcdr msystem-prefix-len path-split)))
         path)))
 
 (defun codex-html-pathname/ (system-name)
