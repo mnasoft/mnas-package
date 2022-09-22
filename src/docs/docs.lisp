@@ -11,18 +11,22 @@
 (in-package :mnas-package/docs)
 
 (defun make-document ()
-    (loop
-      :for i :in
-      '((:mnas-package         :mnas-package :internal t)
-        (:mnas-package/sys     nil           :internal t)
-        (:mnas-package/view    nil           :internal t)
-        (:mnas-package/make    nil           :internal t)
-        (:mnas-package/pkg     nil           :internal t)
-        (:mnas-package/obj     nil           :internal t)
-        (:mnas-package/sec     nil           :internal t)
-        (:mnas-package/example nil           :internal t)
-        )
-      :do (apply #'mnas-package:document i)))
+  (loop
+    :for j :from 1
+    :for i :in
+    '((:mnas-package         :mnas-package :internal t)
+      (:mnas-package/sys     nil           :internal t)
+      (:mnas-package/view    nil           :internal t)
+      (:mnas-package/make    nil           :internal t)
+      (:mnas-package/pkg     nil           :internal t)
+      (:mnas-package/obj     nil           :internal t)
+      (:mnas-package/sec     nil           :internal t)
+      (:mnas-package/example nil           :internal t)
+      )
+    :do
+       (progn
+         (apply #'mnas-package:document i)
+         (format t "~A ~A~%" j i))))
 
 (defun make-graphs ()
   (loop
