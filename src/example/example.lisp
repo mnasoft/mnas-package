@@ -1,6 +1,6 @@
 ;;;; ./src/example/example.lisp
 
-(defpackage #:mnas-package/example
+(defpackage :mnas-package/example
   (:use #:cl)
   ;; Vriables
   (:export *v-c-exp* *v-a-exp* *v-b-exp*)

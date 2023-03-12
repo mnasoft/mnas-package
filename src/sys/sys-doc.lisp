@@ -1,6 +1,6 @@
 ;;;; ./mnas-package/src/sys/sys-doc.lisp
 
-(in-package #:mnas-package/sys)
+(in-package :mnas-package/sys)
 
 (defmacro make-doc (obj-name obj-type doc-string)
   `(setf (documentation ,obj-name ,obj-type)

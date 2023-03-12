@@ -50,10 +50,10 @@
                "inferior-shell") ;;  Рассмотреть вопрос об удалении inferior-shell
   :components
   ((:module "src" 
-    :serial nil
+    :serial t
     :components
     ((:file "mnas-package")
-     (:file "mnas-package-doc" :depends-on ("mnas-package"))))))
+     (:file "mnas-package-doc"))))) ;;;; :depends-on ("mnas-package")
 
 (defsystem "mnas-package/sec"
   :description "Содержит некоторые функции и обобщенные функции,

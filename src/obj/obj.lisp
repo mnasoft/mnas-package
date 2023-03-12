@@ -1,6 +1,6 @@
 ;;;; ./src/obj/obj.lisp
  
-(defpackage #:mnas-package/obj
+(defpackage :mnas-package/obj
   (:use #:cl )
   (:nicknames "MPKG/OBJ")
   (:export obj-package
@@ -19,7 +19,7 @@
 "
    ))
 
-(in-package #:mnas-package/obj)
+(in-package :mnas-package/obj)
 
 (defgeneric obj-name (obj))
 

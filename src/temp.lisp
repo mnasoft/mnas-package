@@ -28,12 +28,23 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defun remove-msys-prefix (path)
+  (let ((msystem-prefix (uiop:getenv "MSYSTEM_PREFIX")
+                        ))
+    (if msystem-prefix
+        (mk-pathname
+         (nthcdr   
+          (1- (length (mnas-string:split "/" msystem-prefix)))
+          (mnas-string:split "/" path)))
+        path)))
 
 
-
-
-
-
-
-
-
+(let ((msystem-prefix "D:/home/namatv/PRG/mingw64/mingw64/"
+              
+                      ))
+  (if msystem-prefix
+      (mk-pathname
+       (nthcdr   
+        (1- (length (mnas-string:split "/" msystem-prefix)))
+        (mnas-string:split "/" path)))
+      path))

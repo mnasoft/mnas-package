@@ -11,7 +11,7 @@
                           "mnas-package-graph.scr" "mnas-package-sys-graph.scr"
                           "mnas-package-view-graph.scr"
                           "mnas-package-make-graph.scr"
-                          "mnas-package-pkg-graph.scr"
                           "mnas-package-obj-graph.scr"
+                          "mnas-package-pkg-graph.scr"
                           "mnas-package-sec-graph.scr")
                 )))

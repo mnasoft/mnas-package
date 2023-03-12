@@ -1,6 +1,6 @@
 ;;;; ./src/docs/docs.lisp
 
-(defpackage #:mnas-package/doc
+(defpackage :mnas-package/doc
   (:use #:cl ) ;; :mnas-package/pkg
   (:nicknames "MPKG/DOC")
   (:export include-in-package
@@ -78,7 +78,7 @@
 ;;;;;;;;;;;;;;;;;;;;
 
 (defun include-in-package (package &key (stream t) &aux (pkg (find-package package)))
-    (format stream "~%(in-package #:~A)~2%" (mnas-package/obj:obj-name pkg)))
+    (format stream "~%(in-package :~A)~2%" (mnas-package/obj:obj-name pkg)))
 
 (defun make-packages (package &key (stream t) &aux (pkg  (find-package package)))
   "(make-packages :mnas-package/example)"

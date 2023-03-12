@@ -1,6 +1,6 @@
 ;;;; ./src/sec/sec.lisp
 
-(defpackage #:mnas-package/sec
+(defpackage :mnas-package/sec
   (:use #:cl ) 
   (:nicknames "MPKG/SEC")
   (:export *min-doc-length*)

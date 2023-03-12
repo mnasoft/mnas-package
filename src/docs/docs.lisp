@@ -1,6 +1,6 @@
 ;;;; ./src/docs/docs.lisp
 
-(defpackage #:mnas-package/docs
+(defpackage :mnas-package/docs
   (:use #:cl ) ;; :mnas-package/pkg
   (:nicknames "MPKG/DOCS")
   (:export make-all)

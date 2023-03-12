@@ -1,6 +1,6 @@
 ;;;; ./src/mnas-package.lisp
 
-(defpackage #:mnas-package
+(defpackage :mnas-package
   (:use #:cl ) ;;;; #:mnas-package/make-graph
   (:nicknames "MPKG")
 
@@ -64,7 +64,7 @@
 "
    ))
 
-(in-package #:mnas-package)
+(in-package :mnas-package)
 
 (defun codex-docs-pathname (system-designator)
   "@b(Описание:) функция @b(codex-docs-pathname) возвращает строку,
