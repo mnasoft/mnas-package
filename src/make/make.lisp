@@ -1,6 +1,6 @@
 ;;;; ./src/make/make.lisp
 
-(defpackage #:mnas-package/make
+(defpackage :mnas-package/make
   (:use #:cl ) ;; :mnas-package/pkg
   (:nicknames "MPKG/MAKE")
   (:export system-graph

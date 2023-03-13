@@ -1,6 +1,6 @@
 ;;;; ./src/pkg/pkg.lisp
 
-(defpackage #:mnas-package/pkg
+(defpackage :mnas-package/pkg
   (:use #:cl )
   (:nicknames "MPKG/PKG")
   (:export package-variables

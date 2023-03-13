@@ -1,6 +1,6 @@
 ;;;; ./src/view/view.lisp
 
-(defpackage #:mnas-package/view
+(defpackage :mnas-package/view
   (:use #:cl ) ;; :mnas-package/pkg
   (:nicknames "MPKG/VIEW")
   (:export system-graph

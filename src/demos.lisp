@@ -1,6 +1,6 @@
 ;;;; demos.lisp
 
-(in-package #:mnas-package)
+(in-package :mnas-package)
 
 (defparameter *sample-var-1* '(1 2 3))
 (defparameter *sample-var-2* ())
