@@ -1,4 +1,5 @@
 ;;;; ./mnas-package/src/obj/obj-doc.lisp
+
 (in-package :mnas-package/obj)
 
 (defmacro make-doc (obj-name obj-type doc-string)

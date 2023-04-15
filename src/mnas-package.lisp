@@ -122,12 +122,23 @@
     (apply #'concatenate 'string (nreverse rez))))
 
 (defun remove-msys-prefix (path)
+  "@b(Описание:) функция @b(remove-msys-prefix)
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (remove-msys-prefix
+    \"D:/home/_namatv/PRG/msys64/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/build/mnas-package/html\")
+    => \"/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/build/mnas-package/html\"
+
+ (remove-msys-prefix
+  \"D:/home/_namatv/PRG/msys64/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/build/mnas-package/html/\")
+  => \"/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/build/mnas-package/html/\"
+@end(code)"
   (let ((msystem-prefix (uiop:getenv "MSYSTEM_PREFIX")))
     (if msystem-prefix
-        (mk-pathname
-         (nthcdr   
-          (1- (length (mnas-string:split "/" msystem-prefix)))
-          (mnas-string:split "/" path)))
+        (let ((msystem-prefix-len (1- (length (mnas-string:split "/" msystem-prefix))))
+              (path-split (mnas-string:split "/" path :omit-nulls nil)))
+          (mk-pathname (nthcdr msystem-prefix-len path-split)))
         path)))
 
 (defun codex-html-pathname/ (system-name)
@@ -138,10 +149,8 @@
  => \"/home/namatv/quicklisp/local-projects/mnas/mnas-package/docs/build/mnas-package/html/\"
 @end(code)
 "
-  (concatenate 'string
-               (remove-msys-prefix
-                (codex-html-pathname
-                 (asdf:find-system system-name)))
+  (concatenate 'string (codex-html-pathname
+                        (asdf:find-system system-name))
                "/"))
 
 (defun copy-doc->public-html (system-name)
@@ -155,7 +164,7 @@
   (inferior-shell:run/lines
    `(rsync "-Pazh"
            "--delete"
-           ,(codex-html-pathname/ system-name)  
+           ,(remove-msys-prefix (codex-html-pathname/ system-name))
            ,(remove-msys-prefix (concatenate 'string
                                              (namestring (uiop/common-lisp:user-homedir-pathname))
                                              "public_html/Common-Lisp-Programs/"
@@ -185,7 +194,7 @@
       (inferior-shell:run/lines `(rsync
                                   "-Pazh"
                                   "--delete"
-                                  ,(codex-html-pathname/ system-name)
+                                  ,(remove-msys-prefix (codex-html-pathname/ system-name))
                                   ,(concatenate 'string (second host) system-name))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

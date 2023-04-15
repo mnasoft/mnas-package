@@ -1,4 +1,5 @@
 ;;;; ./mnas-package/src/mnas-package-doc.lisp
+
 (in-package :mnas-package)
 
 (in-package :MNAS-PACKAGE)
@@ -12,6 +13,7 @@
         (sb-mop:class-direct-slots  (find-class class))
         :key #'sb-mop:slot-definition-name))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 (make-doc
