@@ -25,14 +25,13 @@
 			       (out-type "pdf")
 			       (dpi "300")
 			       (viewer mnas-graph/view:*viewer-path*))
-"@b(Описание:) system-graph визуализирует граф систем, от которых зависит
-система @b(system).
+"@b(Описание:) функция @b(system-graph) визуализирует граф систем, от
+которых зависит система @b(system).
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
  (mnas-package/view:system-graph :mnas-package :out-type \"png\" :viewer nil)
-@end(code)
-"
+@end(code)"
   (mnas-graph/view:view-graph
    (mpkg/make:system-graph system)
    :fpath        fpath
@@ -47,31 +46,31 @@
 |#
 
 (defun symbol-graph (package-name
-			  &key
-			    (fpath mnas-graph/view:*output-path*)
-			    (fname  (format nil "graph-~6,'0D" (incf mnas-graph/view:*graph-count*)))
-			    (graphviz-prg :filter-dot)
-			    (out-type "pdf")
-			    (dpi "300")
-			    (viewer mnas-graph/view:*viewer-path*))
-  "@b(Описание:) view-symbol-graph отображает граф зависимостей глобальных символов.
+		     &key
+		       (fpath mnas-graph/view:*output-path*)
+		       (fname  (format nil "graph-~6,'0D" (incf mnas-graph/view:*graph-count*)))
+		       (graphviz-prg :filter-dot)
+		       (out-type "pdf")
+		       (dpi "300")
+		       (viewer mnas-graph/view:*viewer-path*))
+  "@b(Описание:) функция @b(symbol-graph) отображает граф зависимостей глобальных символов.
 
- Позволяет ответить на вопрос: в какой функции используется тот или иной глобальный символ. 
+ Позволяет ответить на вопрос: в какой функции используется тот или
+ иной глобальный символ.
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
  (view-symbol-graph :mnas-package)
-@end(code)
-"
+@end(code)"
   (when (symbolp package-name) (require package-name))
   (when (stringp package-name) (require package-name))
   (mnas-graph/view:view-graph (mpkg/make:symbol-graph package-name)
-			 :fpath        fpath
-                         :fname        fname
-                         :graphviz-prg graphviz-prg
-                         :out-type     out-type
-                         :dpi          dpi
-                         :viewer       viewer))
+			      :fpath        fpath
+                              :fname        fname
+                              :graphviz-prg graphviz-prg
+                              :out-type     out-type
+                              :dpi          dpi
+                              :viewer       viewer))
 
 (defun class-graph (package-name
                     &key
@@ -84,14 +83,13 @@
 		      (out-type "pdf")
 		      (dpi "300")
 		      (viewer mnas-graph/view:*viewer-path*))
-  "@b(Описание:) view-class-graph выводит визуальное представление 
+  "@b(Описание:) функция @b(class-graph) выводит визуальное представление
 иерархии классов (графа наследования).
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
  (mnas-package:mnas-package-demo-11)
-@end(code)
-"
+@end(code)"
   (when (symbolp package-name) (require package-name))
   (when (stringp package-name) (require package-name))
   (mnas-graph/view:view-graph
@@ -106,22 +104,21 @@
    :viewer       viewer))
 
 (defun call-graph (package-name
-			   &key
-			     (fpath mnas-graph/view:*output-path*)
-			     (fname  (format nil "graph-~6,'0D" (incf mnas-graph/view:*graph-count*)))
-			     (graphviz-prg :filter-dot)
-			     (out-type "pdf")
-			     (dpi "300")
-			     (viewer mnas-graph/view:*viewer-path*)
-			     (system-name package-name))
-" @b(Описание:) функция @b(view-call-graph) выполняет визуализацию графа вызовов 
-пакета @b(package-name).
+		   &key
+		     (fpath mnas-graph/view:*output-path*)
+		     (fname  (format nil "graph-~6,'0D" (incf mnas-graph/view:*graph-count*)))
+		     (graphviz-prg :filter-dot)
+		     (out-type "pdf")
+		     (dpi "300")
+		     (viewer mnas-graph/view:*viewer-path*)
+		     (system-name package-name))
+  "@b(Описание:) функция @b(call-graph) выполняет визуализацию графа
+ вызовов пакета @b(package-name).
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
- (view-call-graph :mnas-package)
-@end(code)
-"
+ (call-graph :mnas-package)
+@end(code)"
   (when (symbolp package-name) (require system-name))
   (when (stringp package-name) (require system-name))
   (mnas-graph/view:view-graph
@@ -162,6 +159,7 @@
 			(out-type "pdf")
 			(dpi "300")
 			(viewer mnas-graph/view:*viewer-path*))
+  "Not yet documented"
   (mnas-graph/view:view-graph
    (mpkg/make:generic-graph generic)
    :fpath        fpath

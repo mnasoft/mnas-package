@@ -8,10 +8,8 @@
 
 (defun find-slot (slot-name class)
   (find slot-name
-        (sb-mop:class-direct-slots  (find-class class))
-        :key #'sb-mop:slot-definition-name))
-
-
+        (closer-mop:class-direct-slots (find-class class))
+        :key #'closer-mop:slot-definition-name))
 
 (make-doc
   #'MNAS-PACKAGE/OBJ:OBJ-NAME-STRING 'function
@@ -26,7 +24,8 @@
 (make-doc
   #'MNAS-PACKAGE/OBJ:OBJ-PACKAGE-STRING 'function
   "@b(Описание:) обобщенная функция @b(obj-package-string)
-возвращает строку, представляющую имя пакета, в котором определен объект @b(obj).")
+возвращает строку, представляющую имя пакета, в котором определен
+объект @b(obj).")
 
 (make-doc
   #'MNAS-PACKAGE/OBJ:OBJ-PACKAGE 'function
@@ -90,7 +89,7 @@
   (find-method #'MNAS-PACKAGE/OBJ:OBJ-PACKAGE NIL '(PACKAGE))
   t
   "@b(Описание:) метод @b(obj-package) возвращает символ,
-представляющий имя класса.
+представляющий имя пакета.
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
@@ -99,7 +98,7 @@
 @end(code)")
 
 (make-doc
-  (find-method #'MNAS-PACKAGE/OBJ:OBJ-PACKAGE NIL '(SB-MOP:SLOT-DEFINITION))
+  (find-method #'MNAS-PACKAGE/OBJ:OBJ-PACKAGE NIL '(CLOSER-MOP:SLOT-DEFINITION))
   t
   "@b(Описание:) метод @b(obj-package) возвращает символ,
 представляющий имя определение слота.
@@ -181,7 +180,7 @@
 @end(code)")
 
 (make-doc
-  (find-method #'MNAS-PACKAGE/OBJ:OBJ-NAME NIL '(SB-MOP:SLOT-DEFINITION))
+  (find-method #'MNAS-PACKAGE/OBJ:OBJ-NAME NIL '(CLOSER-MOP:SLOT-DEFINITION))
   t
   "@b(Описание:) метод @b(obj-name) возвращает символ,
 представляющий имя определеия слота.")

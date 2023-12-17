@@ -35,8 +35,8 @@
 
 (defun find-slot (slot-name class)
   (find slot-name
-        (sb-mop:class-direct-slots  (find-class class))
-        :key #'sb-mop:slot-definition-name))
+        (closer-mop:class-direct-slots  (find-class class))
+        :key #'closer-mop:slot-definition-name))
 
 (defun include-macro (&key (stream t))
   (format stream 
@@ -46,8 +46,8 @@
 
 (defun find-slot (slot-name class)
   (find slot-name
-        (sb-mop:class-direct-slots  (find-class class))
-        :key #'sb-mop:slot-definition-name))
+        (closer-mop:class-direct-slots  (find-class class))
+        :key #'closer-mop:slot-definition-name))
 ~%"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -68,10 +68,10 @@
 (defun make-slots (package &key (stream t) (external t) (internal nil) (inherited nil))
   "(make-slots :mnas-package/example)"
   (loop :for class :in (mnas-package/pkg:package-classes package :external external :internal internal :inherited inherited) :do
-    (loop :for slot :in (sb-mop:class-direct-slots class) :do
+    (loop :for slot :in (closer-mop:class-direct-slots class) :do
       (when (stringp (documentation slot t))
         (format stream "~2%(make-doc~%  (find-slot '~S '~S)~% t~%  ~S)"
-                (sb-mop:slot-definition-name slot)
+                (closer-mop:slot-definition-name slot)
                 (mnas-package/obj:obj-name class)
                 (documentation slot t))))))
 
@@ -142,9 +142,9 @@
         :do
            (when (stringp (documentation i t))
              (format stream "~2%(make-doc~%  (find-method #'~S ~S '~S)~%  t~%  ~S)"
-                     (sb-mop:generic-function-name (sb-mop:method-generic-function i))
+                     (closer-mop:generic-function-name (closer-mop:method-generic-function i))
                      (method-qualifiers i)
-                     (mapcar #' class-name(sb-mop:method-specializers i))
+                     (mapcar #' class-name(closer-mop:method-specializers i))
                      (documentation i t)))))
 
 (defun make-methods (package &key (stream t) (external t) (internal nil) (inherited nil))
@@ -152,9 +152,9 @@
   (loop :for i :in (mnas-package/pkg:package-methods package :external external :internal internal :inherited inherited) :do
     (when (stringp (documentation i t))
       (format stream "~2%(make-doc~%  (find-method #'~S ~S '~S)~%  t~%  ~S)"
-              (sb-mop:generic-function-name (sb-mop:method-generic-function i))
+              (closer-mop:generic-function-name (closer-mop:method-generic-function i))
               (method-qualifiers i)
-              (mapcar #' class-name(sb-mop:method-specializers i))
+              (mapcar #' class-name(closer-mop:method-specializers i))
               (documentation i t)))))
 
 (defun make-all (package &key (stream t) (external t) (internal t) (inherited nil))

@@ -26,6 +26,13 @@
 (in-package :mnas-package/make)
 
 (defun system-graph (system)
+  "@b(Описание:) функция @b(system-graph) возвращает граф систем, от
+которых зависит система @b(system).
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (mnas-package/make:system-graph :mnas-package)
+@end(code)"
   (mnas-graph:make-graph 
    (mapcar
     #'(lambda (el)
@@ -37,9 +44,16 @@
      :initial-value (make-list 0)))))
 
 (defun symbol-graph (package-name
-			&aux
-			  (package (find-package package-name))
-			  (pkg-symbols nil))
+		     &aux
+		       (package (find-package package-name))
+		       (pkg-symbols nil))
+  "@b(Описание:) функция @b(symbol-graph) строит граф использования методпми и функциями 
+внешних символов.
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (symbol-graph :mnas-string)
+@end(code)"
   (declare ((or package string symbol) package-name))
   (cond
     (package
@@ -50,13 +64,20 @@
     (t (error "~S does not designate a package" package-name))))
 
 (defun class-graph (package-name
-                         &key
-                           (external t)
-                           (internal nil)
-                           (inherited nil)
-			 &aux
-			   (package (find-package package-name))
-			   (graph (make-instance 'mnas-graph:<graph>)))
+                    &key
+                      (external t)
+                      (internal nil)
+                      (inherited nil)
+		    &aux
+		      (package (find-package package-name))
+		      (graph (make-instance 'mnas-graph:<graph>)))
+  "@b(Описание:) функция @b(class-graph) создает граф наследования
+ классов.
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (class-graph :mnas-package )
+@end(code)"
   (declare ((or package string symbol) package-name))
   (flet ((find-subclasses (class)
 	   (mapcar
@@ -79,9 +100,16 @@
   graph)
 
 (defun call-graph (package-name
-			&aux
-			  (package (find-package package-name))
-			  (pkg-functions nil))
+		   &aux
+		     (package (find-package package-name))
+		     (pkg-functions nil))
+  "@b(Описание:) функция @b(call-graph) возвращает граф вызовов пакета
+ @b(package-name).
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (mnas-package:make-call-graph :mnas-package)
+@end(code)"
   (declare ((or package string symbol) package-name))
   (cond
     (package
@@ -94,6 +122,14 @@
 (defun class-slot-graph (class
 		         &aux
 		           (graph (make-instance 'mnas-graph:<graph>)))
+    "@b(Описание:) функция @b(class-slot-graph) создает граф слотов класса
+с именем @b(class-name).
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (require :temperature-fild)
+ (mnas-graph:view-graph (class-slot-graph (find-class 'temperature-fild/sector:<sector>)))
+@end(code)"
   ;;(declare ((or class symbol) class-name))
   (let ((cl-node (make-instance 'mnas-graph:<node> :owner graph :name (string (mnas-package/obj:obj-name class)))))
     (mnas-graph:insert-to cl-node graph)
@@ -115,5 +151,19 @@
                       &aux
                         (package *package*)
 		        (graph (make-instance 'mnas-graph:<graph>)))
+  "@b(Описание:) функция @b(generic-graph) возвращает граф параметров
+ обобщенной функций. 
+
+ Данный граф должен быть трехуровневым:
+@begin(list)
+ @item(первый уровень - обобщенная функция;)
+ @item(второй - номер по порядку для обязательного параметра и его имя; )
+ @item(третий - тип обязательного параметра.)
+@end(list)
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+
+@end(code)"
   generic
   graph)

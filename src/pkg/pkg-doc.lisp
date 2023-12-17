@@ -6,26 +6,22 @@
          ,doc-string))
 
 (defun find-slot (slot-name class)
-  (find slot-name
-        (sb-mop:class-direct-slots  (find-class class))
-        :key #'sb-mop:slot-definition-name))
-
-
+  (find slot-name (closer-mop:class-direct-slots (find-class class))
+        :key #'closer-mop:slot-definition-name))
 
 (make-doc
-  #'MNAS-PACKAGE/PKG:WHO-CALLS-LST 'function
-  "")
+ #'MNAS-PACKAGE/PKG:WHO-CALLS-LST 'function
+ "Not yet documented")
 
 (make-doc
   #'MNAS-PACKAGE/PKG:PACKAGE-SETF-FUNCTIONS 'function
-  "@b(Описание:) функция @b(package-functions) возвращает список функций пакета
-@b(package-name).
+  "@b(Описание:) функция @b(package-setf-functions) возвращает список
+setf-функций пакета @b(package-name).
 
  @b(Пример использования:) @begin[lang=lisp](code)
  (package-setf-functions :mnas-package/example :internal t)
  => (#<FUNCTION (SETF MNAS-PACKAGE/EXAMPLE::FOO)>)
-@end(code)
-")
+@end(code)")
 
 (make-doc
   #'MNAS-PACKAGE/PKG:PACKAGE-METHODS 'function
@@ -40,39 +36,39 @@
    #<STANDARD-METHOD MNAS-PACKAGE/EXAMPLE:M-C-EXP (MNAS-PACKAGE/EXAMPLE::<C-A-INT> MNAS-PACKAGE/EXAMPLE::<C-B-INT> MNAS-PACKAGE/EXAMPLE::<C-C-INT>) {10046349A3}>
    #<STANDARD-METHOD MNAS-PACKAGE/EXAMPLE:M-C-EXP (MNAS-PACKAGE/EXAMPLE:<C-A-EXP> MNAS-PACKAGE/EXAMPLE:<C-B-EXP> MNAS-PACKAGE/EXAMPLE:<C-C-EXP>) {10049D5BD3}>)
 
-@end(code)
-")
+@end(code)")
 
 (make-doc
   #'MNAS-PACKAGE/PKG:PACKAGE-MACROSES 'function
-  "@b(Описание:) функция @b(package-functions) возвращает список макросов пакета @b(package-name).
+  "@b(Описание:) функция @b(package-macroses) возвращает список
+ макросов пакета @b(package-name).
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
  (package-macroses :mnas-package/example :internal t)
  => (#<FUNCTION (MACRO-FUNCTION MNAS-PACKAGE/EXAMPLE::MAK-A-SHORT) {52D45ECB}>
      #<FUNCTION (MACRO-FUNCTION MNAS-PACKAGE/EXAMPLE::MAK-A) {52D454BB}>)
-@end(code)
-")
+@end(code)")
 
 (make-doc
   #'MNAS-PACKAGE/PKG:FILTER-FUNCTIONS 'function
   "@b(Описание:) функция filter-functions возвращает список символов, являющихся
 сопряженными с функциями.
 
- @b(Переменые:) @begin(list) @item(symbols - список символов пакета.)  @end(list)
-")
+ @b(Переменые:)
+@begin(list)
+@item(symbols - список символов пакета.)
+@end(list)")
 
 (make-doc
   #'MNAS-PACKAGE/PKG:PACKAGE-VARIABLES 'function
-  " @b(Описание:) функция @b(package-variables) возвращает список символов пакета
+  "@b(Описание:) функция @b(package-variables) возвращает список символов пакета
 @b(package-name).
 
  @b(Пример использования:)
 @begin[lang=lisp](code)
  (package-variables :mnas-package :inherited t)
-@end(code)
-")
+@end(code)")
 
 (make-doc
   #'MNAS-PACKAGE/PKG:FILTER-MACROSES 'function
@@ -105,8 +101,7 @@
       #<STANDARD-CLASS MNAS-PACKAGE/EXAMPLE::<B-SHORT>>
       #<STANDARD-CLASS MNAS-PACKAGE/EXAMPLE::<C-SHORT>>
       #<STANDARD-CLASS MNAS-PACKAGE/EXAMPLE::<A-SHORT>>)
-@end(code)
-")
+@end(code)")
 
 (make-doc
   #'MNAS-PACKAGE/PKG:FILTER-SETF-FUNCTIONS 'function
@@ -116,16 +111,17 @@
  @b(Переменые:)
 @begin(list) 
 @item(symbols - список символов пакета.)
-@end(list)
-")
+@end(list)")
 
 (make-doc
   #'MNAS-PACKAGE/PKG:FILTER-GENERICS 'function
-  " @b(Описание:) функция @b(filter-generics) возвращает список
+  "@b(Описание:) функция @b(filter-generics) возвращает список
 символов сопряженных с обобщеными функциями.
 
- @b(Переменые:) @begin(list) @item(symbols - список символов пакета.)  @end(list)
-")
+ @b(Переменые:)
+@begin(list)
+@item(symbols - список символов пакета.)
+@end(list)")
 
 (make-doc
   #'MNAS-PACKAGE/PKG:PACKAGE-SYMBOLS-BY-CATEGORY 'function
@@ -137,12 +133,11 @@
  (package-symbols-by-category 'mnas-package :internal nil)                 ;; отбор только внешних символов;
  (package-symbols-by-category :mnas-package)                               ;; отбор внешних и внутренних символов;
  (package-symbols-by-category \"MNAS-PACKAGE\" :internal nil :inherited t) ;; отбор только внешних и заимствованных символов;
-@end(code)
-")
+@end(code)")
 
 (make-doc
   #'MNAS-PACKAGE/PKG:FUNC-TO-STRING 'function
-  NIL)
+  "Not yet documented")
 
 (make-doc
   #'MNAS-PACKAGE/PKG:FILTER-SETF-METHODS 'function
@@ -152,8 +147,7 @@
  @b(Переменые:)
 @begin(list) 
 @item(symbols - список символов пакета.)
-@end(list)
-")
+@end(list)")
 
 (make-doc
   #'MNAS-PACKAGE/PKG:FILTER-SETF-GENERICS 'function
@@ -163,19 +157,17 @@
  @b(Переменые:)
 @begin(list) 
 @item(symbols - список символов пакета.)
-@end(list)
-")
+@end(list)")
 
 (make-doc
   #'MNAS-PACKAGE/PKG:FILTER-VARIABLES 'function
-  " @b(Описание:) функция filter-variables возвращает список символов, являющихся
+  "@b(Описание:) функция filter-variables возвращает список символов, являющихся
 сопряженными со значениями.
 
  @b(Переменые:)
 @begin(list) 
 @item(symbols - список символов пакета.)
-@end(list)
-")
+@end(list)")
 
 (make-doc
   #'MNAS-PACKAGE/PKG:PACKAGE-GENERICS 'function
@@ -191,12 +183,11 @@
      #<STANDARD-GENERIC-FUNCTION MNAS-PACKAGE/EXAMPLE::<C-C-INT>-C (1)>
      #<STANDARD-GENERIC-FUNCTION MNAS-PACKAGE/EXAMPLE::<C-B-INT>-B (1)>
      #<STANDARD-GENERIC-FUNCTION MNAS-PACKAGE/EXAMPLE::<C-A-INT>-A (1)>)
-@end(code)
-")
+@end(code)")
 
 (make-doc
   #'MNAS-PACKAGE/PKG:WHO-REFERENCES-LST 'function
-  "who-references-lst")
+  "Not yet documented")
 
 (make-doc
   #'MNAS-PACKAGE/PKG:PACKAGE-SETF-METHODS 'function
@@ -209,19 +200,17 @@
     (#<STANDARD-METHOD MNAS-PACKAGE/EXAMPLE::M-FOO :AROUND (MNAS-PACKAGE/EXAMPLE::<A> MNAS-PACKAGE/EXAMPLE::<B> T) {10019B69A3}>
      ...
      #<STANDARD-METHOD MNAS-PACKAGE/EXAMPLE::M-FOO-SHORT (MNAS-PACKAGE/EXAMPLE::<A> MNAS-PACKAGE/EXAMPLE::<B> MNAS-PACKAGE/EXAMPLE:<C>) {1001C6CAC3}>)
-@end(code)
-")
+@end(code)")
 
 (make-doc
   #'MNAS-PACKAGE/PKG:PACKAGE-SETF-GENERICS 'function
-  "@b(Описание:) функция @b(package-functions) возвращает список функций пакета
+  "@b(Описание:) функция @b(package-setf-generics) возвращает список функций пакета
 @b(package-name).
 
  @b(Пример использования:) @begin[lang=lisp](code)
  (package-setf-functions :mnas-package/example :internal t)
  => (#<FUNCTION (SETF MNAS-PACKAGE/EXAMPLE::FOO)>)
-@end(code)
-")
+@end(code)")
 
 (make-doc
   #'MNAS-PACKAGE/PKG:FILTER-METHODS 'function
@@ -231,12 +220,11 @@
  @b(Переменые:)
 @begin(list) 
 @item(symbols - список символов пакета.)
-@end(list)
-")
+@end(list)")
 
 (make-doc
   #'MNAS-PACKAGE/PKG::DEFU-DEFM-NAME 'function
-  "")
+  "Not yet documented")
 
 (make-doc
   #'MNAS-PACKAGE/PKG::PACKAGE-SYMBOLS-ALL 'function
@@ -249,12 +237,11 @@
  (package-symbols-all :mnas-package)
  (package-symbols-all (find-package :mnas-package))
  (package-symbols-all \"MNAS-PACKAGE\")
-@end(code)
-")
+@end(code)")
 
 (make-doc
   #'MNAS-PACKAGE/PKG::ORDERED-DEP-TREE 'function
-  NIL)
+  "Not yet documented")
 
 (make-doc
   #'MNAS-PACKAGE/PKG::WHO-REFERENCES 'function
@@ -270,19 +257,19 @@ var. Возвращает список, каждым элементом кото
 
 (make-doc
   #'MNAS-PACKAGE/PKG::WHO-CALLS 'function
-  "")
+    "Not yet documented")
 
 (make-doc
   #'MNAS-PACKAGE/PKG:DEPENDENCIES-OF 'function
-  NIL)
+  "Not yet documented")
 
 (make-doc
   #'MNAS-PACKAGE/PKG:DEPENDENCY-TREE 'function
-  NIL)
+  "Not yet documented")
 
 (make-doc
   #'MNAS-PACKAGE/PKG::->KEY 'function
-  NIL)
+  "Not yet documented")
 
 (make-doc
   (find-method #'MNAS-PACKAGE/PKG::->KEY NIL '(STRING))
@@ -302,10 +289,10 @@ var. Возвращает список, каждым элементом кото
 (make-doc
   (find-method #'MNAS-PACKAGE/PKG:DEPENDENCY-TREE NIL '(SYMBOL))
   t
-  NIL)
+  "Not yet documented")
 
 (make-doc
   (find-method #'MNAS-PACKAGE/PKG:DEPENDENCIES-OF NIL '(SYMBOL))
   t
-  NIL)
+  "Not yet documented")
 

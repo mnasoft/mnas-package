@@ -1,20 +1,21 @@
 ;;;; mnas-package.asd
 
 (defsystem "mnas-package"
-  :description " Система @b(mnas-package) предназначена для подготовки
-документации, извлекаемой из asdf-систем.
+  :description
+  "Система @b(mnas-package) предназначена для подготовки документации,
+извлекаемой из asdf-систем.
 
 @begin(section) @title(Мотивация)
 
- Система @b(Codex) является достаточно удобной для выполнения
- документирования систем, написанных с использованием @b(Common
- Lisp). Она позволяет получить на выходе документацию приемлемого
- вида.
+Система @b(Codex) является достаточно удобной для выполнения
+документирования систем, написанных с использованием @b(Common
+Lisp). Она позволяет получить на выходе документацию приемлемого вида.
 
- К недостатку сустемы @b(Codex) можно отнести то, что формирование
- шаблона документации не выполняется автоматически. Указание на
- включение разделов документации, относящихся к отдельным сущностям к
- которым можно отнести: 
+К недостатку сустемы @b(Codex) можно отнести то, что формирование
+шаблона документации не выполняется автоматически. Указание на
+включение разделов документации, относящихся к отдельным сущностям к
+которым можно отнести:
+
 @begin(list) 
 @item(системы;) 
 @item(пакеты;)
@@ -36,7 +37,7 @@
 "
   :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
-  :version "0.48.54"
+  :version "0.53.59"
   :serial nil
   :in-order-to ((test-op (test-op "mnas-package/tests")))
   :depends-on ("mnas-package/obj"
@@ -56,12 +57,13 @@
      (:file "mnas-package-doc"))))) ;;;; :depends-on ("mnas-package")
 
 (defsystem "mnas-package/sec"
-  :description "Содержит некоторые функции и обобщенные функции,
-используемые в проекте повсеместно"
+  :description "Содержит некоторые функции и обобщенные функции, используемые в
+проекте повсеместно."
   :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :serial t
-  :depends-on ("mnas-package/obj"
+  :depends-on ("closer-mop"
+               "mnas-package/obj"
                "mnas-package/pkg"
                "mnas-package/sys"
                "mnas-package/make"
@@ -74,8 +76,9 @@
                              (:file "sec-doc" :depends-on ("sec"))))))
 
 (defsystem "mnas-package/obj"
-  :description "Содержит некоторые функции и обобщенные функции,
-используемые в проекте повсеместно"
+  :description
+  "Содержит некоторые функции и обобщенные функции, используемые в
+проекте повсеместно."
   :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :serial t
@@ -87,13 +90,15 @@
                              (:file "obj-doc")))))
 
 (defsystem "mnas-package/pkg"
-  :description "Содержит некоторые функции и обобщенные функции,
-используемые в проекте повсеместно"
+  :description
+  "Содержит некоторые функции и обобщенные функции, используемые в
+проекте повсеместно."
   :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :serial t
   :in-order-to ((test-op (test-op "math/obj/tests")))
-  :depends-on ("alexandria"
+  :depends-on ("closer-mop"
+               "alexandria"
                "slynk"
                "mnas-package/obj"
                )
@@ -103,48 +108,59 @@
                              (:file "pkg-doc" :depends-on ("pkg"))))))
 
 (defsystem "mnas-package/sys"
-  :description "Содержит некоторые функции для извлечения иформации о системах, поределенных с помощью @b(asdf)"
+  :description
+  "Содержит некоторые функции для извлечения иформации о системах,
+поределенных с помощью @b(asdf)."
   :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :serial t
   :in-order-to ((test-op (test-op "math/obj/tests")))
-  :depends-on ("alexandria")
+  :depends-on ("closer-mop"
+               "alexandria")
   :components ((:module "src/sys"
 		:serial nil
                 :components ((:file "sys")
                              (:file "sys-doc" :depends-on ("sys"))))))
 
 (defsystem "mnas-package/make"
-  :description "Содержит некоторые функции и обобщенные функции,
-используемые в проекте повсеместно"
+  :description
+  "Содержит некоторые функции и обобщенные функции, используемые в
+проекте повсеместно."
   :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :serial t
   :in-order-to ((test-op (test-op "math/obj/tests")))
-  :depends-on ("mnas-graph" "mnas-package/pkg")
+  :depends-on ("closer-mop" "mnas-graph" "mnas-package/pkg")
   :components ((:module "src/make"
 		:serial nil
                 :components ((:file "make")
                              (:file "make-doc" :depends-on ("make"))))))
 
 (defsystem "mnas-package/view"
-  :description "Содержит некоторые функции и обобщенные функции,
-используемые в проекте повсеместно"
+  :description
+  "Содержит некоторые функции и обобщенные функции, используемые в
+проекте повсеместно."
   :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
   :serial t
   :in-order-to ((test-op (test-op "math/obj/tests")))
-  :depends-on ("mnas-package/make" "mnas-graph/view")
+  :depends-on ("closer-mop"
+               "mnas-package/make"
+               "mnas-graph/view")
   :components ((:module "src/view"
 		:serial nil
                 :components ((:file "view")
                              (:file "view-doc" :depends-on ("view"))))))
 
 (defsystem "mnas-package/tests"
-  :description "Тестирование систем, входящих  в проект mnas-package"
+  :description
+  "Тестирование систем, входящих  в проект mnas-package."
   :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
-  :depends-on ("mnas-package" "mnas-package/example" "fiveam")
+  :depends-on ("closer-mop"
+               "fiveam"
+               "mnas-package"
+               "mnas-package/example")
   :perform (test-op (o s)
 		    (uiop:symbol-call :mnas-package/tests :run-tests))
   :components ((:module "src/tests"
@@ -168,25 +184,29 @@
 			:components ((:file "example")))))
 
 (defsystem "mnas-package/doc"
-  :description "@b(Описание:) система @b(mnas-package/doc) содержит
-  функции, позволяющие извлекать строки документации из систем,
-  пакетов, классов, переменных, функций, обобщенных функций, методов.
-  Cистема @b(mnas-package/doc) позволяет генерировать код для
-  динамического создания документации к системам, пакетам, классам,
-  переменным, функциям, обобщенным функциям, методам с целью их
-  последующей локализации."
+  :description
+  "@b(Описание:) система @b(mnas-package/doc) содержит функции,
+позволяющие извлекать строки документации из систем, пакетов, классов,
+переменных, функций, обобщенных функций, методов. Cистема
+@b(mnas-package/doc) позволяет генерировать код для динамического
+создания документации к системам, пакетам, классам,переменным,
+функциям, обобщенным функциям, методам с целью их последующей
+локализации."
   :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
-  :depends-on ("mnas-package/obj" "mnas-package/pkg")
+  :depends-on ("closer-mop" "mnas-package/obj" "mnas-package/pkg")
   :components ((:module "src/doc"
 		:serial nil
                 :components ((:file "doc")))))
 
 (defsystem "mnas-package/docs"
-  :description "Зависимости для сборки документации"
+  :description
+  "Зависимости для сборки документации."
   :author "Mykola Matvyeyev <mnasoft@gmail.com>"
   :license "GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 or later"  
-  :depends-on ("mnas-package" "codex")
+  :depends-on ("closer-mop"
+               "codex"
+               "mnas-package" )
   :components ((:module "src/docs"
 		:serial nil
                 :components ((:file "docs")))))

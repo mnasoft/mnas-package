@@ -1,12 +1,12 @@
 * ToDo
-1. [ ] Заменить зависимость от sb-mop на closer-mop.
-2. [ ] Добавить функцию, генерирующую граф параметров обобщенных
+2. [ ] Рассмотреть вопрос об удалении зависимости inferior-shell.
+3. [ ] Добавить функцию, генерирующую граф параметров обобщенных
    функций. Данный граф должен быть трехуровневым: первый уровень имя
    обобщенной функции; второй - имя обязательного параметра; третий -
    тип обязательного параметра - generic-graph.
-3. [ ] Определить функцию для нахождения подсистем базовой системы.
-4. [ ] Определить функцию для нахождения пакетов, которые определяет система.
-5. [ ] Откорректировать функцию отображения графа вызовов так, чтобы:
+4. [ ] Определить функцию для нахождения подсистем базовой системы.
+5. [ ] Определить функцию для нахождения пакетов, которые определяет система.
+6. [ ] Откорректировать функцию отображения графа вызовов так, чтобы:
    - [ ] имена функций для текущего пакета отображались без имени
      пакета;
    - [ ] имена функций для нетекущего пакета отображались с префиксом
@@ -14,21 +14,43 @@
    - [ ] при построении графа вызовов целесообразно хранить не строки
      с именами функций, а функции и обобщенные функции.
 * DoNe
-1. [X] Устранить ошибку remove-msys-prefix при выполнении функции
+1. [X] Возвратить документацию из файлов *-doc.lisp в файлы с исходным
+   кодом. Для возможности автоматической сборки документации:
+   - [X] [[file:~/quicklisp/local-projects/mnas/mnas-package/src/obj/obj-doc.lisp][mnas-package/src/obj/obj-doc.lisp]] ;
+   - [X] [[file:~/quicklisp/local-projects/mnas/mnas-package/src/sys/sys-doc.lisp][mnas-package/src/sys/sys-doc.lisp]] ;
+   - [X] [[file:~/quicklisp/local-projects/mnas/mnas-package/src/pkg/pkg-doc.lisp][mnas-package/src/pkg/pkg-doc.lisp]] ;
+   - [X] [[file:~/quicklisp/local-projects/mnas/mnas-package/src/make/make-doc.lisp][mnas-package/src/make/make-doc.lisp]] ;
+   - [X] [[file:~/quicklisp/local-projects/mnas/mnas-package/src/view/view-doc.lisp][mnas-package/src/view/view-doc.lisp]] ; 
+   - [X] [[file:~/quicklisp/local-projects/mnas/mnas-package/src/sec/sec-doc.lisp][mnas-package/src/sec/sec-doc.lisp]] ; 
+   - [X] [[file:~/quicklisp/local-projects/mnas/mnas-package/src/doc/doc-doc.lisp][mnas-package/src/doc/doc-doc.lisp]] ; 
+   - [X] [[file:~/quicklisp/local-projects/mnas/mnas-package/src/docs/docs-doc.lisp][mnas-package/src/docs/docs-doc.lisp]] ; 
+   - [X] [[file:~/quicklisp/local-projects/mnas/mnas-package/src/examlpe/examlpe-doc.lisp][mnas-package/src/examlpe/examlpe-doc.lisp]] ; 
+2. [X] Заменить зависимость от sb-mop на closer-mop.
+   - [X] Проверить собираемость систем в чистой среде:
+     - [X] (ql:quickload :mnas-package/obj) ;
+     - [X] (ql:quickload :mnas-package/pkg) ;
+     - [X] (ql:quickload :mnas-package/sys) ;
+     - [X] (ql:quickload :mnas-package/make) ;
+     - [X] (ql:quickload :mnas-package/view) ;
+     - [X] (ql:quickload :mnas-package/sec) ;
+     - [X] (ql:quickload :mnas-package/doc) ;
+     - [X] (ql:quickload :mnas-package/docs) ;       
+     - [X] (ql:quickload :mnas-package/example).
+3. [X] Устранить ошибку remove-msys-prefix при выполнении функции
    исчезает конечный прямой слеш (под MSYS2).
-2. [X] Объединить в одну пременную *intranet-hosts* *intranet-server*.
-3. [X] Написать функцию, генерирующую содержимое файла
+4. [X] Объединить в одну пременную *intranet-hosts* *intranet-server*.
+5. [X] Написать функцию, генерирующую содержимое файла
    docs/build/mainfest.lisp
-4. [X] Удалить переменную *internet-hosts*.
-5. [X] Написать подсистему для извлечения строк документации -
+6. [X] Удалить переменную *internet-hosts*.
+7. [X] Написать подсистему для извлечения строк документации -
    mnas-package/doc.
-6. [X] Устранить ощибку при включении документации на Setf-методы. No
+8. [X] Устранить ощибку при включении документации на Setf-методы. No
    method m-a-exp with the lambda list (val (a <c-a-int>)) found.
-7. [X] Отделить подпроект sec.  
-8. [X] Устранить ошибки, возникающие вверх от section-setf-generics,
-   зависимые от ключевого параметра sort
-9. [X] make-doc-generics - warning :pkg 
-10. [X] Проверить возможность выполнения сортировки для функций:
+9. [X] Отделить подпроект sec.  
+10. [X] Устранить ошибки, возникающие вверх от section-setf-generics,
+    зависимые от ключевого параметра sort
+11. [X] make-doc-generics - warning :pkg 
+12. [X] Проверить возможность выполнения сортировки для функций:
     - [X] section-variables;
     - [X] section-macroses;
     - [X] section-functions;
@@ -38,9 +60,9 @@
     - [X] section-methods;
     - [X] section-setf-methods;
     - [X] section-classes;
-11. [X] Расширить систему mnas-package/example для выполнения проверки
+13. [X] Расширить систему mnas-package/example для выполнения проверки
     по сортировке символов.
-12. [X] Добавить функции поиска и вывода документации для нодов
+14. [X] Добавить функции поиска и вывода документации для нодов
     следующих типов:
     - [X] "variable"      - 'docparser:variable-node;
     - [X] "macro"         - 'docparser:macro-node;
@@ -61,107 +83,107 @@
       - "struct"        - 'docparser:struct-node;
       - "condition"     - 'docparser:condition-node;
       - "type"          - 'docparser:type-node;
-13. [X] При формировании документации для  методов необходимо исключить
+15. [X] При формировании документации для  методов необходимо исключить
     из методов методы типа reader, writer, accessor. Причина: информация
     о них присутствует в описании соответствующих им слотов.
-14. [X] sb-mop -> closer-mop 
-15. [X] Добавить функцию section-setf-methods.
+16. [X] sb-mop -> closer-mop 
+17. [X] Добавить функцию section-setf-methods.
     - [X] определить package-setf-methods
     - [X] проверить работу package-methods
-16. [X] Пересмотреть реализацию функций
+18. [X] Пересмотреть реализацию функций
     - [X] package-setf-functions;
     - [X] filter-setf-functions;
-17. [X] Реализовать функции
+19. [X] Реализовать функции
     - [X] package-setf-generics;
     - [X] filter-setf-generics;
-18. [X] Добавить функцию section-setf-generics.
-19. [X] Добавить документацию к подпакетам.
+20. [X] Добавить функцию section-setf-generics.
+21. [X] Добавить документацию к подпакетам.
     - [X] make;
     - [X] view;
     - [X] pkg;
-20. [X] Перенести class-slot-graph в подпроект make и подпроект view.
-21. [X] Для фукции mnas-package:make-codex-graphs исключить собственно
+22. [X] Перенести class-slot-graph в подпроект make и подпроект view.
+23. [X] Для фукции mnas-package:make-codex-graphs исключить собственно
     раздел вывода графов если нет ни одной вершины ни в доном из,
     выводимых графов.
-22. [X] Определить функцию class-slot-graph(class),
+24. [X] Определить функцию class-slot-graph(class),
     которая строила бы граф слотов класса.
-23. [X] Для фукции mnas-package:make-codex-graphs исключить графы, у
+25. [X] Для фукции mnas-package:make-codex-graphs исключить графы, у
     которых нет ни одной вершины.
-24. [X] Добавить в функцию make-codex-documentation информацию
+26. [X] Добавить в функцию make-codex-documentation информацию
     извлекаемую из системы;
-25. [X] Для функции mnas-package:document исключить разделы
+27. [X] Для функции mnas-package:document исключить разделы
     (относящиеся к различным типам документации), у которых нет ни
     одной документируемой сущности.
-26. [X] Сгруппировать разделы относящиеся к отдельным типам
+28. [X] Сгруппировать разделы относящиеся к отдельным типам
     документируемых объектов попакетно.
-27. [X] Определить функцию для вывода шаблона документации в каталог ./docs/build -> document.
-28. [X] Переопределить функцию class-undirect-subclasses, так чтобы она
+29. [X] Определить функцию для вывода шаблона документации в каталог ./docs/build -> document.
+30. [X] Переопределить функцию class-undirect-subclasses, так чтобы она
     возвращала граф дочерних классов -> sub-class-graph;
-29. [X] Определить функцию для поиска родительских классов ->
+31. [X] Определить функцию для поиска родительских классов ->
     super-class-graph;
-30. [X] Добавить функции тестирования mpkg::insert-codex-doc
-31. [X] Написать макрос для использования в функциях вывода секций с
+32. [X] Добавить функции тестирования mpkg::insert-codex-doc
+33. [X] Написать макрос для использования в функциях вывода секций с
     документацией о: функциях; макросах; и т.д. и.т.п, устанавливающий
     значение текущего пакета и восстанавливающий предідущее значение
     with-package.
-32. [X] Написать макрос для использования в функциях вывода секций с
+34. [X] Написать макрос для использования в функциях вывода секций с
     документацией о: функциях; макросах; и т.д. и.т.п, устанавливающий
     нижний регистр вывода на печать и восстанавливающий исходное
     значение with-downcase.
-33. [X] Откорректировать метод вывода для методов добавить вывод
+35. [X] Откорректировать метод вывода для методов добавить вывод
     квалификаторов (но методы с квалификаторами не выводить).
-34. [X] Создать набор тестов.
+36. [X] Создать набор тестов.
     - [X] mnas-package/obj  - obj;
     - [X] mnas-package/pkg  - pkg;
     - [X] mnas-package/make - make;
     - [X] mnas-package/view - view пока не создавать;
     - [X] mnas-package -      main.
-35. [X] Исключить сортировку функций, обобщенных функций, методов как
+37. [X] Исключить сортировку функций, обобщенных функций, методов как
     параметр по умолчанию. 
-36. [X] Исключить из методов insert-doc ключевой параметр - pkg. При
+38. [X] Исключить из методов insert-doc ключевой параметр - pkg. При
     этом вероятно придется добавить фунцию фильтрации символов, функций
     и т.д. и т.п. на принадлежность определенному пакету.
-37. [X] Добавить в методы insert-doc ключевой параметр - pkg. Вероятно
+39. [X] Добавить в методы insert-doc ключевой параметр - pkg. Вероятно
     это позволит устранить ошибку исчезновения при третьем выводе выводе
     информации относящейся к методам. - Не помогло.
-38. [X] Добавить функцию filter-macroses
-39. [X] Добавить функцию package-macroses
-40. [X] Добавить в функцию make-codex-documentation информацию
+40. [X] Добавить функцию filter-macroses
+41. [X] Добавить функцию package-macroses
+42. [X] Добавить в функцию make-codex-documentation информацию
     извлекаемую из пакета;:
-41. [X] Тестирование добавить систему tests;
-42. [X] Устранение ошибок при вызове функции make-codex-section-variables.
-43. [X] Определить правильный набор экспортируемых функций.
-44. [X] Разделить mnas-package на подсистемы:
+43. [X] Тестирование добавить систему tests;
+44. [X] Устранение ошибок при вызове функции make-codex-section-variables.
+45. [X] Определить правильный набор экспортируемых функций.
+46. [X] Разделить mnas-package на подсистемы:
     - [X] core -> obj;
     - [X] pkg;
     - [X] make-graph -> make;
     - [X] view;
-45. [X] Определить методы:
+47. [X] Определить методы:
     - [X] obj-name
     - [X] obj-name-string
     - [X] obj-package
     - [X] obj-package-string.
-46. [X] Справиться с предупреждениями при компиляции.
-47. [X] Определить функцию make-symbol-graph для создания графа
+48. [X] Справиться с предупреждениями при компиляции.
+49. [X] Определить функцию make-symbol-graph для создания графа
     использования функциями внешних-символов пакета. По шаблону:
     функция -> внешний-символ
-48. [X] Определить функцию package-symbol-graph (make-symbol-graph),
+50. [X] Определить функцию package-symbol-graph (make-symbol-graph),
     которая-бы строила граф использования во всех функциях пакета
     глобальных параметров.
-49. [X] Определить функцию package-system-graph (make-system-graph),
+51. [X] Определить функцию package-system-graph (make-system-graph),
     которая-бы формировала граф зависимостей систем asdf.
-50. [X] Выполнить переименование функций
+52. [X] Выполнить переименование функций
     - [X] package-call-graph -> view-call-graph;
     - [X] package-system-graph -> view-system-graph;
     - [X] package-symbol-graph -> view-symbol-graph;
     - [X] package-class-graph -> view-class-graph;
     - [X] выполнить переименования в файлах Developers-memo.org;
-51. [X] Переименовать make-codex-documentation -> make-codex-graphs
-52. [X] Переписать функции, которые генерируют вывод для системы Codex
+53. [X] Переименовать make-codex-documentation -> make-codex-graphs
+54. [X] Переписать функции, которые генерируют вывод для системы Codex
     с использованием переменной *\*print-case\** равной *:downcase*,
     так чтобы после их выполнения системная переменная принимала
     значение, установленное перед входом в функцию.
-53. [X] Исключить неиспользуемые функции.
+55. [X] Исключить неиспользуемые функции.
     - [X] smbl-name-downcase
     - [X] smbl-name
     - [X] smbl-separator-bak
@@ -172,5 +194,3 @@
 
 * [/] Codex
 1. [X] Codex не выводит методы с квалификаторами создать issue для Codex.
-
-
