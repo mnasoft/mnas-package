@@ -283,7 +283,19 @@ var. Возвращает список, каждым элементом кото
  @b(Переменые:)
 @begin(list)
 @item(symbols - список символов пакета.)
-@end(list)"
+@end(list)
+
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (filter-functions
+   (package-symbols-by-category :mnas-package/example))
+ => (MNAS-PACKAGE/EXAMPLE:F-A-EXP
+     MNAS-PACKAGE/EXAMPLE:F-B-EXP
+     MNAS-PACKAGE/EXAMPLE:F-C-EXP
+     MNAS-PACKAGE/EXAMPLE::F-B-INT
+     MNAS-PACKAGE/EXAMPLE::F-C-INT
+     MNAS-PACKAGE/EXAMPLE::F-A-INT)
+@end(code)"
   (let ((rez nil))
     (mapc
      #'(lambda (el)
@@ -304,7 +316,18 @@ var. Возвращает список, каждым элементом кото
  @b(Переменые:)
 @begin(list)
 @item(symbols - список символов пакета.)
-@end(list)"
+@end(list)
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (filter-macroses
+   (package-symbols-by-category :mnas-package/example))
+ => (MNAS-PACKAGE/EXAMPLE:K-B-EXP
+     MNAS-PACKAGE/EXAMPLE:K-C-EXP
+     MNAS-PACKAGE/EXAMPLE:K-A-EXP
+     MNAS-PACKAGE/EXAMPLE::K-B-INT
+     MNAS-PACKAGE/EXAMPLE::K-C-INT
+     MNAS-PACKAGE/EXAMPLE::K-A-INT)
+@end(code)"
   (let ((rez nil))
     (map nil
      #'(lambda (el) (when (macro-function el) (push el rez)))
@@ -318,7 +341,15 @@ var. Возвращает список, каждым элементом кото
  @b(Переменые:)
 @begin(list) 
 @item(symbols - список символов пакета.)
-@end(list)"  
+@end(list)
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (filter-setf-functions
+   (package-symbols-by-category :mnas-package/example))
+ => (MNAS-PACKAGE/EXAMPLE:F-A-EXP
+     MNAS-PACKAGE/EXAMPLE:F-B-EXP
+     MNAS-PACKAGE/EXAMPLE:F-C-EXP)
+@end(code)"  
   (let ((rez nil))
     (mapc
      #'(lambda (symbol)
@@ -337,7 +368,21 @@ var. Возвращает список, каждым элементом кото
  @b(Переменые:)
 @begin(list)
 @item(symbols - список символов пакета.)
-@end(list)"  
+@end(list)
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (filter-generics
+   (package-symbols-by-category :mnas-package/example))
+ => (MNAS-PACKAGE/EXAMPLE:M-A-EXP
+     MNAS-PACKAGE/EXAMPLE:M-C-EXP
+     MNAS-PACKAGE/EXAMPLE:M-B-EXP
+     MNAS-PACKAGE/EXAMPLE::<C-C-INT>-C
+     MNAS-PACKAGE/EXAMPLE::<C-B-INT>-B
+     MNAS-PACKAGE/EXAMPLE::<C-A-INT>-A
+     MNAS-PACKAGE/EXAMPLE::M-C-INT
+     MNAS-PACKAGE/EXAMPLE::M-A-INT
+     MNAS-PACKAGE/EXAMPLE::M-B-INT)
+@end(code)"  
   (let ((rez nil))
     (mapc
      #'(lambda (el)
@@ -376,7 +421,18 @@ var. Возвращает список, каждым элементом кото
  @b(Переменые:)
 @begin(list) 
 @item(symbols - список символов пакета.)
-@end(list)"  
+@end(list)
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (filter-methods
+   (apply #'append 
+          (mapcar #'closer-mop:generic-function-methods
+                  (package-generics :mnas-package/example))))
+ => (#<STANDARD-METHOD MNAS-PACKAGE/EXAMPLE:M-B-EXP  (MNAS-PACKAGE/EXAMPLE::<C-A-INT> MNAS-PACKAGE/EXAMPLE::<C-B-INT> MNAS-PACKAGE/EXAMPLE:<C-C-EXP>) {100E4888F3}>
+     #<STANDARD-METHOD MNAS-PACKAGE/EXAMPLE:M-C-EXP  (MNAS-PACKAGE/EXAMPLE::<C-A-INT> MNAS-PACKAGE/EXAMPLE::<C-B-INT> MNAS-PACKAGE/EXAMPLE::<C-C-INT>) {100E488903}>
+     #<S TANDARD-METHOD MNAS-PACKAGE/EXAMPLE:M-C-EXP (MNAS-PACKAGE/EXAMPLE:<C-A-EXP> MNAS-PACKAGE/EXAMPLE:<C-B-EXP> MNAS-PACKAGE/EXAMPLE:<C-C-EXP>) {100E53CD03}>
+     #<S TANDARD-METHOD MNAS-PACKAGE/EXAMPLE:M-A-EXP (MNAS-PACKAGE/EXAMPLE::<C-A-INT> MNAS-PACKAGE/EXAMPLE::<C-B-INT> MNAS-PACKAGE/EXAMPLE:<C-C-EXP>) {100E4888E3}>)
+@end(code)"  
   (let ((rez nil))
     (mapc
      #'(lambda (method)
@@ -392,7 +448,18 @@ var. Возвращает список, каждым элементом кото
  @b(Переменые:)
 @begin(list) 
 @item(symbols - список символов пакета.)
-@end(list)"  
+@end(list)
+ @b(Пример использования:)
+@begin[lang=lisp](code)
+ (filter-setf-methods
+   (apply #'append 
+          (mapcar #'closer-mop:generic-function-methods
+                  (package-generics :mnas-package/example))))
+ => (#<STANDARD-METHOD MNAS-PACKAGE/EXAMPLE:M-B-EXP (MNAS-PACKAGE/EXAMPLE::<C-A-INT> MNAS-PACKAGE/EXAMPLE::<C-B-INT> MNAS-PACKAGE/EXAMPLE:<C-C-EXP>) {100E4888F3}>
+     #<STANDARD-METHOD MNAS-PACKAGE/EXAMPLE:M-C-EXP (MNAS-PACKAGE/EXAMPLE::<C-A-INT> MNAS-PACKAGE/EXAMPLE::<C-B-INT> MNAS-PACKAGE/EXAMPLE::<C-C-INT>) {100E488903}>
+     #<S TANDARD-METHOD MNAS-PACKAGE/EXAMPLE:M-C-EXP (MNAS-PACKAGE/EXAMPLE:<C-A-EXP> MNAS-PACKAGE/EXAMPLE:<C-B-EXP> MNAS-PACKAGE/EXAMPLE:<C-C-EXP>) {100E53CD03}>
+     #<S TANDARD-METHOD MNAS-PACKAGE/EXAMPLE:M-A-EXP (MNAS-PACKAGE/EXAMPLE::<C-A-INT> MNAS-PACKAGE/EXAMPLE::<C-B-INT> MNAS-PACKAGE/EXAMPLE:<C-C-EXP>) {100E4888E3}>)
+@end(code)"  
   (let ((rez nil))
     (mapc
      #'(lambda (method)
