@@ -141,7 +141,7 @@
   (loop :for i :in (mnas-package/pkg:package-setf-methods package :external external :internal internal :inherited inherited)
         :do
            (when (stringp (documentation i t))
-             (format stream "~2%(make-doc~%  (find-method #'~S ~S '~S)~%  t~%  ~S)"
+             (format stream "~2%(make-doc~%~2t(find-method~%~4t#'~S~%~4t~S~%~4t(list ~{(find-class '~S)~^~%~10t~}))~%  t~%  ~S)"
                      (closer-mop:generic-function-name (closer-mop:method-generic-function i))
                      (method-qualifiers i)
                      (mapcar #' class-name(closer-mop:method-specializers i))
@@ -151,7 +151,7 @@
   "(make-methods :mnas-package/example)"
   (loop :for i :in (mnas-package/pkg:package-methods package :external external :internal internal :inherited inherited) :do
     (when (stringp (documentation i t))
-      (format stream "~2%(make-doc~%  (find-method #'~S ~S '~S)~%  t~%  ~S)"
+      (format stream "~2%(make-doc~%~2t(find-method~%~4t#'~S~%~4t~S~%~4t(list ~{(find-class '~S)~^~%~10t~}))~%  t~%  ~S)"
               (closer-mop:generic-function-name (closer-mop:method-generic-function i))
               (method-qualifiers i)
               (mapcar #' class-name(closer-mop:method-specializers i))
