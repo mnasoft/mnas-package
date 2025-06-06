@@ -301,14 +301,14 @@ setf-методы из пакета @b(package-name).
                                  :min-doc-length min-doc-length
                                  :external external :internal internal :inherited inherited))
        (list #'section-variables
+             #'section-classes
              #'section-macroses  
              #'section-functions 
              #'section-generics
              #'section-setf-functions 
              #'section-setf-generics  
              #'section-methods
-             #'section-setf-methods                
-             #'section-classes))
+             #'section-setf-methods))
   (format stream "@end(section)~%"))
 
 (defun section-system (system-name
@@ -320,8 +320,12 @@ setf-методы из пакета @b(package-name).
 @begin[lang=lisp](code)
 
 @end(code)"
-  (format stream "@begin(section) @title(Обзор)~2%")
-  (format stream (asdf:system-description system))
+  (format stream "@begin(section) @title(S:~A)~2%" (asdf:coerce-name system))
+  (format stream "~A~%" (asdf:system-description system))
+  (when (asdf:system-long-description system)
+    (format stream "@begin(section) @title(LD:~A)~2%" (asdf:coerce-name system))
+    (format stream "~A~%"(asdf:system-long-description system))
+    (format stream "@end(section)~%"))
   (format stream "@end(section)~%"))
   
 
