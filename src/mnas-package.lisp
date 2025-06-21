@@ -172,18 +172,14 @@
                                              system-name)))))
 
 (defparameter *intranet-hosts*
-  '(("mnasoft-deb"
-     "/home/namatv/rclone/db/Public/Common-Lisp-Programs/")
-    ("N000308"
-     "//n133906/home/_namatv/public_html/Site/Development/Common-Lisp-Programs/")
-    ("N142013"
+  '(("N142013"
      "//n133906/home/_namatv/public_html/Site/Development/Common-Lisp-Programs/"))
   "@b(Описание:) переменная @b(*intranet-hosts*) определяет имена
  хостов, на которых нет выхода в Интернет.")
 
 ;;;; (setf *intranet-hosts* nil)
 (push (list (uiop:hostname)
-             "/usr/share/nginx/html/common-lisp/")
+             "/usr/share/nginx/html/common-lisp/systems/docs/")
        *intranet-hosts*)
 
 (defun rsync-doc (system-name)
@@ -378,7 +374,7 @@ scr-файл системы документирования codex. Этот р�
                     (mnas-graph:count-nodes call-graph  )
                     (mnas-graph:count-nodes symbol-graph)
                     (mnas-graph:count-nodes class-graph )))
-        (format os " @begin(section) @title(Графы ~A)~%" pkg-name)
+        (format os " @begin(section) @title(G:~A)~%" pkg-name)
         (format os "  @begin(list)~%")
         (when (< 0 (mnas-graph:count-nodes system-graph))
           (format os "   @item(system-graph @image[src=./system-graph-~A.gv.png]())~%" pkg-name))
