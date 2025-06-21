@@ -181,6 +181,11 @@
   "@b(Описание:) переменная @b(*intranet-hosts*) определяет имена
  хостов, на которых нет выхода в Интернет.")
 
+;;;; (setf *intranet-hosts* nil)
+(push (list (uiop:hostname)
+             "/usr/share/nginx/html/common-lisp/")
+       *intranet-hosts*)
+
 (defun rsync-doc (system-name)
   "@b(Описание:) функция @b(rsync-doc) выполняет копирование
   документации на удаленный сервер. Расположение удаленного хоста
